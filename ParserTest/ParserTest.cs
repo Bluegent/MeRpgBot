@@ -8,7 +8,7 @@ namespace ParserTest
     public class ParserTest
     {
         [TestMethod]
-        public void testSimpleFunction()
+        public void parser_testSimpleFunction()
         {
             string expression = "MAX(10,20)";
             Assert.AreEqual(20,MEParser.parse(expression));

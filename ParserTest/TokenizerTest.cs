@@ -13,14 +13,14 @@ namespace ParserTest
             ParserConstants.init();
         }
         [TestMethod]
-        public void testEmptyExpression()
+        public void tokenizer_testEmptyExpression()
         {
             string expression = "";
             Assert.AreEqual(0,Tokenizer.tokenize(expression).Length);
         }
 
         [TestMethod]
-        public void testEmptySpacedExpression()
+        public void tokenizer_testEmptySpacedExpression()
         {
             string expression = "                   \n\r\t";
             Assert.AreEqual(0, Tokenizer.tokenize(expression).Length);
@@ -28,7 +28,7 @@ namespace ParserTest
 
 
         [TestMethod]
-        public void testNormalExpression()
+        public void tokenizer_testNormalExpression()
         {
             string expression = "MAX(STR*10,INT*10)";
             Token[] resultTokens = Tokenizer.tokenize(expression);
@@ -39,7 +39,7 @@ namespace ParserTest
         }
 
         [TestMethod]
-        public void testNegativeVar()
+        public void tokenizer_testNegativeVar()
         {
             string expression = "ABS(-10)";
             Token[] resultTokens = Tokenizer.tokenize(expression);
@@ -51,7 +51,7 @@ namespace ParserTest
 
 
         [TestMethod]
-        public void testNestedFunctions()
+        public void tokenizer_testNestedFunctions()
         {
             string expression = "MAX(ABS(10))";
             Token[] resultTokens = Tokenizer.tokenize(expression);
@@ -62,7 +62,7 @@ namespace ParserTest
         }
 
         [TestMethod]
-        public void testSpacedExpression()
+        public void tokenizer_testSpacedExpression()
         {
             string expression = "MAX   (    STR  *\n10,\n\r    INT*10)";
             Token[] resultTokens = Tokenizer.tokenize(expression);
