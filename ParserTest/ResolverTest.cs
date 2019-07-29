@@ -18,6 +18,13 @@ namespace ParserTest
             VariableMap.Add("INT",10);
             VariableMap.Add("AGI",5);
         }
+        [TestMethod]
+        public void ResolverTestComplexFunctionWithAttributes()
+        {
+            string expression = "STR*100+INT/2+MAX(AGI,3)";
+            Assert.AreEqual(3010, ValueResolver.Resolve(expression, VariableMap));
+        }
+
 
         [TestMethod]
         public void ResolverTestSimpleFunction()
