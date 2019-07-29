@@ -40,7 +40,7 @@ namespace MicroExpressionParser
 
         private static String Sanitize(String expression)
         {
-            return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(); ;
+            return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim();
         }
 
         public static Token[] Tokenize(String expression)

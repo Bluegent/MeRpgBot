@@ -5,9 +5,9 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
-    public class MEParser
+    public static class MEParser
     {
-        public static double parse(string expression)
+        public static double Parse(string expression)
         {
             double result = 0;
             return result;

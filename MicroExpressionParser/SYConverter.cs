@@ -5,11 +5,18 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
-    public class SYConverter
+    public static class SYConverter
     {
         public class ConverterException : Exception
         {
             public ConverterException(String msg) : base(msg) { }
+        }
+
+
+        public static Token[] ExprToPostifx(String expression)
+        {
+            Token[] list = Tokenizer.Tokenize((expression));
+            return ToPostfix(list);
         }
 
         private static void ShuntOperators(List<Token> postfix, Stack<Token> opStack, Operator op)

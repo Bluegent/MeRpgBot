@@ -9,7 +9,7 @@ namespace ParserTest
     {
 
         [TestMethod]
-        public void converter_testSimpleFunction()
+        public void ConverterTestSimpleFunction()
         {
             string expression = "ABS(STR)";
             Token[] infix = Tokenizer.Tokenize(expression);

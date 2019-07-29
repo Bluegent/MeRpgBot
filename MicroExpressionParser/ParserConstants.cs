@@ -16,6 +16,11 @@ namespace MicroExpressionParser
         public Func<double, double, double> Operation { get; }
         public bool LeftAsoc { get; }
 
+        public int getOperandCount()
+        {
+            return 2;
+        }
+
         public bool Precedes(Operator other)
         {
             return this.Precedence > other.Precedence;
