@@ -28,8 +28,8 @@ namespace MicroExpressionParser
 
         public double ToValue()
         {
-            if (Type != VariableType.NumericValue || Type != VariableType.Variable)
-                throw new ValueResolverException("Attempted to retrieve invalid value from a node.");
+            if (Type != VariableType.NumericValue && Type != VariableType.Variable)
+                throw new ValueResolverException("Attempted to retrieve invalid value from node "+this.Type+" .");
             return (double)Value;
         }
     }
@@ -65,7 +65,7 @@ namespace MicroExpressionParser
                                 throw new ValueResolverException(
                                     "Attempted to convert unknown value: " + node.Token.Value + " .");
                         }
-                        newNode = new FunctionalNode(result, VariableType.NumericValue);
+                        newNode = new FunctionalNode(result, VariableType.Variable);
                         break;
                     }
             }
@@ -96,7 +96,7 @@ namespace MicroExpressionParser
                             parameters.Add(subNode.ToValue());
                         }
                         node.Value = ((MathFunction)node.Value).Execute(parameters.ToArray());
-                        node.Type = VariableType.NumericValue;
+                        node.Type = VariableType.Variable;
                         node.Leaves.Clear();
                     }
                     else
@@ -108,10 +108,12 @@ namespace MicroExpressionParser
                     //not implemented yet
                     break;
                 case VariableType.Operator:
-                    node.Value = ((Operator)node.Value).Operation(node.Leaves[0].ToValue(),node.Leaves[1].ToValue());
-                    node.Type = VariableType.NumericValue;
-                    node.Leaves.Clear();
-                    break;
+                    {
+                        node.Value = ((Operator)node.Value).Operation(node.Leaves[0].ToValue(), node.Leaves[1].ToValue());
+                        node.Type = VariableType.Variable;
+                        node.Leaves.Clear();
+                        break;
+                    }
             }
         }
 
