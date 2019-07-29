@@ -39,6 +39,18 @@ namespace ParserTest
         }
 
         [TestMethod]
+        public void TokenizerTestFunctionAndOperatorMix()
+        {
+            string expression = "ABS(10-100)";
+            Token[] resultTokens = Tokenizer.Tokenize(expression);
+            String[] expectedTokens = { "ABS","(","10","-","100",")" };
+            Assert.AreEqual(expectedTokens.Length, resultTokens.Length);
+            for (int i = 0; i < resultTokens.Length; ++i)
+                Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
+        }
+
+
+        [TestMethod]
         public void TokenizerTestNegativeVar()
         {
             string expression = "ABS(-10)";

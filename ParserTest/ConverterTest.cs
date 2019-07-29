@@ -21,6 +21,18 @@ namespace ParserTest
         }
 
         [TestMethod]
+        public void ConverterTestFunctionAndOperator()
+        {
+            string expression = "ABS(10-100)";
+            Token[] infix = Tokenizer.Tokenize(expression);
+            Token[] postfix = SYConverter.ToPostfix(infix);
+            String[] expected = { "(", "10", "100","-","ABS" };
+            Assert.AreEqual(expected.Length, postfix.Length);
+            for (int i = 0; i < postfix.Length; ++i)
+                Assert.AreEqual(expected[i], postfix[i].Value);
+        }
+
+        [TestMethod]
         public void ConverterTestMultipleParams()
         {
             string expression = "MAX(STR,INT)";

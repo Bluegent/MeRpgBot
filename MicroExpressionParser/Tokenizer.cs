@@ -56,13 +56,27 @@ namespace MicroExpressionParser
                 }
                 else if(c == '-')
                 {
+                    if (current.Length != 0)
+                    {
+                        Token testToken = new Token(current);
+                        if (testToken.Type == TokenType.Variable)
+                        {
+                            result.Add(testToken);
+                            current = "";
+                        }
+                    }
                     Token prev = result.Last();
                     if (prev.Type == TokenType.Function)
                         throw new Exception("Found minus after function with no (, function: " + prev.Value);
                     else if (prev.Type == TokenType.Variable || prev.Type == TokenType.RightParen)
+                    {
                         result.Add(new Token(Char.ToString(c)));
+                    }
                     else
+                    {
+                        
                         current = "-";
+                    }
                 }
                 else
                 {
