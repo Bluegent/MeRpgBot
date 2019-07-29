@@ -54,6 +54,7 @@ namespace MicroExpressionParser
                                 node.Parameters.Add(nodeStack.Pop());
                             }
                             nodeStack.Push(node);
+                            node.Parameters.Reverse();
                             break;
                         }
                     case TokenType.Function:
@@ -69,6 +70,7 @@ namespace MicroExpressionParser
                                 throw new TreeBuilderException("No parenthesis found for function "+tok.Value+" .");
                             }
                             nodeStack.Pop();
+                            node.Parameters.Reverse();
                             nodeStack.Push(node);
                             break;
                         }
