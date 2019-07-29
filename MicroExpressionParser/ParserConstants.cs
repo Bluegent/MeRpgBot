@@ -11,35 +11,35 @@ namespace MicroExpressionParser
 
     public class Operator
     {
-        public String character { get; }
-        public int precedence { get; }
-        public Func<double, double, double> operation { get; }
-        public bool leftAsoc { get; }
+        public String Character { get; }
+        public int Precedence { get; }
+        public Func<double, double, double> Operation { get; }
+        public bool LeftAsoc { get; }
 
-        public bool precedes(Operator other)
+        public bool Precedes(Operator other)
         {
-            return this.precedence > other.precedence;
+            return this.Precedence > other.Precedence;
         }
 
         public Operator(String character, int precedence, bool leftAsoc, Func<double, double, double> operation)
         {
-            this.character = character;
-            this.precedence = precedence;
-            this.operation = operation;
-            this.leftAsoc = leftAsoc;
+            this.Character = character;
+            this.Precedence = precedence;
+            this.Operation = operation;
+            this.LeftAsoc = leftAsoc;
         }
     }
 
     public class Function
     {
-        public String name { get; }
-        public Func<double[], double> operation { get; }
+        public String Name { get; }
+        public Func<double[], double> Operation { get; }
         public Function(String name, Func<double[], double> operation)
         {
-            this.name = name;
-            this.operation = operation;
+            this.Name = name;
+            this.Operation = operation;
         }
-        public static void validateParameters(int expected, double[] parameters)
+        public static void ValidateParameters(int expected, double[] parameters)
         {
             if (expected == 0)
                 return;
@@ -50,97 +50,97 @@ namespace MicroExpressionParser
 
     public class ParserConstants
     {
-        public static Dictionary<String, Operator> operators;
-        public static Dictionary<String, Function> functions;
-        public const char paramSeparator = ',';
-        public const char leftParen = '(';
-        public const char rightParen = ')';
-        public static bool isSeparator(String str)
+        public static Dictionary<String, Operator> Operators;
+        public static Dictionary<String, Function> Functions;
+        public const char PARAM_SEPARATOR = ',';
+        public const char LEFT_PAREN = '(';
+        public const char RIGHT_PAREN = ')';
+        public static bool IsSeparator(String str)
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == paramSeparator)
+            if (str[0] == PARAM_SEPARATOR)
                 return true;
             return false;
         }
 
-        public static bool isFunction(String str)
+        public static bool IsFunction(String str)
         {
-            return functions.ContainsKey(str);
+            return Functions.ContainsKey(str);
         }
 
-        public static bool isOperator(String str)
+        public static bool IsOperator(String str)
         {
-            return operators.ContainsKey(str);
+            return Operators.ContainsKey(str);
         }
 
-        public static bool isLeftParen(String str)
+        public static bool IsLeftParen(String str)
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == leftParen)
+            if (str[0] == LEFT_PAREN)
                 return true;
             return false;
         }
 
-        public static bool isRightParen(String str)
+        public static bool IsRightParen(String str)
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == rightParen)
+            if (str[0] == RIGHT_PAREN)
                 return true;
             return false;
         }
 
-        public static void addOp(Operator op)
+        public static void AddOp(Operator op)
         {
-            operators.Add(op.character, op);
+            Operators.Add(op.Character, op);
         }
-        public static void addFunc(Function func)
+        public static void AddFunc(Function func)
         {
-            functions.Add(func.name, func);
+            Functions.Add(func.Name, func);
         }
-        public static void init()
+        public static void Init()
         {
-            operators = new Dictionary<string, Operator>();
-            functions = new Dictionary<String, Function>();
+            Operators = new Dictionary<string, Operator>();
+            Functions = new Dictionary<String, Function>();
 
             Operator plus = new Operator("+", 1, true, (left, right) => left + right);
-            addOp(plus);
+            AddOp(plus);
             Operator minus = new Operator("-", 1, true, (left, right) => left - right);
-            addOp(minus);
+            AddOp(minus);
             Operator multiply = new Operator("*", 2, true, (left, right) => left * right);
-            addOp(multiply);
+            AddOp(multiply);
             Operator divide = new Operator("/", 2, true, (left, right) => left / right);
-            addOp(divide);
+            AddOp(divide);
 
             Function max = new Function("MAX", values => values.Max());
-            addFunc(max);
+            AddFunc(max);
 
             Function min = new Function("MIN", values => values.Min());
-            addFunc(min);
+            AddFunc(min);
 
             Function abs = new Function("ABS", values =>
             {
-                Function.validateParameters(1, values);
+                Function.ValidateParameters(1, values);
                 return Math.Abs(values[0]);
             });
-            addFunc(abs);
+            AddFunc(abs);
 
             Function noNegative = new Function("NONNEG", values =>
             {
-                Function.validateParameters(1, values);
+                Function.ValidateParameters(1, values);
                 return values[0] >= 0 ? values[0] : 0;
             });
-            addFunc(noNegative);
+            AddFunc(noNegative);
 
             Function random = new Function("RANDOM", values =>
             {
-                Function.validateParameters(2, values);
+                Function.ValidateParameters(2, values);
                 return new Random().Next((int)values[0], (int)values[1]);
             });
 
-            addFunc(random);
+            AddFunc(random);
         }
     }
 }

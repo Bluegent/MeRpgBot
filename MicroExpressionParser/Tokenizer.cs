@@ -7,46 +7,46 @@ namespace MicroExpressionParser
 {
     public enum TokenType
     {
-        VARIABLE, LEFT_PAREN, RIGHT_PAREN, SEPARATOR, FUNCTION, OPERATOR
+        Variable, LeftParen, RightParen, Separator, Function, Operator
     }
 
     public class Token
     {
-        public TokenType type { get; set; }
-        public String value { get; set; }
-        public static TokenType getType(String str)
+        public TokenType Type { get; set; }
+        public String Value { get; set; }
+        public static TokenType GetType(String str)
         {
-            if (ParserConstants.isFunction(str))
-                return TokenType.FUNCTION;
-            if (ParserConstants.isOperator(str))
-                return TokenType.OPERATOR;
-            if (ParserConstants.isLeftParen(str))
-                return TokenType.LEFT_PAREN;
-            if (ParserConstants.isRightParen(str))
-                return TokenType.RIGHT_PAREN;
-            if (ParserConstants.isSeparator(str))
-                return TokenType.SEPARATOR;
-            return TokenType.VARIABLE;
+            if (ParserConstants.IsFunction(str))
+                return TokenType.Function;
+            if (ParserConstants.IsOperator(str))
+                return TokenType.Operator;
+            if (ParserConstants.IsLeftParen(str))
+                return TokenType.LeftParen;
+            if (ParserConstants.IsRightParen(str))
+                return TokenType.RightParen;
+            if (ParserConstants.IsSeparator(str))
+                return TokenType.Separator;
+            return TokenType.Variable;
         }
         public Token(String value)
         {
-            this.value = value;
-            this.type = getType(value);
+            this.Value = value;
+            this.Type = GetType(value);
         }
     }
 
     public class Tokenizer
     {
 
-        public static String sanitize(String expression)
+        private static String Sanitize(String expression)
         {
             return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim(); ;
         }
 
-        public static Token[] tokenize(String expression)
+        public static Token[] Tokenize(String expression)
         {
             List<Token> result = new List<Token>();
-            String sanitized = sanitize(expression);            
+            String sanitized = Sanitize(expression);            
             String current = "";
             foreach (char c in sanitized)
             {
@@ -57,9 +57,9 @@ namespace MicroExpressionParser
                 else if(c == '-')
                 {
                     Token prev = result.Last();
-                    if (prev.type == TokenType.FUNCTION)
-                        throw new Exception("Found minus after function with no (, function: " + prev.value);
-                    else if (prev.type == TokenType.VARIABLE || prev.type == TokenType.RIGHT_PAREN)
+                    if (prev.Type == TokenType.Function)
+                        throw new Exception("Found minus after function with no (, function: " + prev.Value);
+                    else if (prev.Type == TokenType.Variable || prev.Type == TokenType.RightParen)
                         result.Add(new Token(Char.ToString(c)));
                     else
                         current = "-";

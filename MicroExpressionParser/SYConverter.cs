@@ -12,13 +12,13 @@ namespace MicroExpressionParser
             public ConverterException(String msg) : base(msg) { }
         }
 
-        private static void shuntOperators(List<Token> postfix, Stack<Token> opStack, Operator op)
+        private static void ShuntOperators(List<Token> postfix, Stack<Token> opStack, Operator op)
         {
             Token nextTok = opStack.Count == 0 ? null : opStack.Peek();
             while (nextTok != null &&
-                nextTok.type == TokenType.OPERATOR &&
-                ((op.leftAsoc && op.precedence <= ParserConstants.operators[nextTok.value].precedence)
-                || (op.precedence < ParserConstants.operators[nextTok.value].precedence))
+                nextTok.Type == TokenType.Operator &&
+                ((op.LeftAsoc && op.Precedence <= ParserConstants.Operators[nextTok.Value].Precedence)
+                || (op.Precedence < ParserConstants.Operators[nextTok.Value].Precedence))
                 )
             {
                 postfix.Add(opStack.Pop());
@@ -26,22 +26,22 @@ namespace MicroExpressionParser
             }
         }
 
-        public static void debug(List<Token> postfix, Stack<Token> stack, Token lf, Token pt, Token toke)
+        public static void Debug(List<Token> postfix, Stack<Token> stack, Token lf, Token pt, Token toke)
         {
             System.Console.Write("Expr: ");
             foreach(Token tok in postfix)
             {
-                System.Console.Write(tok.value + " ");
+                System.Console.Write(tok.Value + " ");
             }
             System.Console.Write("\nStack:");
             foreach (Token tok in stack)
             {
-                System.Console.Write(tok.value + " ");
+                System.Console.Write(tok.Value + " ");
             }
-            System.Console.WriteLine("\nCT= "+toke.value+" LF=" + (lf == null? "-" : lf.value) + " PT = " + (pt == null? "-": pt.value)+"\n");
+            System.Console.WriteLine("\nCT= "+toke.Value+" LF=" + (lf == null? "-" : lf.Value) + " PT = " + (pt == null? "-": pt.Value)+"\n");
         }
 
-        public static Token[] toPostfix(Token[] infix)
+        public static Token[] ToPostfix(Token[] infix)
         {
             List<Token> postFix = new List<Token>();
             Stack<Token> opStack = new Stack<Token>();
@@ -50,25 +50,25 @@ namespace MicroExpressionParser
 
             foreach (Token tok in infix)
             {
-                switch (tok.type)
+                switch (tok.Type)
                 {
-                    case TokenType.VARIABLE:
+                    case TokenType.Variable:
                         {
                             postFix.Add(tok);
                             break;
                         }
-                    case TokenType.FUNCTION:
+                    case TokenType.Function:
                         {
                             opStack.Push(tok);
                             lastFunction = tok;
                             break;
                         }
 
-                    case TokenType.SEPARATOR:
+                    case TokenType.Separator:
                         {
-                            if (prevTok != null && prevTok.type == TokenType.OPERATOR)
-                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.value + " .");
-                            while (opStack.Count != 0 && opStack.Peek().type != TokenType.LEFT_PAREN)
+                            if (prevTok != null && prevTok.Type == TokenType.Operator)
+                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.Value + " .");
+                            while (opStack.Count != 0 && opStack.Peek().Type != TokenType.LeftParen)
                             {
                                 postFix.Add(opStack.Pop());
                             }
@@ -76,54 +76,54 @@ namespace MicroExpressionParser
                             {
                                 if (lastFunction == null)
                                 {
-                                    throw new ConverterException("Unexpected separator character.");
+                                    throw new ConverterException("Unexpected separator Character.");
                                 }
                                 else
                                 {
-                                    throw new ConverterException("Error while parsing function " + lastFunction.value + " .");
+                                    throw new ConverterException("Error while parsing function " + lastFunction.Value + " .");
                                 }
                             }
                             break;
                         }
 
-                    case TokenType.OPERATOR:
+                    case TokenType.Operator:
                         {
-                            if (prevTok != null && (prevTok.type == TokenType.SEPARATOR || prevTok.type == TokenType.LEFT_PAREN))
+                            if (prevTok != null && (prevTok.Type == TokenType.Separator || prevTok.Type == TokenType.LeftParen))
                             {
-                                throw new ConverterException("Missing parameter(s) for operator " + tok.value + " .");
+                                throw new ConverterException("Missing parameter(s) for operator " + tok.Value + " .");
                             }
 
-                            Operator op = ParserConstants.operators[tok.value];
-                            shuntOperators(postFix, opStack, op);
+                            Operator op = ParserConstants.Operators[tok.Value];
+                            ShuntOperators(postFix, opStack, op);
                             opStack.Push(tok);
                             break;
                         }
-                    case TokenType.LEFT_PAREN:
+                    case TokenType.LeftParen:
                         {
                             if(prevTok != null)
                             {
-                                if (prevTok.type == TokenType.FUNCTION)
+                                if (prevTok.Type == TokenType.Function)
                                     postFix.Add(tok);
                             }
                             opStack.Push(tok);
                             break;
                         }
-                    case TokenType.RIGHT_PAREN:
+                    case TokenType.RightParen:
                         {
-                            if (prevTok != null && prevTok.type == TokenType.OPERATOR)
+                            if (prevTok != null && prevTok.Type == TokenType.Operator)
                             {
-                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.value + " .");
+                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.Value + " .");
                             }
-                            while(opStack.Count != 0 && opStack.Peek().type != TokenType.LEFT_PAREN)
+                            while(opStack.Count != 0 && opStack.Peek().Type != TokenType.LeftParen)
                             {
                                 postFix.Add(opStack.Pop());
                             }
                             if(opStack.Count == 0)
                             {
-                                throw new ConverterException("Missmatched parenthesis after" + prevTok.value + " .");
+                                throw new ConverterException("Missmatched parenthesis after" + prevTok.Value + " .");
                             }
                             opStack.Pop();
-                            if(opStack.Count != 0  && opStack.Peek().type == TokenType.FUNCTION)
+                            if(opStack.Count != 0  && opStack.Peek().Type == TokenType.Function)
                             {
                                 postFix.Add(opStack.Pop());
                             }
@@ -136,8 +136,8 @@ namespace MicroExpressionParser
             while(opStack.Count != 0 )
             {
                 Token tok = opStack.Pop();
-                if (tok.type == TokenType.LEFT_PAREN || tok.type  == TokenType.RIGHT_PAREN)
-                   throw new ConverterException("Missmatched parenthesis after" + prevTok.value + " .");
+                if (tok.Type == TokenType.LeftParen || tok.Type  == TokenType.RightParen)
+                   throw new ConverterException("Missmatched parenthesis after" + prevTok.Value + " .");
                 postFix.Add(tok);
             }
             return postFix.ToArray();
