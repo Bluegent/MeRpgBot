@@ -44,6 +44,10 @@ namespace MicroExpressionParser
             this.Name = name;
             this.Operation = operation;
         }
+        public bool IsMathematical()
+        {
+            return true;
+        }
         public static void ValidateParameters(int expected, double[] parameters)
         {
             if (expected == 0)
@@ -60,6 +64,7 @@ namespace MicroExpressionParser
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
         public const char RIGHT_PAREN = ')';
+
         public static bool IsSeparator(String str)
         {
             if (str.Length != 1)

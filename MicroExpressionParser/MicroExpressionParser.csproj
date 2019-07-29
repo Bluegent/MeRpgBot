@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SYConverter.cs" />
-    <Compile Include="MEParser.cs" />
+    <Compile Include="ValueResolver.cs" />
     <Compile Include="ParserConstants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
