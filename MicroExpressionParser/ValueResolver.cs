@@ -12,21 +12,14 @@ namespace MicroExpressionParser
     {
         public ValueResolverException(String msg) : base(msg) { }
     }
-    public enum NodeType
-    {
-        Function,
-        Value,
-        Entity,
-        Operator
-    }
 
     public class FunctionalNode
     {
         public Object Value { get; set; }
-        public NodeType Type { get; set; }
+        public VariableType Type { get; set; }
         public List<FunctionalNode> Leaves { get; }
 
-        public FunctionalNode(Object value, NodeType type)
+        public FunctionalNode(Object value, VariableType type)
         {
             Leaves = new List<FunctionalNode>();
             this.Type = type;
@@ -35,7 +28,7 @@ namespace MicroExpressionParser
 
         public double ToValue()
         {
-            if (Type != NodeType.Value)
+            if (Type != VariableType.NumericValue || Type != VariableType.Variable)
                 throw new ValueResolverException("Attempted to retrieve invalid value from a node.");
             return (double)Value;
         }
@@ -51,16 +44,15 @@ namespace MicroExpressionParser
             {
                 case TokenType.Function:
                     {
-                        newNode = new FunctionalNode(ParserConstants.Functions[node.Token.Value], NodeType.Function);
+                        newNode = new FunctionalNode(ParserConstants.Functions[node.Token.Value], VariableType.Function);
                         break;
                     }
 
                 case TokenType.Operator:
                     {
-                        newNode = new FunctionalNode(ParserConstants.Operators[node.Token.Value], NodeType.Operator);
+                        newNode = new FunctionalNode(ParserConstants.Operators[node.Token.Value], VariableType.Operator);
                         break;
                     }
-
                 case TokenType.Variable:
                     {
                         double result;
@@ -73,7 +65,7 @@ namespace MicroExpressionParser
                                 throw new ValueResolverException(
                                     "Attempted to convert unknown value: " + node.Token.Value + " .");
                         }
-                        newNode = new FunctionalNode(result, NodeType.Value);
+                        newNode = new FunctionalNode(result, VariableType.NumericValue);
                         break;
                     }
             }
@@ -95,16 +87,16 @@ namespace MicroExpressionParser
 
             switch (node.Type)
             {
-                case NodeType.Function:
-                    if (((Function)node.Value).IsMathematical())
+                case VariableType.Function:
+                    if (((BaseFunction)node.Value).IsMathematical())
                     {
                         List<double> parameters = new List<Double>();
                         foreach (FunctionalNode subNode in node.Leaves)
                         {
                             parameters.Add(subNode.ToValue());
                         }
-                        node.Value = ((Function)node.Value).Operation(parameters.ToArray());
-                        node.Type = NodeType.Value;
+                        node.Value = ((MathFunction)node.Value).Execute(parameters.ToArray());
+                        node.Type = VariableType.NumericValue;
                         node.Leaves.Clear();
                     }
                     else
@@ -112,12 +104,12 @@ namespace MicroExpressionParser
                         //not implemented yet
                     }
                     break;
-                case NodeType.Entity:
+                case VariableType.Entity:
                     //not implemented yet
                     break;
-                case NodeType.Operator:
+                case VariableType.Operator:
                     node.Value = ((Operator)node.Value).Operation(node.Leaves[0].ToValue(),node.Leaves[1].ToValue());
-                    node.Type = NodeType.Value;
+                    node.Type = VariableType.NumericValue;
                     node.Leaves.Clear();
                     break;
             }

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base.cs" />
+    <Compile Include="Entity.cs" />
     <Compile Include="SYConverter.cs" />
     <Compile Include="ValueResolver.cs" />
     <Compile Include="ParserConstants.cs" />
