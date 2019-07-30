@@ -15,12 +15,12 @@ namespace MicroExpressionParser
     {
         Function,
         NumericValue,
-        Variable,
         Entity,
-        Stat,
+        EntityProperty,
         Operator,
         DamageType,
-        Array
+        Array,
+        String
     }
 
     public class DamageType
@@ -84,6 +84,18 @@ namespace MicroExpressionParser
         {
             ValidateType(VariableType.Array);
             return (MeVariable[])Value;
+        }
+
+        public EntityProperty ToEntityProperty()
+        {
+            ValidateType(VariableType.EntityProperty);
+            return (EntityProperty)Value;
+        }
+
+        public new string ToString()
+        {
+            ValidateType(VariableType.String);
+            return (string)Value;
         }
 
         public static double[] ToDoubleArray(MeVariable[] array)

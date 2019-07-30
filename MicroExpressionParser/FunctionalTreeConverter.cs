@@ -34,7 +34,7 @@ namespace MicroExpressionParser
     public static class FunctionalTreeConverter
     {
 
-        public static FunctionalNode Convert(SyntacticNode node, Dictionary<String, double> variableMap)
+        public static FunctionalNode Convert(SyntacticNode node, IGameEngine engine)
         {
             FunctionalNode newNode = null;
             switch (node.Token.Type)
@@ -42,47 +42,52 @@ namespace MicroExpressionParser
                 case TokenType.Function:
                     {
                         newNode = new FunctionalNode(new MeVariable()
-                                                         {
-                                                             Value= ParserConstants.Functions[node.Token.Value],
-                                                             Type = VariableType.Function,
-                                                         });
+                        {
+                            Value = ParserConstants.Functions[node.Token.Value],
+                            Type = VariableType.Function
+                        });
                         break;
                     }
 
                 case TokenType.Operator:
                     {
                         newNode = new FunctionalNode(new MeVariable()
-                                                         {
-                                                             Value = ParserConstants.Operators[node.Token.Value],
-                                                             Type = VariableType.Operator,
-                                                         });
+                        {
+                            Value = ParserConstants.Operators[node.Token.Value],
+                            Type = VariableType.Operator
+                        });
                         break;
                     }
                 case TokenType.Variable:
                     {
-                        //TODO: implement proper mapping
-                        double result;
+                        double result = 0;
                         bool success = double.TryParse(node.Token.Value, out result);
-                        if (!success)
+                        if (success)
                         {
-                            if (variableMap.ContainsKey(node.Token.Value))
-                                result = variableMap[node.Token.Value];
-                            else
-                                throw new ValueResolverException(
-                                    "Attempted to convert unknown value: " + node.Token.Value + " .");
+                            newNode = new FunctionalNode(
+                                new MeVariable() { Value = result, Type = VariableType.NumericValue });
                         }
-                        newNode = new FunctionalNode(new MeVariable()
-                                                         {
-                                                             Value = result,
-                                                             Type = VariableType.NumericValue,
-                                                         });
+                        else
+                        {
+                            Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
+                            if (tryEntity != null)
+                            {
+                                newNode = new FunctionalNode(
+                                    new MeVariable() { Value = tryEntity, Type = VariableType.Entity });
+                            }
+                            else
+                            {
+                                newNode = new FunctionalNode(
+                                    new MeVariable() { Value = node.Token.Value, Type = VariableType.String });
+                            }
+                        }
                         break;
                     }
             }
 
             foreach (SyntacticNode subNode in node.Parameters)
             {
-                newNode.Leaves.Add(Convert(subNode, variableMap));
+                newNode.Leaves.Add(Convert(subNode, engine));
             }
 
             return newNode;
@@ -99,17 +104,19 @@ namespace MicroExpressionParser
             {
                 case VariableType.Function:
 
-                        List<MeVariable> parameters = new List<MeVariable>();
-                        foreach (FunctionalNode subNode in node.Leaves)
-                        {
-                            parameters.Add(subNode.ToValue());
-                        }
+                    List<MeVariable> parameters = new List<MeVariable>();
+                    foreach (FunctionalNode subNode in node.Leaves)
+                    {
+                        parameters.Add(subNode.Value);
+                    }
 
-                        node.Value = node.Value.ToFunction().Execute(parameters.ToArray());
-                        node.Leaves.Clear();
-                        break;
+                    node.Value = node.Value.ToFunction().Execute(parameters.ToArray());
+                    node.Leaves.Clear();
+                    break;
                 case VariableType.Entity:
-                    //not implemented yet
+                    {
+                        //do nothing, rub mint
+                    }
                     break;
                 case VariableType.Operator:
                     {
@@ -120,10 +127,10 @@ namespace MicroExpressionParser
             }
         }
 
-        public static FunctionalNode BuildTree(string expression, Dictionary<string, double> variableMap)
+        public static FunctionalNode BuildTree(string expression, IGameEngine engine)
         {
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            FunctionalNode resultNode = Convert(tree, variableMap);
+            FunctionalNode resultNode = Convert(tree, engine);
             ResolveNode(resultNode);
             return resultNode;
         }

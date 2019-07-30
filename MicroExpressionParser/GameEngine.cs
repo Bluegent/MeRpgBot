@@ -11,6 +11,8 @@ namespace MicroExpressionParser
     {
         void AddPlayer(Entity entity);
         Entity[] GetAllPlayers();
+
+        Entity GetEntityByKey(string key);
     }
     public class GameEngine : IGameEngine
     {
@@ -28,6 +30,17 @@ namespace MicroExpressionParser
         public Entity[] GetAllPlayers()
         {
             return Players.ToArray();
+        }
+
+        public Entity GetEntityByKey(string key)
+        {
+            foreach (Entity ent in Players)
+            {
+                if (ent.Key.Equals(key))
+                    return ent;
+            }
+
+            return null;
         }
     }
 }

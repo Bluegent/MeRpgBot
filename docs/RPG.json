@@ -62,18 +62,18 @@
             "values_by_level":
             [
                 {
-                    "cooldown":"30/CASTER>ATT_SPEED",
-                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+10+GETPROP(CASTER,STR)/2)",
+                    "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
+                    "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+10+GET_PROP(CASTER,STR)/2)",
                     "needed_level":1
                 },
                 {
-                    "cooldown":"30/CASTER>ATT_SPEED",  
-                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+15+GETPROP(CASTER,STR)/2)",
+                     "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",  
+                    "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+15+GET_PROP(CASTER,STR)/2)",
                     "needed_level":5
                 },
                 {
-                    "cooldown":"30/CASTER>ATT_SPEED", 
-                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+50+GETPROP(CASTER,STR)/2)",
+                     "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
+                    "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+50+GET_PROP(CASTER,STR)/2)",
                     "needed_level":30
                 }
             ]
@@ -111,14 +111,14 @@
                 {
                     "cooldown":"1200",
                     "duration":"60",
-                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+GETPROP(CASTER,STR)/2)",
+                    "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+GET_PROP(CASTER,STR)/2)",
                     "needed_level":15,
                     "interval":"1+NONNEG(9-DEX/10)"
                 },
                 {
                     "cooldown":"60",
                     "duration":"60",
-                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+GETPROP(CASTER,STR)/2)",
+                    "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+GET_PROP(CASTER,STR)/2)",
                     "needed_level":50,
                     "interval":"1+NONNEG(9-DEX/10)"
                 }

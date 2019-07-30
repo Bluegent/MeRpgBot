@@ -216,6 +216,17 @@ namespace MicroExpressionParser
             }
             getAllPlayers.Operation = (Func<MeVariable[], MeVariable>)GetAllPlayersFunction;
             AddFunc(getAllPlayers);
+
+            AbstractFunction getProperty = new AbstractFunction("GET_PROP", 2);
+            MeVariable GetPropertyFunction(MeVariable[] values)
+            {
+                getProperty.ValidateParameters(values.Length);
+                Entity entity = values[0].ToEntity();
+                string prop = values[1].ToString();
+                return entity.GetProperty(prop).Value;
+            }
+            getProperty.Operation = (Func<MeVariable[], MeVariable>)GetPropertyFunction;
+            AddFunc(getProperty);
         }
     }
 }
