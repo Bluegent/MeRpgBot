@@ -1,0 +1,173 @@
+{
+    "comment1":"Base values defined by the Entity's class.",
+    "base_value_keys":
+    [          
+       "B_DMG",
+       "B_HP",
+       "B_MP",
+       "B_DEF",
+       "B_MDEF",
+       "B_ATT_SPEED"
+    ],
+    
+    "comment2":"Can be increased with attribute points rewarded when leveling up.",
+    "attributes_keys":
+    [
+       "STR",
+       "INT",
+       "AGI",
+       "VIT"
+    ],
+    
+    "damage_types":
+    [
+        {"key":"P","name":"Physical","mitigation":"NONNEG(VALUE-DEF)"},
+        {"key":"M","name":"Magic","mitigation":"NONNEG(VALUE-MDEF)"},
+        {"key":"T","name":"True Damage","mitigation":"VALUE"}
+    ],
+    
+    "compund_stats":
+    [
+        {"key":"DEF","formula":"B_DEF+STR/4"},
+        {"key":"MDEF","formula":"B_MDEF+INT/4"},
+        {"key":"ATT_SPEED","formula":"1+DEX/200"}
+    ],
+    
+    "comment3":"HP is hardcoded in the engine and has to be present for HARM() and HEAL() functions.",
+    "entity_resource":
+    [
+        {"key":"HP", "formula":"B_HP+VIT*20"},
+        {"key":"MP", "formula":"B_MP+10*INT"}
+    ],
+    "comment4":"First skill in skills vector always counts as basic attack.",
+    
+    "status_effects":
+    [
+        {   
+            "key":"shonen_powerup",
+            "name":"Shonen Powerup",
+            "description":"You feel stronger, but somehow dumber.",
+            "max_stack":0,
+            "formula":"MOD_VALUE(STR,$0)~MOD_VALUE(DEX,$1)~MOD_VALUE(INT,$2)"
+        }
+    ],
+    "skills":
+    [
+        {   
+            "key":"punch",
+            "name":"Basic Punch",
+            "aliases":["punch","attack"],
+            "description":"Apply fist to target's face.",
+            "type":"cast",
+            "values_by_level":
+            [
+                {
+                    "cooldown":"30/CASTER>ATT_SPEED",
+                    "formula":"HARM(TARGET,P,CASTER>B_DMG+10+CASTER>STR/2)",
+                    "needed_level":1
+                },
+                {
+                    "cooldown":"30/CASTER>ATT_SPEED",  
+                    "formula":"HARM(TARGET,P,CASTER>B_DMG+15+CASTER>STR/2)",
+                    "needed_level":5
+                },
+                {
+                    "cooldown":"30/CASTER>ATT_SPEED", 
+                    "formula":"HARM(TARGET,P,CASTER>B_DMG+50+CASTER>STR/2)",
+                    "needed_level":30
+                }
+            ]
+        },
+        {   
+            "key":"big_punch",
+            "name":"Serious Punch",
+            "aliases":["bigpunch","spunch"],
+            "description":"Describe your super move in a long speech then use it on the target.",  
+            "type":"cast",
+            "values_by_level":
+            [
+                {
+                    "cooldown":"600",
+                    "duration":"300",
+                    "formula":"HARM(TARGET,P,STR*100)",
+                    "needed_level":5
+                },
+                {
+                    "cooldown":"300",
+                    "duration":"600",
+                    "formula":"HARM(TARGET,P,STR*200)",
+                    "needed_level":20
+                }
+            ]
+        },
+        {   
+            "key":"beatdown",
+            "name":"Consecutive Normal Punches",
+            "aliases":["flurry","beatdown","combo"],
+            "description":"Punch the shit out of your target.",  
+            "type":"channel",
+            "values_by_level":
+            [
+                {
+                    "cooldown":"1200",
+                    "duration":"60",
+                    "formula":"HARM(TARGET,P,CASTER>B_DMG+CASTER>STR/2)",
+                    "needed_level":15,
+                    "interval":"1+NONNEG(9-DEX/10)"
+                },
+                {
+                    "cooldown":"60",
+                    "duration":"60",
+                    "formula":"HARM(TARGET,P,CASTER>B_DMG+CASTER>STR/2)",
+                    "needed_level":50,
+                    "interval":"1+NONNEG(9-DEX/10)"
+                }
+            ]
+        },
+        {
+            "key":"powerup",
+            "name":"Asspull",
+            "aliases":["powerup"],
+            "description":"You pull new power from your ass.",  
+            "type":"cast",
+            "values_by_level":
+            [
+                {
+                    "cooldown":"216000",
+                    "duration":"10",
+                    "formula":"APPLYSTATUS(CASTER,shonen_powerup,60,ARRAY(10,10,-5))",
+                    "needed_level":10
+                }
+            ]
+        }
+        
+    ],
+    "classes":
+    [
+        {
+            "key":"Shonen_Protagonist",
+            "base_values":
+            [   
+                {"key":"B_DMG","value":10},
+                {"key":"B_HP","value":100},
+                {"key":"B_MP","value":50},
+                {"key":"B_DEF","value":0}
+            ],
+            "basic_attributes":
+            [   
+                {"key":"STR","value":5},
+                {"key":"INT","value":5},
+                {"key":"AGI","value":5},
+                {"key":"VIT","value":10}
+            ],
+            "skills":
+            [
+                "punch",
+                "big_punch",
+                "beatdown",
+                "powerup"
+            ]
+        }
+    ]
+    
+}
