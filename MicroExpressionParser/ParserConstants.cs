@@ -4,16 +4,9 @@ using System.Linq;
 
 namespace MicroExpressionParser
 {
-
-
-    public class ArgumentException : Exception
-    {
-        public ArgumentException(String message) : base(message) { }
-    }
-
     public class Operator
     {
-        public String Character { get; }
+        public string Character { get; }
         public int Precedence { get; }
         public Func<double, double, double> Operation { get; }
         public bool LeftAsoc { get; }
@@ -28,7 +21,7 @@ namespace MicroExpressionParser
             return this.Precedence > other.Precedence;
         }
 
-        public Operator(String character, int precedence, bool leftAsoc, Func<double, double, double> operation)
+        public Operator(string character, int precedence, bool leftAsoc, Func<double, double, double> operation)
         {
             this.Character = character;
             this.Precedence = precedence;
@@ -37,83 +30,39 @@ namespace MicroExpressionParser
         }
     }
 
-    public abstract class BaseFunction
+    public class AbstractFunction
     {
-        public String Name { get; }
-        protected Object innerFunction;
-        public BaseFunction(String name, Object operation)
+        public string Name { get; set; }
+        public object Operation { get; set; }
+        public int ParameterCount { get; }
+        public AbstractFunction(String name, int parameterCount = 0)
         {
-            this.Name = name;
-            this.innerFunction = operation;
+            Name = name;
+            ParameterCount = parameterCount;
         }
-        public static void ValidateParameters(int expected, double[] parameters)
+        public void ValidateParameters(int variableCount)
         {
-            if (expected == 0)
+            if (ParameterCount == 0)
                 return;
-            if (parameters.Length != expected)
-                throw new ArgumentException("Argument count does not match, got " + parameters.Length + " expected: " + expected);
+            if (variableCount != ParameterCount)
+                throw new MeException($"Invalid argument count for function {Name}, got: {variableCount} expected:  {ParameterCount} .");
         }
 
-        public abstract bool IsMathematical();
-    }
-
-    public class MathFunction : BaseFunction
-    {
-        public MathFunction(String name, Func<double[], double> operation) : base(name, operation)
+        public MeVariable Execute(MeVariable[] variables)
         {
-        }
-
-        public double Execute(double[] values)
-        {
-            return ((Func<double[], double>)innerFunction).Invoke(values);
-        }
-
-        public override bool IsMathematical()
-        {
-            return true;
-        }
-    }
-
-    public class NonMathFunction : BaseFunction
-    {
-        public NonMathFunction(string name, Func<MeVariable[], MeVariable> operation) : base(name, operation)
-        {
-        }
-
-        public static void ValidateParameters(int expected, MeVariable[] parameters)
-        {
-            if (expected == 0)
-                return;
-            if (parameters.Length != expected)
-                throw new ArgumentException("Argument count does not match, got " + parameters.Length + " expected: " + expected);
-        }
-
-        public static void ValidateParameter(MeVariable parameter, int count, VariableType expected)
-        {
-            if (parameter.Type != expected)
-                throw new ArgumentException("Argument " + count + " is the wrong type (" + parameter.Type.ToString() + "). Expected: " + expected.ToString());
-        }
-
-        public void Execute(MeVariable[] variables)
-        {
-            ((Func<MeVariable[], MeVariable>)innerFunction).Invoke(variables);
-        }
-
-        public override bool IsMathematical()
-        {
-            return false;
+            return ((Func<MeVariable[], MeVariable>)(Operation)).Invoke(variables);
         }
     }
 
     public class ParserConstants
     {
-        public static Dictionary<String, Operator> Operators;
-        public static Dictionary<String, BaseFunction> Functions;
+        public static Dictionary<string, Operator> Operators;
+        public static Dictionary<string, AbstractFunction> Functions;
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
         public const char RIGHT_PAREN = ')';
 
-        public static bool IsSeparator(String str)
+        public static bool IsSeparator(string str)
         {
             if (str.Length != 1)
                 return false;
@@ -122,17 +71,17 @@ namespace MicroExpressionParser
             return false;
         }
 
-        public static bool IsFunction(String str)
+        public static bool IsFunction(string str)
         {
             return Functions.ContainsKey(str);
         }
 
-        public static bool IsOperator(String str)
+        public static bool IsOperator(string str)
         {
             return Operators.ContainsKey(str);
         }
 
-        public static bool IsLeftParen(String str)
+        public static bool IsLeftParen(string str)
         {
             if (str.Length != 1)
                 return false;
@@ -141,7 +90,7 @@ namespace MicroExpressionParser
             return false;
         }
 
-        public static bool IsRightParen(String str)
+        public static bool IsRightParen(string str)
         {
             if (str.Length != 1)
                 return false;
@@ -150,18 +99,18 @@ namespace MicroExpressionParser
             return false;
         }
 
-        public static void AddOp(Operator op)
+        private static void AddOp(Operator op)
         {
             Operators.Add(op.Character, op);
         }
-        public static void AddFunc(BaseFunction func)
+        private static void AddFunc(AbstractFunction func)
         {
             Functions.Add(func.Name, func);
         }
         public static void Init()
         {
             Operators = new Dictionary<string, Operator>();
-            Functions = new Dictionary<String, BaseFunction>();
+            Functions = new Dictionary<string, AbstractFunction>();
 
             Operator plus = new Operator("+", 1, true, (left, right) => left + right);
             AddOp(plus);
@@ -172,49 +121,84 @@ namespace MicroExpressionParser
             Operator divide = new Operator("/", 2, true, (left, right) => left / right);
             AddOp(divide);
 
-            BaseFunction max = new MathFunction("MAX", values => values.Max());
+            AbstractFunction max = new AbstractFunction("MAX");
+
+            MeVariable MaxFunction(MeVariable[] values)
+            {
+                max.ValidateParameters(values.Length);
+                double[] parameters = MeVariable.ToDoubleArray(values);
+                return parameters.Max();
+            }
+
+            max.Operation = (Func<MeVariable[], MeVariable>)MaxFunction;
             AddFunc(max);
 
-            BaseFunction min = new MathFunction("MIN", values => values.Min());
+            AbstractFunction min = new AbstractFunction("MIN");
+
+            MeVariable MinFunction(MeVariable[] values)
+            {
+                max.ValidateParameters(values.Length);
+                double[] parameters = MeVariable.ToDoubleArray(values);
+                return parameters.Min();
+            }
+
+            min.Operation = (Func<MeVariable[], MeVariable>)MinFunction;
             AddFunc(min);
 
-            BaseFunction abs = new MathFunction("ABS", values =>
+
+            AbstractFunction abs = new AbstractFunction("ABS", 1);
+
+            MeVariable AbsFunction(MeVariable[] values)
             {
-                BaseFunction.ValidateParameters(1, values);
-                return Math.Abs(values[0]);
-            });
+                abs.ValidateParameters(values.Length);
+                return Math.Abs(values[0].ToDouble());
+            }
+
+            abs.Operation = (Func<MeVariable[], MeVariable>)AbsFunction;
             AddFunc(abs);
 
-            BaseFunction noNegative = new MathFunction("NONNEG", values =>
+
+            AbstractFunction noNegative = new AbstractFunction("NON_NEG", 1);
+
+            MeVariable NoNegativeFunction(MeVariable[] values)
             {
-                BaseFunction.ValidateParameters(1, values);
-                return values[0] >= 0 ? values[0] : 0;
-            });
+                noNegative.ValidateParameters(values.Length);
+                double value = values[0].ToDouble();
+                return value > 0 ? value : 0;
+            }
+
+            noNegative.Operation = (Func<MeVariable[], MeVariable>)NoNegativeFunction;
             AddFunc(noNegative);
 
-            BaseFunction random = new MathFunction("RANDOM", values =>
+
+            AbstractFunction random = new AbstractFunction("RANDOM", 2);
+
+            MeVariable RandomFunction(MeVariable[] values)
             {
-                BaseFunction.ValidateParameters(2, values);
-                return new Random().Next((int)values[0], (int)values[1]);
-            });
+                random.ValidateParameters(values.Length);
+                return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
+            }
 
-            BaseFunction ModifyValue = new NonMathFunction("MOD_VALUE", variables =>
-            {
-                //Usage: MOD_VALUE(Entity Caster, Entity TARGET,Stat TO_MODIFY ,Numeric AMOUNT)
-                NonMathFunction.ValidateParameters(4, variables);
-                NonMathFunction.ValidateParameter(variables[0], 0, VariableType.Entity);
-                NonMathFunction.ValidateParameter(variables[1], 1, VariableType.Entity);
-                NonMathFunction.ValidateParameter(variables[2], 2, VariableType.Stat);
-                NonMathFunction.ValidateParameter(variables[3], 3, VariableType.NumericValue);
-
-                Entity target = (Entity)(variables[1].Value);
-                String statName = (String)(variables[2].Value);
-                double value = (double)(variables[3].Value);
-                target.ModifyValue(statName, value);
-                return null;
-            });
-
+            random.Operation = (Func<MeVariable[], MeVariable>)RandomFunction;
             AddFunc(random);
+
+
+            AbstractFunction harm = new AbstractFunction("HARM", 3);
+
+            MeVariable HarmFunction(MeVariable[] values)
+            {
+                //HARM(TARGET,TYPE,AMOUNT)
+                harm.ValidateParameters(values.Length);
+                Entity target = values[0].ToEntity();
+                DamageType damageType = values[1].ToDamageType();
+                double amount = values[2].ToDouble();
+                //not implemented yet
+                //target.TakeDamage(amount,type);
+                return null;
+            }
+
+            harm.Operation = (Func<MeVariable[], MeVariable>)HarmFunction;
+            AddFunc(harm);
         }
     }
 }

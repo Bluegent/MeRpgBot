@@ -7,6 +7,7 @@ namespace MicroExpressionParser
 {
     using System.Data;
     using System.Net.Configuration;
+    using System.Runtime.InteropServices;
 
     public class ValueResolverException : Exception
     {
@@ -15,22 +16,18 @@ namespace MicroExpressionParser
 
     public class FunctionalNode
     {
-        public Object Value { get; set; }
-        public VariableType Type { get; set; }
+        public MeVariable Value { get; set; }
         public List<FunctionalNode> Leaves { get; }
 
-        public FunctionalNode(Object value, VariableType type)
+        public FunctionalNode(MeVariable value)
         {
             Leaves = new List<FunctionalNode>();
-            this.Type = type;
             this.Value = value;
         }
 
         public double ToValue()
         {
-            if (Type != VariableType.NumericValue && Type != VariableType.Variable)
-                throw new ValueResolverException("Attempted to retrieve invalid value from node "+this.Type+" .");
-            return (double)Value;
+            return Value.ToDouble();
         }
     }
 
@@ -44,13 +41,21 @@ namespace MicroExpressionParser
             {
                 case TokenType.Function:
                     {
-                        newNode = new FunctionalNode(ParserConstants.Functions[node.Token.Value], VariableType.Function);
+                        newNode = new FunctionalNode(new MeVariable()
+                                                         {
+                                                             Value= ParserConstants.Functions[node.Token.Value],
+                                                             Type = VariableType.Function,
+                                                         });
                         break;
                     }
 
                 case TokenType.Operator:
                     {
-                        newNode = new FunctionalNode(ParserConstants.Operators[node.Token.Value], VariableType.Operator);
+                        newNode = new FunctionalNode(new MeVariable()
+                                                         {
+                                                             Value = ParserConstants.Operators[node.Token.Value],
+                                                             Type = VariableType.Operator,
+                                                         });
                         break;
                     }
                 case TokenType.Variable:
@@ -65,7 +70,11 @@ namespace MicroExpressionParser
                                 throw new ValueResolverException(
                                     "Attempted to convert unknown value: " + node.Token.Value + " .");
                         }
-                        newNode = new FunctionalNode(result, VariableType.Variable);
+                        newNode = new FunctionalNode(new MeVariable()
+                                                         {
+                                                             Value = result,
+                                                             Type = VariableType.NumericValue,
+                                                         });
                         break;
                     }
             }
@@ -85,32 +94,25 @@ namespace MicroExpressionParser
                 ResolveNode(subNode);
             }
 
-            switch (node.Type)
+            switch (node.Value.Type)
             {
                 case VariableType.Function:
-                    if (((BaseFunction)node.Value).IsMathematical())
-                    {
-                        List<double> parameters = new List<Double>();
+
+                        List<MeVariable> parameters = new List<MeVariable>();
                         foreach (FunctionalNode subNode in node.Leaves)
                         {
                             parameters.Add(subNode.ToValue());
                         }
-                        node.Value = ((MathFunction)node.Value).Execute(parameters.ToArray());
-                        node.Type = VariableType.Variable;
+
+                        node.Value = node.Value.ToFunction().Execute(parameters.ToArray());
                         node.Leaves.Clear();
-                    }
-                    else
-                    {
-                        //not implemented yet
-                    }
-                    break;
+                        break;
                 case VariableType.Entity:
                     //not implemented yet
                     break;
                 case VariableType.Operator:
                     {
-                        node.Value = ((Operator)node.Value).Operation(node.Leaves[0].ToValue(), node.Leaves[1].ToValue());
-                        node.Type = VariableType.Variable;
+                        node.Value = node.Value.ToOperator().Operation(node.Leaves[0].ToValue(), node.Leaves[1].ToValue());
                         node.Leaves.Clear();
                         break;
                     }

@@ -6,7 +6,7 @@ using System.Text;
 namespace MicroExpressionParser
 {
 
-    class Entity
+    public class Entity
     {
         public String Name { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
