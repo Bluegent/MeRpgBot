@@ -42,7 +42,7 @@ namespace MicroExpressionParser
         public void ValidateType(VariableType type)
         {
             if (Type != type)
-                throw new MeException($"Exception when converting variable to {type} .Variable: {Value}");
+                throw new MeException($"Exception when converting variable of type {Type} to {type}.");
         }
 
         public double ToDouble()

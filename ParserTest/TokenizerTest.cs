@@ -84,8 +84,6 @@ namespace ParserTest
                 Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
         }
 
-
-
         [TestMethod]
         public void TokenizerTestDoubleValue()
         {
@@ -96,6 +94,8 @@ namespace ParserTest
             for (int i = 0; i < resultTokens.Length; ++i)
                 Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
         }
+
+
     }
 }
 

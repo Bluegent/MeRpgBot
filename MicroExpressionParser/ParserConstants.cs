@@ -204,6 +204,17 @@ namespace MicroExpressionParser
 
             harm.Operation = (Func<MeVariable[], MeVariable>)HarmFunction;
             AddFunc(harm);
+
+            AbstractFunction array = new AbstractFunction("ARRAY");
+
+            MeVariable ArrayFunction(MeVariable[] values)
+            {
+                array.ValidateParameters(values.Length);
+                return new MeVariable() {Type = VariableType.Array, Value = values};
+            }
+
+            array.Operation = (Func<MeVariable[], MeVariable>)ArrayFunction;
+            AddFunc(array);
         }
     }
 }

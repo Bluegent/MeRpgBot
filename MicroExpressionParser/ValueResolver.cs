@@ -11,7 +11,7 @@ namespace MicroExpressionParser
 
     public class ValueResolverException : Exception
     {
-        public ValueResolverException(String msg) : base(msg) { }
+        public ValueResolverException(string msg) : base(msg) { }
     }
 
     public class FunctionalNode
@@ -60,8 +60,9 @@ namespace MicroExpressionParser
                     }
                 case TokenType.Variable:
                     {
+                        //TODO: implement proper mapping
                         double result;
-                        bool success = Double.TryParse(node.Token.Value, out result);
+                        bool success = double.TryParse(node.Token.Value, out result);
                         if (!success)
                         {
                             if (variableMap.ContainsKey(node.Token.Value))
@@ -119,13 +120,13 @@ namespace MicroExpressionParser
             }
         }
 
-        public static double Resolve(string expression, Dictionary<String, double> variableMap)
+        public static FunctionalNode Resolve(string expression, Dictionary<string, double> variableMap)
         {
             double result = 0;
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
             FunctionalNode resultNode = Convert(tree, variableMap);
             ResolveNode(resultNode);
-            return resultNode.ToValue();
+            return resultNode;
         }
     }
 }
