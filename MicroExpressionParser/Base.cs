@@ -39,6 +39,11 @@ namespace MicroExpressionParser
             return new MeVariable(){Type = VariableType.NumericValue, Value =  value};
         }
 
+        public static implicit operator MeVariable(Entity value)
+        {
+            return new MeVariable() { Type = VariableType.Entity, Value = value };
+        }
+
         public void ValidateType(VariableType type)
         {
             if (Type != type)

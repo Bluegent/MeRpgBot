@@ -35,14 +35,14 @@ namespace MicroExpressionParser
         public string Name { get; set; }
         public object Operation { get; set; }
         public int ParameterCount { get; }
-        public AbstractFunction(String name, int parameterCount = 0)
+        public AbstractFunction(string name, int parameterCount = -1)
         {
             Name = name;
             ParameterCount = parameterCount;
         }
         public void ValidateParameters(int variableCount)
         {
-            if (ParameterCount == 0)
+            if (ParameterCount == -1)
                 return;
             if (variableCount != ParameterCount)
                 throw new MeException($"Invalid argument count for function {Name}, got: {variableCount} expected:  {ParameterCount} .");
@@ -112,7 +112,7 @@ namespace MicroExpressionParser
         {
             Functions.Add(func.Name, func);
         }
-        public static void Init()
+        public static void Init(IGameEngine engine)
         {
             Operators = new Dictionary<string, Operator>();
             Functions = new Dictionary<string, AbstractFunction>();
@@ -127,69 +127,58 @@ namespace MicroExpressionParser
             AddOp(divide);
 
             AbstractFunction max = new AbstractFunction("MAX");
-
             MeVariable MaxFunction(MeVariable[] values)
             {
                 max.ValidateParameters(values.Length);
                 double[] parameters = MeVariable.ToDoubleArray(values);
                 return parameters.Max();
             }
-
             max.Operation = (Func<MeVariable[], MeVariable>)MaxFunction;
             AddFunc(max);
 
             AbstractFunction min = new AbstractFunction("MIN");
-
             MeVariable MinFunction(MeVariable[] values)
             {
                 max.ValidateParameters(values.Length);
                 double[] parameters = MeVariable.ToDoubleArray(values);
                 return parameters.Min();
             }
-
             min.Operation = (Func<MeVariable[], MeVariable>)MinFunction;
             AddFunc(min);
 
 
             AbstractFunction abs = new AbstractFunction("ABS", 1);
-
             MeVariable AbsFunction(MeVariable[] values)
             {
                 abs.ValidateParameters(values.Length);
                 return Math.Abs(values[0].ToDouble());
             }
-
             abs.Operation = (Func<MeVariable[], MeVariable>)AbsFunction;
             AddFunc(abs);
 
 
             AbstractFunction noNegative = new AbstractFunction("NON_NEG", 1);
-
             MeVariable NoNegativeFunction(MeVariable[] values)
             {
                 noNegative.ValidateParameters(values.Length);
                 double value = values[0].ToDouble();
                 return value > 0 ? value : 0;
             }
-
             noNegative.Operation = (Func<MeVariable[], MeVariable>)NoNegativeFunction;
             AddFunc(noNegative);
 
 
             AbstractFunction random = new AbstractFunction("RANDOM", 2);
-
             MeVariable RandomFunction(MeVariable[] values)
             {
                 random.ValidateParameters(values.Length);
                 return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
             }
-
             random.Operation = (Func<MeVariable[], MeVariable>)RandomFunction;
             AddFunc(random);
 
 
             AbstractFunction harm = new AbstractFunction("HARM", 3);
-
             MeVariable HarmFunction(MeVariable[] values)
             {
                 //HARM(TARGET,TYPE,AMOUNT)
@@ -197,24 +186,36 @@ namespace MicroExpressionParser
                 Entity target = values[0].ToEntity();
                 DamageType damageType = values[1].ToDamageType();
                 double amount = values[2].ToDouble();
-                //not implemented yet
-                //target.TakeDamage(amount,type);
+                target.TakeDamage(amount, damageType);
                 return null;
             }
-
             harm.Operation = (Func<MeVariable[], MeVariable>)HarmFunction;
             AddFunc(harm);
 
             AbstractFunction array = new AbstractFunction("ARRAY");
-
             MeVariable ArrayFunction(MeVariable[] values)
             {
                 array.ValidateParameters(values.Length);
                 return new MeVariable() {Type = VariableType.Array, Value = values};
             }
-
             array.Operation = (Func<MeVariable[], MeVariable>)ArrayFunction;
             AddFunc(array);
+
+
+            AbstractFunction getAllPlayers = new AbstractFunction("GET_PLAYERS",0);
+            MeVariable GetAllPlayersFunction(MeVariable[] values)
+            {
+                getAllPlayers.ValidateParameters(values.Length);
+                Entity[] players = engine.GetAllPlayers();
+                List<MeVariable> playerList = new List<MeVariable>();
+                foreach(Entity entity in players)
+                {
+                    playerList.Add(entity);
+                }
+                return new MeVariable(){Value = playerList.ToArray(), Type = VariableType.Array};
+            }
+            getAllPlayers.Operation = (Func<MeVariable[], MeVariable>)GetAllPlayersFunction;
+            AddFunc(getAllPlayers);
         }
     }
 }

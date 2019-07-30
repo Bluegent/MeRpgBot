@@ -8,6 +8,12 @@ namespace ParserTest
     public class ConverterTest
     {
 
+        public static readonly GameEngine Engine = new GameEngine();
+        [ClassInitialize]
+        public static void StartUp(TestContext context)
+        {
+            ParserConstants.Init(Engine);
+        }
         [TestMethod]
         public void ConverterTestSimpleFunction()
         {

@@ -5,28 +5,33 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
-
-    public class Entity
+    public abstract class Entity
     {
-        public String Name { get; set; }
+        public string Name { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
 
-        public Entity()
+        public abstract void TakeDamage(double amount, DamageType type);
+
+    }
+    public class MockEntity : Entity { 
+    
+        public MockEntity()
         {
-            // static 
-            StatMap.Add("CHP", 100);
-            StatMap.Add("MHP", 100);
-            
-            //dynamic
-            StatMap.Add("STR", 5);
-            StatMap.Add("INT", 5);
-            StatMap.Add("AGI", 5);
+            StatMap = new Dictionary<string, double>
+                          {
+                              { "CHP", 100 },
+                              { "MHP", 100 },
+                              { "STR", 5 },
+                              { "INT", 5 },
+                              { "AGI", 5 }
+                          };
+                          
 
         }
 
-        public void ModifyValue(String stat, double amount)
+        public override void TakeDamage(double amount, DamageType type)
         {
-            StatMap[stat] += amount;
+            //do things
         }
     }
 }

@@ -31,7 +31,7 @@ namespace MicroExpressionParser
         }
     }
 
-    public static class ValueResolver
+    public static class FunctionalTreeConverter
     {
 
         public static FunctionalNode Convert(SyntacticNode node, Dictionary<String, double> variableMap)
@@ -120,9 +120,8 @@ namespace MicroExpressionParser
             }
         }
 
-        public static FunctionalNode Resolve(string expression, Dictionary<string, double> variableMap)
+        public static FunctionalNode BuildTree(string expression, Dictionary<string, double> variableMap)
         {
-            double result = 0;
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
             FunctionalNode resultNode = Convert(tree, variableMap);
             ResolveNode(resultNode);

@@ -7,11 +7,14 @@ namespace ParserTest
     [TestClass]
     public class TokenizerTest
     {
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
+        public static readonly GameEngine Engine = new GameEngine();
+
+        [ClassInitialize]
+        public static void StartUp(TestContext context)
         {
-            ParserConstants.Init();
+            ParserConstants.Init(Engine);
         }
+
         [TestMethod]
         public void TokenizerTestEmptyExpression()
         {
