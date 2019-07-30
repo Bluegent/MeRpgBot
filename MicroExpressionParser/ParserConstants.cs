@@ -54,13 +54,18 @@ namespace MicroExpressionParser
         }
     }
 
-    public class ParserConstants
+    public static class ParserConstants
     {
         public static Dictionary<string, Operator> Operators;
         public static Dictionary<string, AbstractFunction> Functions;
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
         public const char RIGHT_PAREN = ')';
+
+        public static bool IsSpecialChar(char c)
+        {
+            return c == PARAM_SEPARATOR || c == LEFT_PAREN || c == RIGHT_PAREN || IsOperator($"{c}");
+        }
 
         public static bool IsSeparator(string str)
         {

@@ -38,6 +38,7 @@ namespace MicroExpressionParser
     public class Tokenizer
     {
 
+
         private static String Sanitize(String expression)
         {
             return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim();
@@ -50,7 +51,7 @@ namespace MicroExpressionParser
             String current = "";
             foreach (char c in sanitized)
             {
-                if (Char.IsLetterOrDigit(c))
+                if (!ParserConstants.IsSpecialChar(c))
                 {
                     current += c;
                 }

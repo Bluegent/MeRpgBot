@@ -63,17 +63,17 @@
             [
                 {
                     "cooldown":"30/CASTER>ATT_SPEED",
-                    "formula":"HARM(TARGET,P,CASTER>B_DMG+10+CASTER>STR/2)",
+                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+10+GETPROP(CASTER,STR)/2)",
                     "needed_level":1
                 },
                 {
                     "cooldown":"30/CASTER>ATT_SPEED",  
-                    "formula":"HARM(TARGET,P,CASTER>B_DMG+15+CASTER>STR/2)",
+                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+15+GETPROP(CASTER,STR)/2)",
                     "needed_level":5
                 },
                 {
                     "cooldown":"30/CASTER>ATT_SPEED", 
-                    "formula":"HARM(TARGET,P,CASTER>B_DMG+50+CASTER>STR/2)",
+                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+50+GETPROP(CASTER,STR)/2)",
                     "needed_level":30
                 }
             ]
@@ -111,14 +111,14 @@
                 {
                     "cooldown":"1200",
                     "duration":"60",
-                    "formula":"HARM(TARGET,P,CASTER>B_DMG+CASTER>STR/2)",
+                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+GETPROP(CASTER,STR)/2)",
                     "needed_level":15,
                     "interval":"1+NONNEG(9-DEX/10)"
                 },
                 {
                     "cooldown":"60",
                     "duration":"60",
-                    "formula":"HARM(TARGET,P,CASTER>B_DMG+CASTER>STR/2)",
+                    "formula":"HARM(TARGET,P,GETPROP(CASTER,B_DMG)+GETPROP(CASTER,STR)/2)",
                     "needed_level":50,
                     "interval":"1+NONNEG(9-DEX/10)"
                 }
