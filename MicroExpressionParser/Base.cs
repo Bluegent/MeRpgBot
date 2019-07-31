@@ -20,7 +20,8 @@ namespace MicroExpressionParser
         Operator,
         DamageType,
         Array,
-        String
+        String,
+        Boolean
     }
 
     public class DamageType
@@ -42,6 +43,11 @@ namespace MicroExpressionParser
         public static implicit operator MeVariable(Entity value)
         {
             return new MeVariable() { Type = VariableType.Entity, Value = value };
+        }
+
+        public static implicit operator MeVariable(bool value)
+        {
+            return new MeVariable() { Type = VariableType.Boolean, Value = value };
         }
 
         public void ValidateType(VariableType type)
@@ -97,6 +103,13 @@ namespace MicroExpressionParser
             ValidateType(VariableType.String);
             return (string)Value;
         }
+
+        public bool ToBoolean()
+        {
+            ValidateType(VariableType.Boolean);
+            return (bool)Value;
+        }
+
 
         public static double[] ToDoubleArray(MeVariable[] array)
         {
