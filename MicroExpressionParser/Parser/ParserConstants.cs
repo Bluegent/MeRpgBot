@@ -86,6 +86,13 @@ namespace MicroExpressionParser
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
         public const char RIGHT_PAREN = ')';
+        public const char SPECIAL_CHAR = '$';
+
+        public static readonly string TargetKeyword = SPECIAL_CHAR+"TARGET";
+
+        public static readonly string CasterKeyword = SPECIAL_CHAR+"CASTER";
+
+        public const char FUNCTION_SEPARATOR = '~';
 
         public static bool IsSpecialChar(char c)
         {

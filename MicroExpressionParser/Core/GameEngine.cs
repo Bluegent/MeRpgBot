@@ -10,6 +10,8 @@ namespace MicroExpressionParser
     public interface IGameEngine
     {
         void AddPlayer(Entity entity);
+
+        void AddEnemy(Entity entity);
         Entity[] GetAllPlayers();
 
         DamageType GeDamageType(string key);
@@ -18,11 +20,12 @@ namespace MicroExpressionParser
     public class GameEngine : IGameEngine
     {
         public Dictionary<string, Entity> Players { get; }
-
+        public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
         public GameEngine()
         {
             Players = new Dictionary<string, Entity>();
+            Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();
             DamageTypes.Add("P", new DamageType() { Key = "P", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, DEF))" });
             DamageTypes.Add("M", new DamageType() { Key = "M", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, MDEF))" });
@@ -32,6 +35,11 @@ namespace MicroExpressionParser
         public void AddPlayer(Entity entity)
         {
             Players.Add(entity.Key, entity);
+        }
+
+        public void AddEnemy(Entity entity)
+        {
+            Enemies.Add(entity.Key, entity);
         }
 
         public Entity[] GetAllPlayers()
@@ -46,7 +54,11 @@ namespace MicroExpressionParser
 
         public Entity GetEntityByKey(string key)
         {
-            return Players.ContainsKey(key) ? Players[key] : null;
+            if(Players.ContainsKey(key)) 
+                return Players[key];
+            if(Enemies.ContainsKey(key))
+                return Enemies[key];
+            return null;
         }
     }
 }

@@ -30,8 +30,8 @@ namespace MicroExpressionParser
         }
         public Token(String value)
         {
-            this.Value = value;
-            this.Type = GetType(value);
+            Value = value;
+            Type = GetType(value);
         }
     }
 

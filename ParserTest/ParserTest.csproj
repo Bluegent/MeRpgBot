@@ -65,6 +65,7 @@
     <Compile Include="Data\SkillTest.cs" />
     <Compile Include="Data\ClassTest.cs" />
     <Compile Include="Data\ValueByLevelTest.cs" />
+    <Compile Include="Sanitizer\SanitizerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroExpressionParser\MicroExpressionParser.csproj">

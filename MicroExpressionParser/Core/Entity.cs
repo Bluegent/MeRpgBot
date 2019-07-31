@@ -47,7 +47,9 @@ namespace MicroExpressionParser
 
         public override EntityProperty GetProperty(string key)
         {
-            return new EntityProperty() { Key = key, Value = StatMap[key] };
+            if(StatMap.ContainsKey(key))
+                return new EntityProperty(){Key = key, Value = StatMap[key]};
+            return null;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace MicroExpressionParser
     using System.Net.Configuration;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
+    using System.Threading;
 
     public class ValueResolverException : Exception
     {
@@ -156,12 +157,17 @@ namespace MicroExpressionParser
             }
         }
 
-        public static FunctionalNode BuildTree(string expression, IGameEngine engine)
+        public static FunctionalNode BuildTree(Token[] tokens, IGameEngine engine)
         {
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            FunctionalNode resultNode = Convert(null,tree, engine);
+            SyntacticNode tree = TreeBuilder.MakeTree(SYConverter.ToPostfix(tokens));
+            FunctionalNode resultNode = Convert(null, tree, engine);
             ResolveNode(resultNode,0);
             return resultNode;
+        }
+
+        public static FunctionalNode BuildTree(string expression, IGameEngine engine)
+        {
+            return BuildTree(Tokenizer.Tokenize(expression),engine);
         }
     }
 }

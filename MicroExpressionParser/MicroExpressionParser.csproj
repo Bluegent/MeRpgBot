@@ -61,6 +61,7 @@
     <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Parser\TreeBuilder.cs" />
     <Compile Include="Data\ValueByLevel.cs" />
+    <Compile Include="Sanitizer\Sanitizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
