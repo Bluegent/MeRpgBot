@@ -62,6 +62,8 @@
     <Compile Include="CompoundStatTest.cs" />
     <Compile Include="DamageTypeTest.cs" />
     <Compile Include="StatusEffectTest.cs" />
+    <Compile Include="SkillTest.cs" />
+    <Compile Include="ClassTest.cs" />
     <Compile Include="ValueByLevelTest.cs" />
   </ItemGroup>
   <ItemGroup>

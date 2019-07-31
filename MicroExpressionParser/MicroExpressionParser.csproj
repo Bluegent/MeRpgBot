@@ -44,12 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class.cs" />
     <Compile Include="MeVariable.cs" />
     <Compile Include="BaseValue.cs" />
     <Compile Include="CompoundStat.cs" />
     <Compile Include="DamageType.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="GameEngine.cs" />
+    <Compile Include="Skill.cs" />
     <Compile Include="StatusEffect.cs" />
     <Compile Include="SYConverter.cs" />
     <Compile Include="FunctionalTreeConverter.cs" />
