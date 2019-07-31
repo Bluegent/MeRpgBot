@@ -53,24 +53,27 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConverterTest.cs" />
-    <Compile Include="ResolverTest.cs" />
+    <Compile Include="Parser\ConverterTest.cs" />
+    <Compile Include="Parser\FunctionalTreeConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TokenizerTest.cs" />
-    <Compile Include="TreeBuilderTest.cs" />
-    <Compile Include="BaseValueTest.cs" />
-    <Compile Include="CompoundStatTest.cs" />
-    <Compile Include="DamageTypeTest.cs" />
-    <Compile Include="StatusEffectTest.cs" />
-    <Compile Include="SkillTest.cs" />
-    <Compile Include="ClassTest.cs" />
-    <Compile Include="ValueByLevelTest.cs" />
+    <Compile Include="Parser\TokenizerTest.cs" />
+    <Compile Include="Parser\TreeBuilderTest.cs" />
+    <Compile Include="Data\BaseValueTest.cs" />
+    <Compile Include="Data\CompoundStatTest.cs" />
+    <Compile Include="Data\DamageTypeTest.cs" />
+    <Compile Include="Data\StatusEffectTest.cs" />
+    <Compile Include="Data\SkillTest.cs" />
+    <Compile Include="Data\ClassTest.cs" />
+    <Compile Include="Data\ValueByLevelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroExpressionParser\MicroExpressionParser.csproj">
       <Project>{766b4ddb-1c02-4b22-8b7d-b3d0ce5f77fa}</Project>
       <Name>MicroExpressionParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

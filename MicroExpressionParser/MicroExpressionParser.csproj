@@ -44,27 +44,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class.cs" />
-    <Compile Include="MeVariable.cs" />
-    <Compile Include="BaseValue.cs" />
-    <Compile Include="CompoundStat.cs" />
-    <Compile Include="DamageType.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="GameEngine.cs" />
-    <Compile Include="Skill.cs" />
-    <Compile Include="StatusEffect.cs" />
-    <Compile Include="SYConverter.cs" />
-    <Compile Include="FunctionalTreeConverter.cs" />
-    <Compile Include="ParserConstants.cs" />
+    <Compile Include="Data\Class.cs" />
+    <Compile Include="Core\MeVariable.cs" />
+    <Compile Include="Data\BaseValue.cs" />
+    <Compile Include="Data\CompoundStat.cs" />
+    <Compile Include="Data\DamageType.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\GameEngine.cs" />
+    <Compile Include="Data\Skill.cs" />
+    <Compile Include="Data\StatusEffect.cs" />
+    <Compile Include="Parser\SYConverter.cs" />
+    <Compile Include="Parser\FunctionalTreeConverter.cs" />
+    <Compile Include="Parser\ParserConstants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tokenizer.cs" />
-    <Compile Include="TreeBuilder.cs" />
-    <Compile Include="ValueByLevel.cs" />
+    <Compile Include="Parser\Tokenizer.cs" />
+    <Compile Include="Parser\TreeBuilder.cs" />
+    <Compile Include="Data\ValueByLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
