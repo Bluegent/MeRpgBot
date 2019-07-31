@@ -61,6 +61,8 @@
     <Compile Include="BaseValueTest.cs" />
     <Compile Include="CompoundStatTest.cs" />
     <Compile Include="DamageTypeTest.cs" />
+    <Compile Include="StatusEffectTest.cs" />
+    <Compile Include="ValueByLevelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroExpressionParser\MicroExpressionParser.csproj">
