@@ -21,8 +21,9 @@ namespace MicroExpressionParser
         public abstract EntityProperty GetProperty(string key);
 
     }
-    public class MockEntity : Entity { 
-    
+    public class MockEntity : Entity
+    {
+
         public MockEntity()
         {
             StatMap = new Dictionary<string, double>
@@ -31,20 +32,22 @@ namespace MicroExpressionParser
                               { "MHP", 100 },
                               { "STR", 5 },
                               { "INT", 5 },
-                              { "AGI", 5 }
+                              { "AGI", 5 },
+                              { "DEF",10},
+                              { "MDEF",0 }
                           };
-                          
+
 
         }
 
         public override void TakeDamage(double amount, DamageType type)
         {
-            //do things
+            StatMap["CHP"] -= amount;
         }
 
         public override EntityProperty GetProperty(string key)
         {
-            return new EntityProperty(){Key = key, Value = StatMap[key]};
+            return new EntityProperty() { Key = key, Value = StatMap[key] };
         }
     }
 }

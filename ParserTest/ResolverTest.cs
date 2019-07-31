@@ -107,7 +107,18 @@ namespace ParserTest
             MeVariable player  = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToArray()[0];
             Assert.AreEqual(expected,player.ToEntity().Name);
         }
-    
-}
+
+        [TestMethod]
+        public void ResolverTestHarmEntity()
+        {
+            string expression = "HARM(MOCK_KEY,P,20)";
+            double expected = MockPlayer.GetProperty("CHP").Value - 20;
+            FunctionalTreeConverter.BuildTree(expression, Engine);
+
+            Assert.AreEqual(expected,MockPlayer.GetProperty("CHP").Value);
+        }
+
+
+    }
 }
 

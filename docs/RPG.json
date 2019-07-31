@@ -21,8 +21,8 @@
     
     "damage_types":
     [
-        {"key":"P","name":"Physical","mitigation":"NONNEG(VALUE-DEF)"},
-        {"key":"M","name":"Magic","mitigation":"NONNEG(VALUE-MDEF)"},
+        {"key":"P","name":"Physical","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,DEF))"},
+        {"key":"M","name":"Magic","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,MDEF))"},
         {"key":"T","name":"True Damage","mitigation":"VALUE"}
     ],
     

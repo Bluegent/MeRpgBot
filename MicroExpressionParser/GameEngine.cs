@@ -12,35 +12,41 @@ namespace MicroExpressionParser
         void AddPlayer(Entity entity);
         Entity[] GetAllPlayers();
 
+        DamageType GeDamageType(string key);
         Entity GetEntityByKey(string key);
     }
     public class GameEngine : IGameEngine
     {
-        public List<Entity> Players { get; }
+        public Dictionary<string, Entity> Players { get; }
+
+        private Dictionary<string, DamageType> DamageTypes { get; }
         public GameEngine()
         {
-            Players = new List<Entity>();
+            Players = new Dictionary<string, Entity>();
+            DamageTypes = new Dictionary<string, DamageType>();
+            DamageTypes.Add("P", new DamageType() { Key = "P", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, DEF))" });
+            DamageTypes.Add("M", new DamageType() { Key = "M", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, MDEF))" });
+            DamageTypes.Add("T", new DamageType() { Key = "T", MitigationFormula = "$VALUE" });
         }
 
         public void AddPlayer(Entity entity)
         {
-            Players.Add(entity);
+            Players.Add(entity.Key, entity);
         }
 
         public Entity[] GetAllPlayers()
         {
-            return Players.ToArray();
+            return Players.Values.ToArray();
+        }
+
+        public DamageType GeDamageType(string key)
+        {
+            return DamageTypes.ContainsKey(key) ? DamageTypes[key] : null;
         }
 
         public Entity GetEntityByKey(string key)
         {
-            foreach (Entity ent in Players)
-            {
-                if (ent.Key.Equals(key))
-                    return ent;
-            }
-
-            return null;
+            return Players.ContainsKey(key) ? Players[key] : null;
         }
     }
 }

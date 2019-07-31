@@ -66,21 +66,28 @@ namespace MicroExpressionParser
                         {
                             newNode = new FunctionalNode(
                                 new MeVariable() { Value = result, Type = VariableType.NumericValue });
+                            break;
                         }
-                        else
+
+                        Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
+                        if (tryEntity != null)
                         {
-                            Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
-                            if (tryEntity != null)
-                            {
-                                newNode = new FunctionalNode(
-                                    new MeVariable() { Value = tryEntity, Type = VariableType.Entity });
-                            }
-                            else
-                            {
-                                newNode = new FunctionalNode(
-                                    new MeVariable() { Value = node.Token.Value, Type = VariableType.String });
-                            }
+                            newNode = new FunctionalNode(
+                                new MeVariable() { Value = tryEntity, Type = VariableType.Entity });
+                            break;
                         }
+
+              
+                        DamageType tryDamageType = engine.GeDamageType(node.Token.Value);
+                        if (tryDamageType != null)
+                        {
+                            newNode = new FunctionalNode(
+                                new MeVariable() { Value = tryDamageType, Type = VariableType.DamageType });
+                            break;
+                        }
+
+                        newNode = new FunctionalNode(
+                                new MeVariable() { Value = node.Token.Value, Type = VariableType.String });
                         break;
                     }
             }
