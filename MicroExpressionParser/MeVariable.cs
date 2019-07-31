@@ -9,7 +9,7 @@ namespace MicroExpressionParser
 
     public class MeException : Exception
     {
-        public MeException(String message) : base(message) { }
+        public MeException(string message) : base(message) { }
     }
     public enum VariableType
     {
@@ -24,12 +24,6 @@ namespace MicroExpressionParser
         Boolean
     }
 
-    public class DamageType
-    {
-        public string Key { get; set; }
-        public string MitigationFormula { get; set; }
-
-    }
     public class MeVariable
     {
         public VariableType Type { get; set; }
@@ -121,8 +115,5 @@ namespace MicroExpressionParser
 
             return result;
         }
-    }
-    class Base
-    {
     }
 }

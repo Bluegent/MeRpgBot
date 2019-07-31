@@ -58,6 +58,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TokenizerTest.cs" />
     <Compile Include="TreeBuilderTest.cs" />
+    <Compile Include="BaseValueTest.cs" />
+    <Compile Include="CompoundStatTest.cs" />
+    <Compile Include="DamageTypeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroExpressionParser\MicroExpressionParser.csproj">
