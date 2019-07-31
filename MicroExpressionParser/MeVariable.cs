@@ -44,7 +44,12 @@ namespace MicroExpressionParser
             return new MeVariable() { Type = VariableType.Boolean, Value = value };
         }
 
-        public void ValidateType(VariableType type)
+        public virtual MeVariable Execute()
+        {
+            return this;
+        }
+
+        protected void ValidateType(VariableType type)
         {
             if (Type != type)
                 throw new MeException($"Exception when converting variable of type {Type} to {type}.");
@@ -114,6 +119,27 @@ namespace MicroExpressionParser
             }
 
             return result;
+        }
+    }
+
+    public class MeFunction : MeVariable
+    {
+        public MeVariable[] SubVariables { get; set; }
+
+        public MeFunction(MeVariable baseVar, MeVariable[] parameters)
+        {
+            Value = baseVar.Value;
+            Type = baseVar.Type;
+            SubVariables = parameters;
+        }
+
+        public override MeVariable Execute()
+        {
+           if(Type == VariableType.Function)
+               return ToFunction().Execute(SubVariables);
+           else if (Type == VariableType.Operator)
+               return ToOperator().Execute(SubVariables);
+           return base.Execute();
         }
     }
 }

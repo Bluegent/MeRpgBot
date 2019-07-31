@@ -7,6 +7,7 @@ namespace MicroExpressionParser
 {
     using System.Data;
     using System.Net.Configuration;
+    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
 
     public class ValueResolverException : Exception
@@ -18,6 +19,7 @@ namespace MicroExpressionParser
     {
         public MeVariable Value { get; set; }
         public List<FunctionalNode> Leaves { get; }
+        public FunctionalNode Parent { get; set; }
 
         public FunctionalNode(MeVariable value)
         {
@@ -34,7 +36,7 @@ namespace MicroExpressionParser
     public static class FunctionalTreeConverter
     {
 
-        public static FunctionalNode Convert(SyntacticNode node, IGameEngine engine)
+        public static FunctionalNode Convert(FunctionalNode parent, SyntacticNode node, IGameEngine engine)
         {
             FunctionalNode newNode = null;
             switch (node.Token.Type)
@@ -77,7 +79,6 @@ namespace MicroExpressionParser
                             break;
                         }
 
-              
                         DamageType tryDamageType = engine.GeDamageType(node.Token.Value);
                         if (tryDamageType != null)
                         {
@@ -94,19 +95,34 @@ namespace MicroExpressionParser
 
             foreach (SyntacticNode subNode in node.Parameters)
             {
-                newNode.Leaves.Add(Convert(subNode, engine));
+                newNode.Leaves.Add(Convert(newNode, subNode, engine));
             }
 
+            newNode.Parent = parent;
             return newNode;
         }
 
-        public static void ResolveNode(FunctionalNode node)
+        public static void ResolveNode(FunctionalNode node, int index)
         {
-            foreach (FunctionalNode subNode in node.Leaves)
+            for(int i=0;i<node.Leaves.Count;++i)
             {
-                ResolveNode(subNode);
+                ResolveNode(node.Leaves[i],i);
             }
 
+            if (node.Parent != null && node.Parent.Value.Type == VariableType.Function)
+            {
+                if (!node.Parent.Value.ToFunction().ExecuteSubNode(index))
+                {
+                    List<MeVariable> parameters = new List<MeVariable>();
+                    foreach (FunctionalNode subNode in node.Leaves)
+                    {
+                        parameters.Add(subNode.Value);
+                    }
+                    node.Value = new MeFunction(node.Value,parameters.ToArray());
+                    node.Leaves.Clear();
+                    return;
+                }
+            }
             switch (node.Value.Type)
             {
                 case VariableType.Function:
@@ -143,8 +159,8 @@ namespace MicroExpressionParser
         public static FunctionalNode BuildTree(string expression, IGameEngine engine)
         {
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            FunctionalNode resultNode = Convert(tree, engine);
-            ResolveNode(resultNode);
+            FunctionalNode resultNode = Convert(null,tree, engine);
+            ResolveNode(resultNode,0);
             return resultNode;
         }
     }

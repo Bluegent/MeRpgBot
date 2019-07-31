@@ -44,11 +44,26 @@ namespace MicroExpressionParser
     {
         public string Name { get; set; }
         public Func<MeVariable[], AbstractFunction, MeVariable> Operation { get; set; }
+
+        private bool[] ExecuteInPlace;
         public int ParameterCount { get; }
-        public AbstractFunction(string name, int parameterCount = -1)
+
+        public bool ExecuteSubNode(int index)
+        {
+            if (ExecuteInPlace == null)
+            {
+                return true;
+            }
+            else
+            {
+                return ExecuteInPlace[index];
+            }
+        }
+        public AbstractFunction(string name, int parameterCount = -1, bool[] executeInPlace = null)
         {
             Name = name;
             ParameterCount = parameterCount;
+            ExecuteInPlace = executeInPlace;
         }
         public void ValidateParameters(int variableCount)
         {
@@ -126,9 +141,9 @@ namespace MicroExpressionParser
             Operators.Add(op.Character, op);
         }
 
-        private static void AddFunction(string name, Func<MeVariable[], AbstractFunction, MeVariable> operation, int parameterCount = -1)
+        private static void AddFunction(string name, Func<MeVariable[], AbstractFunction, MeVariable> operation, int parameterCount = -1,bool[] executeInPlace = null)
         {
-            AbstractFunction func = new AbstractFunction(name,parameterCount);
+            AbstractFunction func = new AbstractFunction(name,parameterCount, executeInPlace);
             func.Operation = operation;
             Functions.Add(func.Name, func);
         }
@@ -260,6 +275,23 @@ namespace MicroExpressionParser
                         string prop = values[1].ToString();
                         return entity.GetProperty(prop).Value;
                     },2);
+
+            AddFunction("IF",
+                (values, func) =>
+                    {
+                        //IF(CONDITION,THEN,ELSE)
+                        func.ValidateParameters(values.Length);
+                        bool condition = values[0].ToBoolean();
+                        if (condition)
+                        {
+                            return values[1].Execute();
+                        }
+                        else
+                        {
+                            return values[2].Execute();
+                        }
+                    }, 3,new bool[]{true,false,false});
+
 
         }
     }
