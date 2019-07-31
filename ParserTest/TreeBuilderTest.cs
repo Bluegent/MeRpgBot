@@ -131,5 +131,44 @@ namespace ParserTest
             for (int i = 0; i < subNode2.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect2[i], subNode2.Parameters[i].Token.Value);
         }
+
+        [TestMethod]
+        public void TreeBuilderUnaryOperator()
+        {
+            String expression = "!(X>Y)";
+            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            String[] expected = { ">"};
+            String[] nestedExpect = { "X", "Y" };
+            Assert.AreEqual("!", tree.Token.Value);
+            Assert.AreEqual(expected.Length, tree.Parameters.Count);
+
+            for (int i = 0; i < tree.Parameters.Count; ++i)
+                Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
+
+            SyntacticNode subNode = tree.Parameters[0];
+            for (int i = 0; i < subNode.Parameters.Count; ++i)
+                Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
+        }
+
+        [TestMethod]
+        public void TreeBuilderBooleanOperatorPrecedence()
+        {
+            String expression = "X>Y+Z";
+            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            String[] expected = { "X","+" };
+            String[] nestedExpect = { "Y", "Z" };
+            Assert.AreEqual(">", tree.Token.Value);
+
+            Assert.AreEqual(expected.Length, tree.Parameters.Count);
+            for (int i = 0; i < tree.Parameters.Count; ++i)
+                Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
+
+            SyntacticNode subNode = tree.Parameters[1];
+            Assert.AreEqual(nestedExpect.Length, subNode.Parameters.Count);
+            for (int i = 0; i < subNode.Parameters.Count; ++i)
+                Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
+
+
+        }
     }
 }

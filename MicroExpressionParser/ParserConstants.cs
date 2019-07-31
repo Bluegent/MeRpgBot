@@ -23,6 +23,10 @@ namespace MicroExpressionParser
             return this.Precedence > other.Precedence;
         }
 
+        public bool IsUnary()
+        {
+            return OperatorCount == 1;
+        }
         public Operator(string character, int precedence, bool leftAsoc,  int operatorCount = 2)
         {
             Character = character;
@@ -163,6 +167,15 @@ namespace MicroExpressionParser
             }
             not.Operation = NotFunc;
             AddOp(not);
+
+            Operator greaterThan = new Operator(">", 0, false);
+            MeVariable GreaterFunc(MeVariable[] values)
+            {
+                greaterThan.ValidateParameters(values.Length);
+                return values[0].ToDouble() > values[1].ToDouble();
+            }
+            greaterThan.Operation = GreaterFunc;
+            AddOp(greaterThan);
 
             AbstractFunction max = new AbstractFunction("MAX");
             MeVariable MaxFunction(MeVariable[] values)

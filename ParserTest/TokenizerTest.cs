@@ -98,6 +98,17 @@ namespace ParserTest
                 Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
         }
 
+        [TestMethod]
+        public void TokenizerTestUnaryOperator()
+        {
+            string expression = "!TRUE";
+            Token[] resultTokens = Tokenizer.Tokenize(expression);
+            String[] expectedTokens = { "!", "TRUE"};
+            Assert.AreEqual(expectedTokens.Length, resultTokens.Length);
+            for (int i = 0; i < resultTokens.Length; ++i)
+                Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
+        }
+
 
     }
 }

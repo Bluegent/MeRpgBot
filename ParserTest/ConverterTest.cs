@@ -88,5 +88,17 @@ namespace ParserTest
                 Assert.AreEqual(expected[i], postfix[i].Value);
         }
 
+        [TestMethod]
+        public void ConverterTestUnaryOperator()
+        {
+            string expression = "!(X+Y)";
+            Token[] infix = Tokenizer.Tokenize(expression);
+            Token[] postfix = SYConverter.ToPostfix(infix);
+            String[] expected = { "X","Y","+","!" };
+            Assert.AreEqual(expected.Length, postfix.Length);
+            for (int i = 0; i < postfix.Length; ++i)
+                Assert.AreEqual(expected[i], postfix[i].Value);
+        }
+
     }
 }

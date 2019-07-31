@@ -118,7 +118,21 @@ namespace ParserTest
             Assert.AreEqual(expected,MockPlayer.GetProperty("CHP").Value);
         }
 
+        [TestMethod]
+        public void ResolverTestBooleanOperator()
+        {
+            string expression = "10>3";
+            bool actual = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToBoolean();
+            Assert.AreEqual(true, actual);
+        }
 
+        [TestMethod]
+        public void ResolverTestBooleanAndUnaryOperator()
+        {
+            string expression = "!(10>3+8)";
+            bool actual = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToBoolean();
+            Assert.AreEqual(true, actual);
+        }
     }
 }
 
