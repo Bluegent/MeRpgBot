@@ -8,7 +8,7 @@ namespace MicroExpressionParser
     {
         public string Character { get; }
         public int Precedence { get; }
-        public Func<MeVariable[], MeVariable> Operation { get; set; }
+        public Func<MeVariable[], Operator, MeVariable> Operation { get; set; }
         public bool LeftAsoc { get; }
         public int OperatorCount { get; }
 
@@ -27,19 +27,23 @@ namespace MicroExpressionParser
         {
             return OperatorCount == 1;
         }
-        public Operator(string character, int precedence, bool leftAsoc,  int operatorCount = 2)
+        public Operator(string character, int precedence, bool leftAsoc, int operatorCount = 2)
         {
             Character = character;
             Precedence = precedence;
             LeftAsoc = leftAsoc;
             OperatorCount = operatorCount;
         }
+        public MeVariable Execute(MeVariable[] variables)
+        {
+            return Operation.Invoke(variables, this);
+        }
     }
 
     public class AbstractFunction
     {
         public string Name { get; set; }
-        public object Operation { get; set; }
+        public Func<MeVariable[], AbstractFunction, MeVariable> Operation { get; set; }
         public int ParameterCount { get; }
         public AbstractFunction(string name, int parameterCount = -1)
         {
@@ -56,7 +60,7 @@ namespace MicroExpressionParser
 
         public MeVariable Execute(MeVariable[] variables)
         {
-            return ((Func<MeVariable[], MeVariable>)(Operation)).Invoke(variables);
+            return Operation.Invoke(variables, this);
         }
     }
 
@@ -110,12 +114,22 @@ namespace MicroExpressionParser
             return false;
         }
 
-        private static void AddOp(Operator op)
+        private static void AddOperator(
+            string character,
+            int precedence,
+            bool leftAssoc,
+            Func<MeVariable[], Operator, MeVariable> operation,
+            int opCount = 2)
         {
+            Operator op = new Operator(character, precedence, leftAssoc, opCount);
+            op.Operation = operation;
             Operators.Add(op.Character, op);
         }
-        private static void AddFunc(AbstractFunction func)
+
+        private static void AddFunction(string name, Func<MeVariable[], AbstractFunction, MeVariable> operation, int parameterCount = -1)
         {
+            AbstractFunction func = new AbstractFunction(name,parameterCount);
+            func.Operation = operation;
             Functions.Add(func.Name, func);
         }
         public static void Init(IGameEngine engine)
@@ -123,161 +137,130 @@ namespace MicroExpressionParser
             Operators = new Dictionary<string, Operator>();
             Functions = new Dictionary<string, AbstractFunction>();
 
-            Operator plus = new Operator("+", 1, true);
-            MeVariable PlusFunction(MeVariable[] values)
-            {
-                plus.ValidateParameters(values.Length);
-                return values[0].ToDouble() + values[1].ToDouble();
-            }
-            plus.Operation = PlusFunction;
-            AddOp(plus);
-
-            Operator minus = new Operator("-", 1, true);
-            MeVariable MinusFunc(MeVariable[] values)
-            {
-                minus.ValidateParameters(values.Length);
-                return values[0].ToDouble() - values[1].ToDouble();
-            }
-            minus.Operation = MinusFunc;
-            AddOp(minus);
-
-            Operator multiply = new Operator("*", 2, true);
-            MeVariable MultiplyFunc(MeVariable[] values)
-            {
-                multiply.ValidateParameters(values.Length);
-                return values[0].ToDouble() * values[1].ToDouble();
-            }
-            multiply.Operation = MultiplyFunc;
-            AddOp(multiply);
-
-            Operator divide = new Operator("/", 2, true);
-            MeVariable DivideFunc(MeVariable[] values)
-            {
-                divide.ValidateParameters(values.Length);
-                return values[0].ToDouble() - values[1].ToDouble();
-            }
-            divide.Operation = DivideFunc;
-            AddOp(divide);
-
-            Operator not = new Operator("!", 3, false, 1);
-            MeVariable NotFunc(MeVariable[] values)
-            {
-                not.ValidateParameters(values.Length);
-                return !values[0].ToBoolean();
-            }
-            not.Operation = NotFunc;
-            AddOp(not);
-
-            Operator greaterThan = new Operator(">", 0, false);
-            MeVariable GreaterFunc(MeVariable[] values)
-            {
-                greaterThan.ValidateParameters(values.Length);
-                return values[0].ToDouble() > values[1].ToDouble();
-            }
-            greaterThan.Operation = GreaterFunc;
-            AddOp(greaterThan);
-
-            AbstractFunction max = new AbstractFunction("MAX");
-            MeVariable MaxFunction(MeVariable[] values)
-            {
-                max.ValidateParameters(values.Length);
-                double[] parameters = MeVariable.ToDoubleArray(values);
-                return parameters.Max();
-            }
-            max.Operation = (Func<MeVariable[], MeVariable>)MaxFunction;
-            AddFunc(max);
-
-            AbstractFunction min = new AbstractFunction("MIN");
-            MeVariable MinFunction(MeVariable[] values)
-            {
-                max.ValidateParameters(values.Length);
-                double[] parameters = MeVariable.ToDoubleArray(values);
-                return parameters.Min();
-            }
-            min.Operation = (Func<MeVariable[], MeVariable>)MinFunction;
-            AddFunc(min);
-
-
-            AbstractFunction abs = new AbstractFunction("ABS", 1);
-            MeVariable AbsFunction(MeVariable[] values)
-            {
-                abs.ValidateParameters(values.Length);
-                return Math.Abs(values[0].ToDouble());
-            }
-            abs.Operation = (Func<MeVariable[], MeVariable>)AbsFunction;
-            AddFunc(abs);
-
-
-            AbstractFunction noNegative = new AbstractFunction("NON_NEG", 1);
-            MeVariable NoNegativeFunction(MeVariable[] values)
-            {
-                noNegative.ValidateParameters(values.Length);
-                double value = values[0].ToDouble();
-                return value > 0 ? value : 0;
-            }
-            noNegative.Operation = (Func<MeVariable[], MeVariable>)NoNegativeFunction;
-            AddFunc(noNegative);
-
-
-            AbstractFunction random = new AbstractFunction("RANDOM", 2);
-            MeVariable RandomFunction(MeVariable[] values)
-            {
-                random.ValidateParameters(values.Length);
-                return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
-            }
-            random.Operation = (Func<MeVariable[], MeVariable>)RandomFunction;
-            AddFunc(random);
-
-
-            AbstractFunction harm = new AbstractFunction("HARM", 3);
-            MeVariable HarmFunction(MeVariable[] values)
-            {
-                //HARM(TARGET,TYPE,AMOUNT)
-                harm.ValidateParameters(values.Length);
-                Entity target = values[0].ToEntity();
-                DamageType damageType = values[1].ToDamageType();
-                double amount = values[2].ToDouble();
-                target.TakeDamage(amount, damageType);
-                return null;
-            }
-            harm.Operation = (Func<MeVariable[], MeVariable>)HarmFunction;
-            AddFunc(harm);
-
-            AbstractFunction array = new AbstractFunction("ARRAY");
-            MeVariable ArrayFunction(MeVariable[] values)
-            {
-                array.ValidateParameters(values.Length);
-                return new MeVariable() {Type = VariableType.Array, Value = values};
-            }
-            array.Operation = (Func<MeVariable[], MeVariable>)ArrayFunction;
-            AddFunc(array);
-
-
-            AbstractFunction getAllPlayers = new AbstractFunction("GET_PLAYERS",0);
-            MeVariable GetAllPlayersFunction(MeVariable[] values)
-            {
-                getAllPlayers.ValidateParameters(values.Length);
-                Entity[] players = engine.GetAllPlayers();
-                List<MeVariable> playerList = new List<MeVariable>();
-                foreach(Entity entity in players)
+            AddOperator("+", 1, true,
+            (values, op) =>
                 {
-                    playerList.Add(entity);
-                }
-                return new MeVariable(){Value = playerList.ToArray(), Type = VariableType.Array};
-            }
-            getAllPlayers.Operation = (Func<MeVariable[], MeVariable>)GetAllPlayersFunction;
-            AddFunc(getAllPlayers);
+                    op.ValidateParameters(values.Length);
+                    return values[0].ToDouble() + values[1].ToDouble();
+                });
 
-            AbstractFunction getProperty = new AbstractFunction("GET_PROP", 2);
-            MeVariable GetPropertyFunction(MeVariable[] values)
-            {
-                getProperty.ValidateParameters(values.Length);
-                Entity entity = values[0].ToEntity();
-                string prop = values[1].ToString();
-                return entity.GetProperty(prop).Value;
-            }
-            getProperty.Operation = (Func<MeVariable[], MeVariable>)GetPropertyFunction;
-            AddFunc(getProperty);
+            AddOperator("-", 1, true,
+            (values, op) =>
+                {
+                    op.ValidateParameters(values.Length);
+                    return values[0].ToDouble() - values[1].ToDouble();
+                });
+
+
+            AddOperator("*", 2, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return values[0].ToDouble() * values[1].ToDouble();
+                    });
+
+            AddOperator("/", 2, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return values[0].ToDouble() / values[1].ToDouble();
+                    });
+
+            AddOperator("!", 2, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return !values[0].ToBoolean();
+                    },1);
+
+            AddOperator(">", 0, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return values[0].ToDouble()>values[1].ToDouble();
+                    });
+
+
+            AddFunction("MAX",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        double[] parameters = MeVariable.ToDoubleArray(values);
+                        return parameters.Max();
+                    });
+
+            AddFunction("MIN",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        double[] parameters = MeVariable.ToDoubleArray(values);
+                        return parameters.Min();
+                    });
+
+
+            AddFunction("ABS",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        return Math.Abs(values[0].ToDouble());
+                    },1);
+
+            AddFunction("NON_NEG",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        double value = values[0].ToDouble();
+                        return value > 0 ? value : 0;
+                    }, 1);
+
+            AddFunction("RANDOM",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
+                    },2);
+
+
+            AddFunction("HARM",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        Entity target = values[0].ToEntity();
+                        DamageType damageType = values[1].ToDamageType();
+                        double amount = values[2].ToDouble();
+                        target.TakeDamage(amount, damageType);
+                        return null;
+                    }, 3);
+
+            AddFunction("ARRAY",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        return new MeVariable() { Type = VariableType.Array, Value = values };
+                    });
+
+            AddFunction("GET_PLAYERS",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        Entity[] players = engine.GetAllPlayers();
+                        List<MeVariable> playerList = new List<MeVariable>();
+                        foreach (Entity entity in players)
+                        {
+                            playerList.Add(entity);
+                        }
+                        return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
+                    },0);
+
+            AddFunction("GET_PROP",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        Entity entity = values[0].ToEntity();
+                        string prop = values[1].ToString();
+                        return entity.GetProperty(prop).Value;
+                    },2);
+
         }
     }
 }

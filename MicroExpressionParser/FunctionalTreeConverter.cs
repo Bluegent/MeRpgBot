@@ -133,7 +133,7 @@ namespace MicroExpressionParser
                         {
                             opParameters.Add(subNode.Value);
                         }
-                        node.Value = node.Value.ToOperator().Operation(opParameters.ToArray());
+                        node.Value = node.Value.ToOperator().Execute(opParameters.ToArray());
                         node.Leaves.Clear();
                         break;
                     }
