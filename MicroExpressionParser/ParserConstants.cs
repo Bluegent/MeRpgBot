@@ -8,12 +8,14 @@ namespace MicroExpressionParser
     {
         public string Character { get; }
         public int Precedence { get; }
-        public Func<double, double, double> Operation { get; }
+        public Func<MeVariable[], MeVariable> Operation { get; set; }
         public bool LeftAsoc { get; }
+        public int OperatorCount { get; }
 
-        public int getOperandCount()
+        public void ValidateParameters(int parameterCount)
         {
-            return 2;
+            if (parameterCount != OperatorCount)
+                throw new MeException($"Invalid argument count for operator {Character}, got: {parameterCount} expected:  {OperatorCount} .");
         }
 
         public bool Precedes(Operator other)
@@ -21,12 +23,12 @@ namespace MicroExpressionParser
             return this.Precedence > other.Precedence;
         }
 
-        public Operator(string character, int precedence, bool leftAsoc, Func<double, double, double> operation)
+        public Operator(string character, int precedence, bool leftAsoc,  int operatorCount = 2)
         {
-            this.Character = character;
-            this.Precedence = precedence;
-            this.Operation = operation;
-            this.LeftAsoc = leftAsoc;
+            Character = character;
+            Precedence = precedence;
+            LeftAsoc = leftAsoc;
+            OperatorCount = operatorCount;
         }
     }
 
@@ -117,14 +119,50 @@ namespace MicroExpressionParser
             Operators = new Dictionary<string, Operator>();
             Functions = new Dictionary<string, AbstractFunction>();
 
-            Operator plus = new Operator("+", 1, true, (left, right) => left + right);
+            Operator plus = new Operator("+", 1, true);
+            MeVariable PlusFunction(MeVariable[] values)
+            {
+                plus.ValidateParameters(values.Length);
+                return values[0].ToDouble() + values[1].ToDouble();
+            }
+            plus.Operation = PlusFunction;
             AddOp(plus);
-            Operator minus = new Operator("-", 1, true, (left, right) => left - right);
+
+            Operator minus = new Operator("-", 1, true);
+            MeVariable MinusFunc(MeVariable[] values)
+            {
+                minus.ValidateParameters(values.Length);
+                return values[0].ToDouble() - values[1].ToDouble();
+            }
+            minus.Operation = MinusFunc;
             AddOp(minus);
-            Operator multiply = new Operator("*", 2, true, (left, right) => left * right);
+
+            Operator multiply = new Operator("*", 2, true);
+            MeVariable MultiplyFunc(MeVariable[] values)
+            {
+                multiply.ValidateParameters(values.Length);
+                return values[0].ToDouble() * values[1].ToDouble();
+            }
+            multiply.Operation = MultiplyFunc;
             AddOp(multiply);
-            Operator divide = new Operator("/", 2, true, (left, right) => left / right);
+
+            Operator divide = new Operator("/", 2, true);
+            MeVariable DivideFunc(MeVariable[] values)
+            {
+                divide.ValidateParameters(values.Length);
+                return values[0].ToDouble() - values[1].ToDouble();
+            }
+            divide.Operation = DivideFunc;
             AddOp(divide);
+
+            Operator not = new Operator("!", 3, false, 1);
+            MeVariable NotFunc(MeVariable[] values)
+            {
+                not.ValidateParameters(values.Length);
+                return !values[0].ToBoolean();
+            }
+            not.Operation = NotFunc;
+            AddOp(not);
 
             AbstractFunction max = new AbstractFunction("MAX");
             MeVariable MaxFunction(MeVariable[] values)

@@ -47,7 +47,7 @@ namespace MicroExpressionParser
                     case TokenType.Operator:
                         {
                             SyntacticNode node = new SyntacticNode(tok);
-                            for (int i = 0; i < ParserConstants.Operators[tok.Value].getOperandCount();++i)
+                            for (int i = 0; i < ParserConstants.Operators[tok.Value].OperatorCount;++i)
                             {
                                 if(nodeStack.Count == 0 || nodeStack.Peek().Token.Type == TokenType.LeftParen)
                                     throw new TreeBuilderException("Paramether(s) missing for operator " + tok.Value + " .");

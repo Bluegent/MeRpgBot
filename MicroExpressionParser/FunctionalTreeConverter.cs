@@ -127,7 +127,13 @@ namespace MicroExpressionParser
                     break;
                 case VariableType.Operator:
                     {
-                        node.Value = node.Value.ToOperator().Operation(node.Leaves[0].ToValue(), node.Leaves[1].ToValue());
+
+                        List<MeVariable> opParameters = new List<MeVariable>();
+                        foreach (FunctionalNode subNode in node.Leaves)
+                        {
+                            opParameters.Add(subNode.Value);
+                        }
+                        node.Value = node.Value.ToOperator().Operation(opParameters.ToArray());
                         node.Leaves.Clear();
                         break;
                     }
