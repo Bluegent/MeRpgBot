@@ -266,6 +266,17 @@ namespace MicroExpressionParser
                         return null;
                     }, 3);
 
+            AddFunction("HEAL",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        Entity target = values[0].ToEntity();
+                        DamageType damageType = values[1].ToDamageType();
+                        double amount = values[2].ToDouble();
+                        target.TakeDamage(amount, damageType);
+                        return null;
+                    }, 3);
+
             AddFunction("ARRAY",
                 (values, func) =>
                     {
@@ -285,6 +296,20 @@ namespace MicroExpressionParser
                         }
                         return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
                     },0);
+
+            AddFunction("GET_ACTIVE_PLAYERS",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        //TODO: Implement retrieving ONLY active players
+                        Entity[] players = engine.GetAllPlayers();
+                        List<MeVariable> playerList = new List<MeVariable>();
+                        foreach (Entity entity in players)
+                        {
+                            playerList.Add(entity);
+                        }
+                        return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
+                    }, 0);
 
             AddFunction("GET_PROP",
                 (values, func) =>
@@ -310,8 +335,39 @@ namespace MicroExpressionParser
                             return values[2].Execute();
                         }
                     }, 3,new bool[]{true,false,false});
+            AddFunction("ARR_RANDOM",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        MeVariable[] input = values[0].ToArray();
+                        int index = new Random().Next(0, input.Length);
+                        return input[index];
 
+                    }, 1);
 
+            AddFunction("CHANCE",
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        double chance = values[0].ToDouble();
+                        int dice = new Random().Next(0,100);
+
+                        return dice < chance;
+
+                    }, 1);
+
+            AddFunction("CAST",
+                (values, func) =>
+                    {
+                        //CAST(CASTER,TARGET,SKILL)
+                        func.ValidateParameters(values.Length);
+                        Entity caster = values[0].ToEntity();
+                        Entity target = values[1].ToEntity();
+                        string skillKey = values[2].ToString();
+                        caster.Cast(target,skillKey);
+                        return null;
+
+                    }, 3);
         }
     }
 }

@@ -23,7 +23,6 @@ Functions:
     * HARM(BOSS,physical,30) - Entity BOSS would be damaged for 30 points, but the actual damage will be calculated based on physical's mitigation formula 
 * HEAL(entity,value) - heals entity for value
     * HEAL(BOSS,30) - Entity BOSS would be healed for 30 points     
-    
 * ARRAY(value1, value2, ...) - produces an array for functions that take one as an argument
     * ARRAY(1,2,3,4) = [1,2,3,4]
 * GET_PLAYERS() - returns an array with all the existing players
@@ -39,6 +38,10 @@ Functions:
     * IF(GET_PROP($CASTER,STR) > GET_PROP($CASTER,DEX) , STR, DEX) - returns the higher value between the caster's STR and DEX attributes
     * IF(GET_PROP($CASTER,INT) > 10, HEAL($CASTER,100), HARM($CASTER,M,10)) - if the caster has more than 10 INT points, they get healed for 100, else they get harmed for 10 magical damage
 * CAST(caster,target,skill_key) - casts a skill, if it's found in the skill dictionary
+    *CAST(Billy,Jimmy,heal) - Billy will cast heal on Jimmy
+* CHANCE(percentage) - rolls for an outcome with a percentage chance
+    CHANCE(25) - will return true 25% of the time
+
           
 Keywords:
 * skill:

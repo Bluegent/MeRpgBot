@@ -18,6 +18,10 @@ namespace MicroExpressionParser
 
         public abstract void TakeDamage(double amount, DamageType type);
 
+        public abstract void GetHealed(double amount);
+
+        public abstract void Cast(Entity target, string skillKey);
+
         public abstract EntityProperty GetProperty(string key);
 
     }
@@ -43,6 +47,16 @@ namespace MicroExpressionParser
         public override void TakeDamage(double amount, DamageType type)
         {
             StatMap["CHP"] -= amount;
+        }
+
+        public override void GetHealed(double amount)
+        {
+            StatMap["CHP"] += amount;
+        }
+
+        public override void Cast(Entity target, string skillKey)
+        {
+            //do stuff...
         }
 
         public override EntityProperty GetProperty(string key)
