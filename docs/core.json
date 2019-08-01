@@ -1,0 +1,38 @@
+{
+    "base_value_keys":
+    [          
+       "B_DMG",
+       "B_HP",
+       "B_MP",
+       "B_DEF",
+       "B_MDEF",
+       "B_ATT_SPEED"
+    ],
+    "attributes_keys":
+    [
+       "STR",
+       "INT",
+       "AGI",
+       "VIT"
+    ],
+    
+    "damage_types":
+    [
+        {"key":"P","name":"Physical","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,DEF))"},
+        {"key":"M","name":"Magic","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,MDEF))"},
+        {"key":"T","name":"True Damage","mitigation":"VALUE"}
+    ],
+    
+    "compund_stats":
+    [
+        {"key":"DEF","formula":"B_DEF+STR/4"},
+        {"key":"MDEF","formula":"B_MDEF+INT/4"},
+        {"key":"ATT_SPEED","formula":"1+DEX/200"}
+    ],
+    
+    "entity_resource":
+    [
+        {"key":"HP", "formula":"B_HP+VIT*20"},
+        {"key":"MP", "formula":"B_MP+10*INT"}
+    ]
+}

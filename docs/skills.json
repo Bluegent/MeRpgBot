@@ -1,0 +1,90 @@
+[
+    {   
+        "key":"punch",
+        "name":"Basic Punch",
+        "aliases":["punch","attack"],
+        "description":"Apply fist to target's face.",
+        "type":"cast",
+        "values_by_level":
+        [
+            {
+                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
+                "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+10+GET_PROP(CASTER,STR)/2)",
+                "needed_level":1
+            },
+            {
+                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",  
+                "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+15+GET_PROP(CASTER,STR)/2)",
+                "needed_level":5
+            },
+            {
+                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
+                "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+50+GET_PROP(CASTER,STR)/2)",
+                "needed_level":30
+            }
+        ]
+    },
+    {   
+        "key":"big_punch",
+        "name":"Serious Punch",
+        "aliases":["bigpunch","spunch"],
+        "description":"Describe your super move in a long speech then use it on the target.",  
+        "type":"cast",
+        "values_by_level":
+        [
+            {
+                "cooldown":"600",
+                "duration":"300",
+                "formula":"HARM(TARGET,P,STR*100)",
+                "needed_level":5
+            },
+            {
+                "cooldown":"300",
+                "duration":"600",
+                "formula":"HARM(TARGET,P,STR*200)",
+                "needed_level":20
+            }
+        ]
+    },
+    {   
+        "key":"beatdown",
+        "name":"Consecutive Normal Punches",
+        "aliases":["flurry","beatdown","combo"],
+        "description":"Punch the shit out of your target.",  
+        "type":"channel",
+        "values_by_level":
+        [
+            {
+                "cooldown":"1200",
+                "duration":"60",
+                "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+GET_PROP(CASTER,STR)/2)",
+                "needed_level":15,
+                "interval":"1+NONNEG(9-DEX/20)"
+            },
+            {
+                "cooldown":"60",
+                "duration":"60",
+                "formula":"HARM(TARGET,P,GET_PROP(CASTER,B_DMG)+GET_PROP(CASTER,STR)/2)",
+                "needed_level":50,
+                "interval":"1+NONNEG(9-DEX/10)"
+            }
+        ]
+    },
+    {
+        "key":"powerup",
+        "name":"Asspull",
+        "aliases":["powerup"],
+        "description":"You pull some new power from your ass.",  
+        "type":"cast",
+        "values_by_level":
+        [
+            {
+                "cooldown":"216000",
+                "duration":"10",
+                "formula":"APPLYSTATUS(CASTER,shonen_powerup,60,ARRAY(10,10,-5))",
+                "needed_level":10
+            }
+        ]
+    }
+    
+]

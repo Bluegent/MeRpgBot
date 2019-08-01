@@ -1,0 +1,9 @@
+[
+    {   
+        "key":"shonen_powerup",
+        "name":"Shonen Powerup",
+        "description":"You feel stronger, but somehow dumber.",
+        "max_stack":0,
+        "formula":"MOD_VALUE(STR,$0)~MOD_VALUE(DEX,$1)~MOD_VALUE(INT,$2)"
+    }
+]
