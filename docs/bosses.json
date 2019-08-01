@@ -1,0 +1,10 @@
+[
+    {
+        "key":"boss1",
+        "name":"Generic Boss",
+        "description":"Test boss.",
+        "stats_per_level":
+        [
+        ]
+    }
+]

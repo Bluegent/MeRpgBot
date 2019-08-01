@@ -201,7 +201,19 @@ namespace MicroExpressionParser
                         op.ValidateParameters(values.Length);
                         return values[0].ToDouble()>values[1].ToDouble();
                     });
+            AddOperator("<", 0, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return values[0].ToDouble() < values[1].ToDouble();
+                    });
 
+            AddOperator("=", 0, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return values[0].ToDouble() == values[1].ToDouble();
+                    });
 
             AddFunction("MAX",
                 (values, func) =>
