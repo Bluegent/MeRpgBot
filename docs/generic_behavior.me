@@ -1,0 +1,4 @@
+IF(GET_PROP($ME,CHP) < 100 * GET_PROP($ME,LEVEL),
+    CAST($ME,$ME,basic_heal),
+    CAST($ME,ARR_RANDOM(GET_PLAYERS()),punch)
+    )

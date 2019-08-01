@@ -23,13 +23,22 @@ Functions:
     * HARM(BOSS,physical,30) - Entity BOSS would be damaged for 30 points, but the actual damage will be calculated based on physical's mitigation formula 
 * HEAL(entity,value) - heals entity for value
     * HEAL(BOSS,30) - Entity BOSS would be healed for 30 points     
+    
 * ARRAY(value1, value2, ...) - produces an array for functions that take one as an argument
     * ARRAY(1,2,3,4) = [1,2,3,4]
+* GET_PLAYERS() - returns an array with all the existing players
+    * GET_PLAYERS() = [Jimmy, Billy, Johnny, Frank]
+* GET_ACTIVE_PLAYERS() - returns an array with all the online players
+    * GET_ACTIVE_PLAYERS() = [Jimmy, Johnny]
+* ARR_RANDOM(array) - returns a random value from the array
+    * ARR_RANDOM(ARRAY(1,2,3)) = 2
+    * ARR_RANDOM(GET_PLAYERS()) = Billy (assuming Billy is one of the players)
 * GET_PROP(entity,key) - retrieves the property of the entity that matches the given key
     * GET_PROP(BOSS,DEF) = boss' defence
 * IF(condition, then, else) - evaluates condition then executes either then or else
     * IF(GET_PROP($CASTER,STR) > GET_PROP($CASTER,DEX) , STR, DEX) - returns the higher value between the caster's STR and DEX attributes
     * IF(GET_PROP($CASTER,INT) > 10, HEAL($CASTER,100), HARM($CASTER,M,10)) - if the caster has more than 10 INT points, they get healed for 100, else they get harmed for 10 magical damage
+* CAST(caster,target,skill_key) - casts a skill, if it's found in the skill dictionary
           
 Keywords:
 * skill:
@@ -41,4 +50,7 @@ Keywords:
     * $TARGET - the entity being damaged
     * $VALUE - the value of the damage before it is mitigated
         * $VALUE-GET_PROP($TARGET,DEF) - reduces the value of the damage by the DEF stat of the target
+* boss scripts:
+    * $ME - boss entity
+        * GET_PROP($ME,CHP) - returns bosses's current HP
     

@@ -85,6 +85,27 @@
                 "needed_level":10
             }
         ]
+    },
+    {
+        "key":"basic_heal"
+        "aliases":["heal","mend"],
+        "description":"Heal yourself for a small amount",  
+        "type":"cast",
+        "values_by_level":
+        [
+            {
+                "cooldown":"300",
+                "duration":"10",
+                "formula":"HEAL($CASTER,10+GET_PROP($CASTER,INT)*5)",
+                "needed_level":5
+            },
+            {
+                "cooldown":"300",
+                "duration":"10",
+                "formula":"HEAL($CASTER,10+GET_PROP($CASTER,INT)*10)",
+                "needed_level":20
+            }
+        ]
     }
     
 ]
