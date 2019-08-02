@@ -66,5 +66,14 @@ namespace ParserTest
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected,MockEnemy.GetProperty("CHP").Value);
         }
+
+        [TestMethod]
+        public void SanitizerTestResolveMutlipleCalls()
+        {
+            string expression = "HARM($TARGET, P, GET_PROP($CASTER, STR));HARM($TARGET, P, GET_PROP($CASTER, STR))";
+            double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value*2;
+            SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
+            Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
+        }
     }
 }

@@ -50,9 +50,16 @@ namespace MicroExpressionParser.Sanitizer
 
         public MeVariable SanitizeSkill(string skill, Entity caster, Entity target)
         {
-            Token[] tokens = Tokenizer.Tokenize(skill);
-            Token[] sanitizedTokens = ReplaceEntities(tokens, caster,target);
-            return FunctionalTreeConverter.BuildTree(sanitizedTokens, _engine).Value;
+            string[] lines = skill.Split(ParserConstants.FUNCTION_SEPARATOR);
+            MeVariable var = null;
+            foreach (string expr in lines)
+            {
+                Token[] tokens = Tokenizer.Tokenize(expr);
+                Token[] sanitizedTokens = ReplaceEntities(tokens, caster, target);
+                var = FunctionalTreeConverter.BuildTree(sanitizedTokens, _engine).Value;
+            }
+
+            return var;
         }
 
         public Token[] ReplaceProperties(Token[] tokens, Entity entity)

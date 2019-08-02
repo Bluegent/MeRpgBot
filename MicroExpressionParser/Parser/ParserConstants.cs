@@ -92,7 +92,7 @@ namespace MicroExpressionParser
 
         public static readonly string CasterKeyword = SPECIAL_CHAR+"CASTER";
 
-        public const char FUNCTION_SEPARATOR = '~';
+        public const char FUNCTION_SEPARATOR = ';';
 
         public static bool IsSpecialChar(char c)
         {
