@@ -16,9 +16,9 @@ namespace MicroExpressionParser
         public string Key { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
 
-        public abstract void TakeDamage(double amount, DamageType type);
+        public abstract void TakeDamage(double amount, DamageType type,Entity source);
 
-        public abstract void GetHealed(double amount);
+        public abstract void GetHealed(double amount,Entity source);
 
         public abstract void Cast(Entity target, string skillKey);
 
@@ -44,12 +44,12 @@ namespace MicroExpressionParser
 
         }
 
-        public override void TakeDamage(double amount, DamageType type)
+        public override void TakeDamage(double amount, DamageType type, Entity source)
         {
             StatMap["CHP"] -= amount;
         }
 
-        public override void GetHealed(double amount)
+        public override void GetHealed(double amount, Entity source)
         {
             StatMap["CHP"] += amount;
         }

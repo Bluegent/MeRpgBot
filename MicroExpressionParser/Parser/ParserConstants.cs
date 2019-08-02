@@ -181,6 +181,13 @@ namespace MicroExpressionParser
                         return values[0].ToDouble() * values[1].ToDouble();
                     });
 
+            AddOperator("^", 3, true,
+                (values, op) =>
+                    {
+                        op.ValidateParameters(values.Length);
+                        return Math.Pow(values[0].ToDouble(),values[1].ToDouble());
+                    });
+
             AddOperator("/", 2, true,
                 (values, op) =>
                     {
@@ -262,7 +269,7 @@ namespace MicroExpressionParser
                         Entity target = values[0].ToEntity();
                         DamageType damageType = values[1].ToDamageType();
                         double amount = values[2].ToDouble();
-                        target.TakeDamage(amount, damageType);
+                        target.TakeDamage(amount, damageType,null);
                         return null;
                     }, 3);
 
@@ -273,7 +280,7 @@ namespace MicroExpressionParser
                         Entity target = values[0].ToEntity();
                         DamageType damageType = values[1].ToDamageType();
                         double amount = values[2].ToDouble();
-                        target.TakeDamage(amount, damageType);
+                        target.TakeDamage(amount, damageType,null);
                         return null;
                     }, 3);
 

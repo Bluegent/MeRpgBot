@@ -168,6 +168,26 @@ namespace ParserTest
             double actual = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToDouble();
             Assert.AreEqual(exepected, actual);
         }
+
+
+        [TestMethod]
+        public void FunctionalTreeConverterTestPowerOperator()
+        {
+            string expression = "10^3";
+            double exepected = 1000;
+            double actual = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToDouble();
+            Assert.AreEqual(exepected, actual);
+        }
+
+
+        [TestMethod]
+        public void FunctionalTreeConverterTestPowerOperatorCombination()
+        {
+            string expression = "10+10^3+10";
+            double exepected = 1020;
+            double actual = FunctionalTreeConverter.BuildTree(expression, Engine).Value.ToDouble();
+            Assert.AreEqual(exepected, actual);
+        }
     }
 }
 
