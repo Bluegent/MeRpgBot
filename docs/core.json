@@ -1,38 +1,105 @@
 {
-    "base_value_keys":
-    [          
-       "B_DMG",
-       "B_HP",
-       "B_MP",
-       "B_DEF",
-       "B_MDEF",
-       "B_ATT_SPEED"
-    ],
-    "attributes_keys":
-    [
-       "STR",
-       "INT",
-       "AGI",
-       "VIT"
-    ],
-    
-    "damage_types":
-    [
-        {"key":"P","name":"Physical","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,DEF))"},
-        {"key":"M","name":"Magic","mitigation":"NONNEG(VALUE-GET_PROP($TARGET,MDEF))"},
-        {"key":"T","name":"True Damage","mitigation":"VALUE"}
-    ],
-    
-    "compund_stats":
-    [
-        {"key":"DEF","formula":"B_DEF+STR/4"},
-        {"key":"MDEF","formula":"B_MDEF+INT/4"},
-        {"key":"ATT_SPEED","formula":"1+DEX/200"}
-    ],
-    
-    "entity_resource":
-    [
-        {"key":"HP", "formula":"B_HP+VIT*20"},
-        {"key":"MP", "formula":"B_MP+10*INT"}
-    ]
+	"base_values": [
+		"BASE_DMG",
+		"BASE_HP",
+		"BASE_MP",
+		"BASE_DEF",
+		"BASE_MDEF",
+		"BASE_ATT_SPEED"
+	],
+	"attributes": [{
+			"key": "STR",
+			"name": "Strength",
+			"description": "Boosts physical abilities."
+		},
+		{
+			"key": "INT",
+			"name": "Intellect",
+			"description": "Boosts magical abilities."
+		},
+		{
+			"key": "AGI",
+			"name": "Agility",
+			"description": "Boosts crit and dodge chances.."
+		},
+		{
+			"key": "VIT",
+			"name": "Vitality",
+			"description": "Boosts health."
+		}
+	],
+    "level_values":
+    {
+        "points_per_level":"1",
+        "start_exp":"500",
+        "exp_formula":"$PREV * 1.1 +20*2^(LEVEL/5)"
+    }
+	"compund_stats": [
+        {
+			"key": "DODGE",
+			"formula": "1+DEX/2000",
+			"name": "Physical Defense",
+			"description": "Chance to avoid an enemy attack."
+		},
+        {
+			"key": "DEF",
+			"formula": "BASE_DEF+STR/4",
+			"name": "Physical Defense",
+			"description": "Helps you avoid physical damage."
+		},
+		{
+			"key": "MDEF",
+			"formula": "BASE_MDEF+INT/4",
+			"name": "Magic Defense",
+			"description": "Helps you avoid magic damage."
+		},
+		{
+			"key": "ATT_SPEED",
+			"formula": "BASE_MDEF+INT/4",
+			"name": "Attack Speed",
+			"description": "How fast your normal attack is casted when auto attacking."
+		}
+	],
+
+	"entity_resource": [{
+			"key": "HP",
+			"formula": "BASE_HP+VIT*20",
+            "regen":"15+VIT/1000",
+            "interval":"5",
+			"name": "Health",
+			"description": "Your health pool. You die if it drops to 0."
+		},
+		{
+			"key": "MP",
+			"formula": "BASE_MP+INT*10",
+            "regen":"5",
+            "interval":"5",
+			"name": "Mana",
+			"description": "Used to casts spells."
+		}
+	],
+
+	"damage_types": [{
+            "key": "P",
+			"mitigation": "NON_NEG($VALUE-DEF)",
+			"name": "Physical",
+			"description": "Physical damage, mitigated by a target's DEF attribute."
+		},
+		{
+            "key": "M",
+			"mitigation": "NON_NEG($VALUE-MDEF)",
+			"name": "Magic",
+			"description": "Magical damage, mitigated by a target's MDEF attribute."
+		},
+		{
+            "key": "T",
+			"name": "True Damage",
+			"description": "The damage train has no breaks."
+		}
+	],
+    "misc_config":
+    {
+        "revive_time":"1800",
+        "revive_modifier":"0.5"
+    }
 }

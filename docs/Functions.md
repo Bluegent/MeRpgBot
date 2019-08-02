@@ -6,6 +6,7 @@ Chapters:
 Operators: 
 * "+ - / *" - self explanatory
 * "> < =" - comparison
+* ^ - power operator
     
 Functions:
 * MAX(value1,value2,...)  - returns the maximum value between the supplied ones, only takes numeric values
@@ -40,8 +41,10 @@ Functions:
 * CAST(caster,target,skill_key) - casts a skill, if it's found in the skill dictionary
     *CAST(Billy,Jimmy,heal) - Billy will cast heal on Jimmy
 * CHANCE(percentage) - rolls for an outcome with a percentage chance
-    CHANCE(25) - will return true 25% of the time
-
+    * CHANCE(25) - will return true 25% of the time
+* APPLY_STATUS(entity,status,duration,value(s)) - apply a status effec to given entity that lasts a certain duration
+    * APPLY_STATUS(Billy,poison,60,ARRAY(10,10)) - will poison Billy for 60 seconds, where Billy takes 10 damage every 10 seconds.
+    * Note: The last argument can be a single value or an array and is interpreted by the status itself. In this case we assume the values that poison takes are damage and interval.
           
 Keywords:
 * skill:
@@ -56,4 +59,9 @@ Keywords:
 * boss scripts:
     * $ME - boss entity
         * GET_PROP($ME,CHP) - returns bosses's current HP
+* statuses:
+    * $0, $1, $2... - 
+* level values:
+    * $PREV - how many experience points were needed to level up for the previous level
+    * LEVEL - your current level
     

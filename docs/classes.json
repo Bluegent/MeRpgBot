@@ -3,10 +3,10 @@
         "key":"Shonen_Protagonist",
         "base_values":
         [   
-            {"key":"B_DMG","value":10},
-            {"key":"B_HP","value":100},
-            {"key":"B_MP","value":50},
-            {"key":"B_DEF","value":0}
+            {"key":"BASE_DMG","value":10},
+            {"key":"BASE_HP","value":100},
+            {"key":"BASE_MP","value":50},
+            {"key":"BASE_DEF","value":0}
         ],
         "basic_attributes":
         [   
