@@ -59,14 +59,14 @@
                 "duration":"60",
                 "formula":"HARM($TARGET,P,GET_PROP($CASTER,B_DMG)+GET_PROP($CASTER,STR)/2)",
                 "needed_level":15,
-                "interval":"1+NONNEG(9-DEX/20)"
+                "interval":"1+NON_NEG(9-DEX/20)"
             },
             {
                 "cooldown":"60",
                 "duration":"60",
                 "formula":"HARM($TARGET,P,GET_PROP($CASTER,B_DMG)+GET_PROP($CASTER,STR)/2)",
                 "needed_level":50,
-                "interval":"1+NONNEG(9-DEX/10)"
+                "interval":"1+NON_NEG(9-DEX/10)"
             }
         ]
     },
@@ -88,14 +88,17 @@
     },
     {
         "key":"basic_heal",
+        "name":"Inspiration",
         "aliases":["heal","mend"],
-        "description":"Heal yourself for a small amount",  
+        "description":"Remember the words of your mentor and feel better.",  
         "type":"cast",
         "values_by_level":
         [
             {
                 "cooldown":"300",
                 "duration":"10",
+                "push_back":"3",
+                "interrupt":"true",
                 "formula":"HEAL($CASTER,10+GET_PROP($CASTER,INT)*5)",
                 "needed_level":5,
                 "cost":{"key":"MP","value":"10"}
@@ -103,6 +106,8 @@
             {
                 "cooldown":"300",
                 "duration":"10",
+                "push_back":"3",
+                "interrupt":"false",
                 "formula":"HEAL($CASTER,10+GET_PROP($CASTER,INT)*10)",
                 "needed_level":20,
                 "cost":{"key":"MP","value":"25"}
