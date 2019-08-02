@@ -48,7 +48,7 @@ Details:
 
 Compound stats.
 ```
-	"compund_stats": [{
+	"compound_stats": [{
 			"key": "DEF",
 			"formula": "BASE_DEF+STR/4",
 			"name": "Physical Defense",
