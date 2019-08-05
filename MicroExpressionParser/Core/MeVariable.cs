@@ -13,6 +13,7 @@ namespace MicroExpressionParser
     }
     public enum VariableType
     {
+        Invalid,
         Function,
         NumericValue,
         Entity,
@@ -28,6 +29,17 @@ namespace MicroExpressionParser
     {
         public VariableType Type { get; set; }
         public object Value { get; set; }
+
+        public MeVariable()
+        {
+            Value = null;
+            Type = VariableType.Invalid;
+        }
+        public MeVariable(MeVariable other)
+        {
+            Type = other.Type;
+            Value = other.Value;
+        }
 
         public static implicit operator MeVariable(double value)
         {
@@ -131,6 +143,12 @@ namespace MicroExpressionParser
             Value = baseVar.Value;
             Type = baseVar.Type;
             SubVariables = parameters;
+        }
+
+        public MeFunction(MeFunction other)
+        {
+            SubVariables = new MeVariable[other.SubVariables.Length];
+            Array.Copy(other.SubVariables, SubVariables.Length,SubVariables,0, SubVariables.Length);
         }
 
         public override MeVariable Execute()

@@ -103,11 +103,11 @@ namespace MicroExpressionParser
             return newNode;
         }
 
-        public static void ResolveNode(FunctionalNode node, int index)
+        public static FunctionalNode ResolveNode(FunctionalNode node, int index)
         {
             for(int i=0;i<node.Leaves.Count;++i)
             {
-                ResolveNode(node.Leaves[i],i);
+                node.Leaves[i] = ResolveNode(node.Leaves[i],i);
             }
 
             if (node.Parent != null && node.Parent.Value.Type == VariableType.Function)
@@ -119,9 +119,7 @@ namespace MicroExpressionParser
                     {
                         parameters.Add(subNode.Value);
                     }
-                    node.Value = new MeFunction(node.Value,parameters.ToArray());
-                    node.Leaves.Clear();
-                    return;
+                    return new FunctionalNode(new MeFunction(node.Value, parameters.ToArray())); ;
                 }
             }
             switch (node.Value.Type)
@@ -133,15 +131,7 @@ namespace MicroExpressionParser
                     {
                         parameters.Add(subNode.Value);
                     }
-
-                    node.Value = node.Value.ToFunction().Execute(parameters.ToArray());
-                    node.Leaves.Clear();
-                    break;
-                case VariableType.Entity:
-                    {
-                        //do nothing, rub mint
-                    }
-                    break;
+                    return new FunctionalNode(node.Value.ToFunction().Execute(parameters.ToArray()));
                 case VariableType.Operator:
                     {
 
@@ -150,9 +140,11 @@ namespace MicroExpressionParser
                         {
                             opParameters.Add(subNode.Value);
                         }
-                        node.Value = node.Value.ToOperator().Execute(opParameters.ToArray());
-                        node.Leaves.Clear();
-                        break;
+                        return new FunctionalNode(node.Value.ToOperator().Execute(opParameters.ToArray()));
+                    }
+                default:
+                    {
+                        return node;
                     }
             }
         }
@@ -160,14 +152,22 @@ namespace MicroExpressionParser
         public static FunctionalNode BuildTree(Token[] tokens, IGameEngine engine)
         {
             SyntacticNode tree = TreeBuilder.MakeTree(SYConverter.ToPostfix(tokens));
-            FunctionalNode resultNode = Convert(null, tree, engine);
-            ResolveNode(resultNode,0);
-            return resultNode;
+            return Convert(null, tree, engine);
         }
 
         public static FunctionalNode BuildTree(string expression, IGameEngine engine)
         {
-            return BuildTree(Tokenizer.Tokenize(expression),engine);
+            return BuildTree(Tokenizer.Tokenize(expression), engine);
+        }
+
+        public static FunctionalNode ResolveTree(Token[] tokens, IGameEngine engine)
+        {
+            return ResolveNode(BuildTree(tokens, engine), 0); ;
+        }
+
+        public static FunctionalNode ResolveTree(string expression, IGameEngine engine)
+        {
+            return ResolveTree(Tokenizer.Tokenize(expression),engine);
         }
     }
 }

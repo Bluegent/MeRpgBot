@@ -56,7 +56,7 @@ namespace MicroExpressionParser.Sanitizer
             {
                 Token[] tokens = Tokenizer.Tokenize(expr);
                 Token[] sanitizedTokens = ReplaceEntities(tokens, caster, target);
-                var = FunctionalTreeConverter.BuildTree(sanitizedTokens, _engine).Value;
+                var = FunctionalTreeConverter.ResolveTree(sanitizedTokens, _engine).Value;
             }
 
             return var;
@@ -91,7 +91,7 @@ namespace MicroExpressionParser.Sanitizer
         {
             Token[] tokens = Tokenizer.Tokenize(expression);
             Token[] sanitizedTokens = ReplaceProperties(tokens, entity);
-            return FunctionalTreeConverter.BuildTree(sanitizedTokens,_engine).Value.ToDouble();
+            return FunctionalTreeConverter.ResolveTree(sanitizedTokens,_engine).Value.ToDouble();
 
         }
     }
