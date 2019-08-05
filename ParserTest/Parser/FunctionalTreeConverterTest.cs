@@ -111,7 +111,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestHarmEntity()
         {
-            string expression = "HARM(MOCK_KEY,P,20)";
+            string expression = "HARM(MOCK_KEY,MOCK_KEY,P,20)";
             double expected = MockPlayer.GetProperty("CHP").Value - 20;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
 
@@ -145,7 +145,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatDoesntChangeThings()
         {
-            string expression = "IF(10>3,10,HARM(MOCK_KEY,P,10))";
+            string expression = "IF(10>3,10,HARM(MOCK_KEY,MOCK_KEY,P,10))";
             double exepectedHp = MockPlayer.GetProperty("CHP").Value;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
             Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
@@ -154,7 +154,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
-            string expression = "IF(1>3,10,HARM(MOCK_KEY,P,10))";
+            string expression = "IF(1>3,10,HARM(MOCK_KEY,MOCK_KEY,P,10))";
             double exepectedHp = MockPlayer.GetProperty("CHP").Value-10;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
             Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);

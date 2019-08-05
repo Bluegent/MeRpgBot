@@ -50,8 +50,8 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestSanitizeSimpleSkill()
         {
-            string expression = "HARM($TARGET, P, GET_PROP($CASTER, STR))";
-            string[] expected = { "HARM","(",MockEnemy.Key,",","P",",","GET_PROP","(",MockPlayer.Key,",","STR",")",")"};
+            string expression = "HARM($TARGET,$CASTER, P, GET_PROP($CASTER, STR))";
+            string[] expected = { "HARM","(",MockEnemy.Key,",",MockPlayer.Key,",","P",",","GET_PROP","(",MockPlayer.Key,",","STR",")",")"};
             Token[] actual = SanitizerInstance.ReplaceEntities(Tokenizer.Tokenize(expression), MockPlayer,MockEnemy);
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < actual.Length; ++i)
@@ -61,7 +61,7 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveSimpleSkill()
         {
-            string expression = "HARM($TARGET, P, GET_PROP($CASTER, STR))";
+            string expression = "HARM($TARGET,$CASTER, P, GET_PROP($CASTER, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected,MockEnemy.GetProperty("CHP").Value);
@@ -70,7 +70,7 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveMutlipleCalls()
         {
-            string expression = "HARM($TARGET, P, GET_PROP($CASTER, STR));HARM($TARGET, P, GET_PROP($CASTER, STR))";
+            string expression = "HARM($TARGET,$CASTER, P, GET_PROP($CASTER, STR));HARM($TARGET,$CASTER, P, GET_PROP($CASTER, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value*2;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);

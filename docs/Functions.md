@@ -20,10 +20,10 @@ Functions:
 * RANDOM(min, max) - returns a random integer value between min and max
     * RANDOM(3,10) = 5
     * Note: the value returned will never be equal to max, but can be equal to min
-* HARM(entity,damage_type,value) - damages entity for value of damage_type type
-    * HARM(BOSS,physical,30) - Entity BOSS would be damaged for 30 points, but the actual damage will be calculated based on physical's mitigation formula 
-* HEAL(entity,value) - heals entity for value
-    * HEAL(BOSS,30) - Entity BOSS would be healed for 30 points     
+* HARM(target,source,damage_type,value) - damages entity for value of damage_type type
+    * HARM(BOSS,me,physical,30) - Entity BOSS would be damaged for 30 points by me, but the actual damage will be calculated based on physical's mitigation formula 
+* HEAL(target,source,value) - heals entity for value
+    * HEAL(BOSS,BOSS,30) - Entity BOSS would be healed by BOSS for 30 points     
 * ARRAY(value1, value2, ...) - produces an array for functions that take one as an argument
     * ARRAY(1,2,3,4) = [1,2,3,4]
 * GET_PLAYERS() - returns an array with all the existing players

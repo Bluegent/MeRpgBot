@@ -267,20 +267,21 @@ namespace MicroExpressionParser
                     {
                         func.ValidateParameters(values.Length);
                         Entity target = values[0].ToEntity();
-                        DamageType damageType = values[1].ToDamageType();
-                        double amount = values[2].ToDouble();
-                        target.TakeDamage(amount, damageType,null);
+                        Entity source = values[1].ToEntity();
+                        DamageType damageType = values[2].ToDamageType();
+                        double amount = values[3].ToDouble();
+                        target.TakeDamage(amount, damageType,source);
                         return null;
-                    }, 3);
+                    }, 4);
 
             AddFunction("HEAL",
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
                         Entity target = values[0].ToEntity();
-                        DamageType damageType = values[1].ToDamageType();
+                        Entity source = values[1].ToEntity();
                         double amount = values[2].ToDouble();
-                        target.TakeDamage(amount, damageType,null);
+                        target.GetHealed(amount,source);
                         return null;
                     }, 3);
 
