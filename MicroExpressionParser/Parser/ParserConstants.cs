@@ -382,16 +382,17 @@ namespace MicroExpressionParser
             AddFunction(StringConstants.APPLY_F,
                (values, func) =>
                {
-                   //APPLYSTATUS(target,source,status_key,amounts)
+                   //APPLYSTATUS(target,source,status_key,duration,amounts)
                    Entity target = values[0].ToEntity();
                    Entity source = values[1].ToEntity();
                    StatusTemplate effect = engine.GetStatusByKey(values[2].ToString());
-                   double[] amounts = MeVariable.ToDoubleArray(values[3].ToArray());
+                   double duration = values[3].ToDouble();
+                   double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
                    func.ValidateParameters(values.Length);
 
                    //TODO:construct a statusEffect
                    return null;
-               }, 4);
+               }, 5);
 
         }
     }
