@@ -4,6 +4,7 @@ using MicroExpressionParser;
 
 namespace ParserTest
 {
+    using MicroExpressionParser.Core;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -25,14 +26,14 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestGetPropertyTest()
         {
-            string expression = "GET_PROP(MOCK_KEY,STR)";
+            string expression = $"{StringConstants.GET_PROP_F}({MockPlayer.Key},STR)";
             Assert.AreEqual(5, FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestComplexFunctionWithAttributes()
         {
-            string expression = "GET_PROP(MOCK_KEY,STR)*100+MAX(GET_PROP(MOCK_KEY,AGI),3)";
+            string expression = $"{StringConstants.GET_PROP_F}({MockPlayer.Key},STR)*100+{StringConstants.MAX_F}({StringConstants.GET_PROP_F}({MockPlayer.Key},AGI),3)";
             Assert.AreEqual(505, FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
         }
 
@@ -40,7 +41,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestSimpleFunction()
         {
-            string expression = "MAX(10,20)";
+            string expression = $"{StringConstants.MAX_F}(10,20)";
             Assert.AreEqual(20, FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
         }
 
@@ -68,14 +69,14 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestNestedFunctions()
         {
-            string expression = "MAX(10,MIN(3,4))";
+            string expression = $"{StringConstants.MAX_F}(10,{StringConstants.MAX_F}(3,4))";
             Assert.AreEqual(10, FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestOperatorAndFunction()
         {
-            string expression = "ABS(10-100)";
+            string expression = $"{StringConstants.ABS_F}(10-100)";
             Assert.AreEqual(90, FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
         }
 
@@ -83,7 +84,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestArray()
         {
-            string expression = "ARRAY(10,10,10)";
+            string expression = $"{StringConstants.ARRAY_F}(10,10,10)";
             double[] expected = { 10, 10, 10 };
             double[] actual = MeVariable.ToDoubleArray(FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToArray());
             Assert.AreEqual(expected.Length, actual.Length);
@@ -93,7 +94,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestArrayAndFunction()
         {
-            string expression = "ARRAY(10,MAX(10,20),10)";
+            string expression = $"{StringConstants.ARRAY_F}(10,{StringConstants.MAX_F}(10,20),10)";
             double[] expected = { 10, 20, 10 };
             double[] actual = MeVariable.ToDoubleArray(FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToArray());
             Assert.AreEqual(expected.Length, actual.Length);
@@ -102,7 +103,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestFunctionWithNoParameters()
         {
-            string expression = "GET_PLAYERS()";
+            string expression = $"{StringConstants.GET_PLAYERS_F}()";
             string expected = "MOCK_PLAYER";
             MeVariable player = FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToArray()[0];
             Assert.AreEqual(expected, player.ToEntity().Name);
@@ -111,7 +112,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestHarmEntity()
         {
-            string expression = "HARM(MOCK_KEY,MOCK_KEY,P,20)";
+            string expression = $"{StringConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,20)";
             double expected = MockPlayer.GetProperty("CHP").Value - 20;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
 
@@ -137,7 +138,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLater()
         {
-            string expression = "IF(10>3,10,11)";
+            string expression = $"{StringConstants.IF_F}(10>3,10,11)";
             double actual = FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
             Assert.AreEqual(10, actual);
         }
@@ -145,7 +146,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatDoesntChangeThings()
         {
-            string expression = "IF(10>3,10,HARM(MOCK_KEY,MOCK_KEY,P,10))";
+            string expression = $"{StringConstants.IF_F}(10>3,10,{StringConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
             double exepectedHp = MockPlayer.GetProperty("CHP").Value;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
             Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
@@ -154,7 +155,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
-            string expression = "IF(1>3,10,HARM(MOCK_KEY,MOCK_KEY,P,10))";
+            string expression = $"{StringConstants.IF_F}(1>3,10,HARM({MockPlayer.Key},{MockPlayer.Key},P,10))";
             double exepectedHp = MockPlayer.GetProperty("CHP").Value-10;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
             Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
@@ -163,7 +164,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestNestedIf()
         {
-            string expression = "IF(MAX(10,3)>3,IF(10>3,10,20),30)";
+            string expression = $"{StringConstants.IF_F}({StringConstants.MAX_F}(10,3)>3,{StringConstants.IF_F}(10>3,10,20),30)";
             double exepected = 10;
             double actual = FunctionalTreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
             Assert.AreEqual(exepected, actual);

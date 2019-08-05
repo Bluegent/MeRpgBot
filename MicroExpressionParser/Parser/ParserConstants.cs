@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MicroExpressionParser.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MicroExpressionParser
 {
+
     public class Operator
     {
         public string Character { get; }
@@ -222,7 +224,7 @@ namespace MicroExpressionParser
                         return values[0].ToDouble() == values[1].ToDouble();
                     });
 
-            AddFunction("MAX",
+            AddFunction(StringConstants.MAX_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -230,7 +232,7 @@ namespace MicroExpressionParser
                         return parameters.Max();
                     });
 
-            AddFunction("MIN",
+            AddFunction(StringConstants.MIN_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -239,14 +241,14 @@ namespace MicroExpressionParser
                     });
 
 
-            AddFunction("ABS",
+            AddFunction(StringConstants.ABS_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
                         return Math.Abs(values[0].ToDouble());
                     },1);
 
-            AddFunction("NON_NEG",
+            AddFunction(StringConstants.NON_NEG_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -254,7 +256,7 @@ namespace MicroExpressionParser
                         return value > 0 ? value : 0;
                     }, 1);
 
-            AddFunction("RANDOM",
+            AddFunction(StringConstants.RANDOM_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -262,7 +264,7 @@ namespace MicroExpressionParser
                     },2);
 
 
-            AddFunction("HARM",
+            AddFunction(StringConstants.HARM_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -274,7 +276,7 @@ namespace MicroExpressionParser
                         return null;
                     }, 4);
 
-            AddFunction("HEAL",
+            AddFunction(StringConstants.HEAL_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -285,14 +287,14 @@ namespace MicroExpressionParser
                         return null;
                     }, 3);
 
-            AddFunction("ARRAY",
+            AddFunction(StringConstants.ARRAY_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
                         return new MeVariable() { Type = VariableType.Array, Value = values };
                     });
 
-            AddFunction("GET_PLAYERS",
+            AddFunction(StringConstants.GET_PLAYERS_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -305,7 +307,7 @@ namespace MicroExpressionParser
                         return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
                     },0);
 
-            AddFunction("GET_ACTIVE_PLAYERS",
+            AddFunction(StringConstants.GET_ACTIVE_PLAYERS_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -319,7 +321,7 @@ namespace MicroExpressionParser
                         return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
                     }, 0);
 
-            AddFunction("GET_PROP",
+            AddFunction(StringConstants.GET_PROP_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -328,7 +330,7 @@ namespace MicroExpressionParser
                         return entity.GetProperty(prop).Value;
                     },2);
 
-            AddFunction("IF",
+            AddFunction(StringConstants.IF_F,
                 (values, func) =>
                     {
                         //IF(CONDITION,THEN,ELSE)
@@ -343,7 +345,7 @@ namespace MicroExpressionParser
                             return values[2].Execute();
                         }
                     }, 3,new bool[]{true,false,false});
-            AddFunction("ARR_RANDOM",
+            AddFunction(StringConstants.ARR_RANDOM_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
@@ -353,18 +355,18 @@ namespace MicroExpressionParser
 
                     }, 1);
 
-            AddFunction("CHANCE",
+            AddFunction(StringConstants.CHANCE_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
-                        double chance = values[0].ToDouble();
-                        int dice = new Random().Next(0,100);
+                        double chance = values[0].ToDouble()*10;
+                        int dice = new Random().Next(0,1000);
 
                         return dice < chance;
 
                     }, 1);
 
-            AddFunction("CAST",
+            AddFunction(StringConstants.CAST_F,
                 (values, func) =>
                     {
                         //CAST(CASTER,TARGET,SKILL)
