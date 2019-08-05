@@ -22,7 +22,9 @@ namespace MicroExpressionParser
         DamageType,
         Array,
         String,
-        Boolean
+        Boolean,
+        Status,
+        StatModifier
     }
 
     public class MeVariable
@@ -121,6 +123,17 @@ namespace MicroExpressionParser
             return (bool)Value;
         }
 
+        public StatusTemplate ToStatus()
+        {
+            ValidateType(VariableType.Status);
+            return (StatusTemplate)Value;
+        }
+
+        public StatModifier ToModifier()
+        {
+            ValidateType(VariableType.StatModifier);
+            return (StatModifier)Value;
+        }
 
         public static double[] ToDoubleArray(MeVariable[] array)
         {

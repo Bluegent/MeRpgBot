@@ -141,9 +141,9 @@ namespace MicroExpressionParser
             Operators.Add(op.Character, op);
         }
 
-        private static void AddFunction(string name, Func<MeVariable[], AbstractFunction, MeVariable> operation, int parameterCount = -1,bool[] executeInPlace = null)
+        private static void AddFunction(string name, Func<MeVariable[], AbstractFunction, MeVariable> operation, int parameterCount = -1, bool[] executeInPlace = null)
         {
-            AbstractFunction func = new AbstractFunction(name,parameterCount, executeInPlace);
+            AbstractFunction func = new AbstractFunction(name, parameterCount, executeInPlace);
             func.Operation = operation;
             Functions.Add(func.Name, func);
         }
@@ -178,7 +178,7 @@ namespace MicroExpressionParser
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
-                        return Math.Pow(values[0].ToDouble(),values[1].ToDouble());
+                        return Math.Pow(values[0].ToDouble(), values[1].ToDouble());
                     });
 
             AddOperator(StringConstants.DIVIDE_OP, 2, true,
@@ -193,13 +193,13 @@ namespace MicroExpressionParser
                     {
                         op.ValidateParameters(values.Length);
                         return !values[0].ToBoolean();
-                    },1);
+                    }, 1);
 
             AddOperator(StringConstants.GREATER_OP, 0, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
-                        return values[0].ToDouble()>values[1].ToDouble();
+                        return values[0].ToDouble() > values[1].ToDouble();
                     });
             AddOperator(StringConstants.LESSER_OP, 0, true,
                 (values, op) =>
@@ -237,7 +237,7 @@ namespace MicroExpressionParser
                     {
                         func.ValidateParameters(values.Length);
                         return Math.Abs(values[0].ToDouble());
-                    },1);
+                    }, 1);
 
             AddFunction(StringConstants.NON_NEG_F,
                 (values, func) =>
@@ -252,7 +252,7 @@ namespace MicroExpressionParser
                     {
                         func.ValidateParameters(values.Length);
                         return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
-                    },2);
+                    }, 2);
 
 
             AddFunction(StringConstants.HARM_F,
@@ -263,7 +263,7 @@ namespace MicroExpressionParser
                         Entity source = values[1].ToEntity();
                         DamageType damageType = values[2].ToDamageType();
                         double amount = values[3].ToDouble();
-                        target.TakeDamage(amount, damageType,source);
+                        target.TakeDamage(amount, damageType, source);
                         return null;
                     }, 4);
 
@@ -274,7 +274,7 @@ namespace MicroExpressionParser
                         Entity target = values[0].ToEntity();
                         Entity source = values[1].ToEntity();
                         double amount = values[2].ToDouble();
-                        target.GetHealed(amount,source);
+                        target.GetHealed(amount, source);
                         return null;
                     }, 3);
 
@@ -296,7 +296,7 @@ namespace MicroExpressionParser
                             playerList.Add(entity);
                         }
                         return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
-                    },0);
+                    }, 0);
 
             AddFunction(StringConstants.GET_ACTIVE_PLAYERS_F,
                 (values, func) =>
@@ -319,7 +319,7 @@ namespace MicroExpressionParser
                         Entity entity = values[0].ToEntity();
                         string prop = values[1].ToString();
                         return entity.GetProperty(prop).Value;
-                    },2);
+                    }, 2);
 
             AddFunction(StringConstants.IF_F,
                 (values, func) =>
@@ -335,7 +335,7 @@ namespace MicroExpressionParser
                         {
                             return values[2].Execute();
                         }
-                    }, 3,new bool[]{true,false,false});
+                    }, 3, new bool[] { true, false, false });
             AddFunction(StringConstants.ARR_RANDOM_F,
                 (values, func) =>
                     {
@@ -350,8 +350,8 @@ namespace MicroExpressionParser
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
-                        double chance = values[0].ToDouble()*10;
-                        int dice = new Random().Next(0,1000);
+                        double chance = values[0].ToDouble() * 10;
+                        int dice = new Random().Next(0, 1000);
 
                         return dice < chance;
 
@@ -365,10 +365,34 @@ namespace MicroExpressionParser
                         Entity caster = values[0].ToEntity();
                         Entity target = values[1].ToEntity();
                         string skillKey = values[2].ToString();
-                        caster.Cast(target,skillKey);
+                        caster.Cast(target, skillKey);
                         return null;
 
                     }, 3);
+            AddFunction(StringConstants.MOD_VALUE_F,
+               (values, func) =>
+               {
+                   //MOD_VALUE(stat,amount)
+                   func.ValidateParameters(values.Length);
+                   string stat = values[0].ToString();
+                   double amount = values[1].ToDouble();
+                   StatModifier mod = new StatModifier() { amount = amount, key = stat };
+                   return new MeVariable { Type = VariableType.StatModifier, Value = mod };
+               }, 3);
+            AddFunction(StringConstants.APPLY_F,
+               (values, func) =>
+               {
+                   //APPLYSTATUS(target,source,status_key,amounts)
+                   Entity target = values[0].ToEntity();
+                   Entity source = values[1].ToEntity();
+                   StatusTemplate effect = engine.GetStatusByKey(values[2].ToString());
+                   double[] amounts = MeVariable.ToDoubleArray(values[3].ToArray());
+                   func.ValidateParameters(values.Length);
+
+                   //TODO:construct a statusEffect
+                   return null;
+               }, 4);
+
         }
     }
 }

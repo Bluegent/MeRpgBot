@@ -95,5 +95,10 @@ namespace MicroExpressionParser.Sanitizer
             return FunctionalTreeConverter.ResolveTree(sanitizedTokens,_engine).Value.ToDouble();
 
         }
+
+        public Token[] SanitizeStatus(Entity target, double[] values)
+        {
+            return null;
+        }
     }
 }

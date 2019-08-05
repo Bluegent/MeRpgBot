@@ -16,6 +16,7 @@ namespace MicroExpressionParser
 
         DamageType GeDamageType(string key);
         Entity GetEntityByKey(string key);
+        StatusTemplate GetStatusByKey(string key);
     }
     public class GameEngine : IGameEngine
     {

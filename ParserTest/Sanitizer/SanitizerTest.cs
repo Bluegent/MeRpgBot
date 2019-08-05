@@ -76,5 +76,11 @@ namespace ParserTest
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
         }
+
+        [TestMethod]
+        public void SanitizerTestStatus()
+        {
+            string expression = "APPLYSTATUS($S,shonen_powerup,60,ARRAY(10,10,-5))";
+        }
     }
 }

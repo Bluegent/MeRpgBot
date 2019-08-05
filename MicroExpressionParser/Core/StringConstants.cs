@@ -29,6 +29,8 @@
         public const string ARR_RANDOM_F = "ARR_RANDOM";
         public const string CHANCE_F = "CHANCE";
         public const string CAST_F = "CAST";
+        public const string MOD_VALUE_F = "MOD_VALUE";
+        public const string APPLY_F = "APPLY";
 
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';

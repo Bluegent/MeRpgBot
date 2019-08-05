@@ -24,9 +24,32 @@ namespace MicroExpressionParser
 
         public abstract EntityProperty GetProperty(string key);
 
+        public abstract void ApplyStatus(StatusTemplate status, double duration);
+
     }
+
+    public class StatusTemplate
+    {
+        public FunctionalNode formula { get; set; }
+    }
+
+    public class StatModifier
+    {
+        public string key { get; set; }
+        public double amount { get; set; }
+    }
+
+    public class AppliedStatus
+    {
+        public StatusTemplate status { get; set; }
+        public double[] values { get; set; }
+        public long removeTime { get; set; }
+    }
+
     public class MockEntity : Entity
     {
+
+        public Dictionary<string, double> FinalStats { get; set; }
 
         public MockEntity()
         {
@@ -40,6 +63,7 @@ namespace MicroExpressionParser
                               { "DEF",10},
                               { "MDEF",0 }
                           };
+            FinalStats = new Dictionary<string, double>();
 
 
         }
@@ -64,6 +88,11 @@ namespace MicroExpressionParser
             if(StatMap.ContainsKey(key))
                 return new EntityProperty(){Key = key, Value = StatMap[key]};
             return null;
+        }
+
+        public override void ApplyStatus(StatusTemplate status, double duration)
+        {
+            throw new NotImplementedException();
         }
     }
 }
