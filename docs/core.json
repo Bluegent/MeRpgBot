@@ -33,7 +33,7 @@
         "points_per_level":"1",
         "start_exp":"500",
         "exp_formula":"$PREV * 1.1 +20*2^(LEVEL/5)"
-    }
+    },
 	"compound_stats": [
         {
 			"key": "DODGE",

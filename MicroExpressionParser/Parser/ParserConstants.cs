@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MicroExpressionParser.Core;
 
 namespace MicroExpressionParser
 {
@@ -85,27 +86,17 @@ namespace MicroExpressionParser
     {
         public static Dictionary<string, Operator> Operators;
         public static Dictionary<string, AbstractFunction> Functions;
-        public const char PARAM_SEPARATOR = ',';
-        public const char LEFT_PAREN = '(';
-        public const char RIGHT_PAREN = ')';
-        public const char SPECIAL_CHAR = '$';
-
-        public static readonly string TargetKeyword = SPECIAL_CHAR+"TARGET";
-
-        public static readonly string CasterKeyword = SPECIAL_CHAR+"CASTER";
-
-        public const char FUNCTION_SEPARATOR = ';';
 
         public static bool IsSpecialChar(char c)
         {
-            return c == PARAM_SEPARATOR || c == LEFT_PAREN || c == RIGHT_PAREN || IsOperator($"{c}");
+            return c == StringConstants.PARAM_SEPARATOR || c == StringConstants.LEFT_PAREN || c == StringConstants.RIGHT_PAREN || IsOperator(char.ToString(c));
         }
 
         public static bool IsSeparator(string str)
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == PARAM_SEPARATOR)
+            if (str[0] == StringConstants.PARAM_SEPARATOR)
                 return true;
             return false;
         }
@@ -124,7 +115,7 @@ namespace MicroExpressionParser
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == LEFT_PAREN)
+            if (str[0] == StringConstants.LEFT_PAREN)
                 return true;
             return false;
         }
@@ -133,7 +124,7 @@ namespace MicroExpressionParser
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == RIGHT_PAREN)
+            if (str[0] == StringConstants.RIGHT_PAREN)
                 return true;
             return false;
         }
@@ -161,14 +152,14 @@ namespace MicroExpressionParser
             Operators = new Dictionary<string, Operator>();
             Functions = new Dictionary<string, AbstractFunction>();
 
-            AddOperator("+", 1, true,
+            AddOperator(StringConstants.PLUS_OP, 1, true,
             (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return values[0].ToDouble() + values[1].ToDouble();
                 });
 
-            AddOperator("-", 1, true,
+            AddOperator(StringConstants.MINUS_OP, 1, true,
             (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
@@ -176,48 +167,48 @@ namespace MicroExpressionParser
                 });
 
 
-            AddOperator("*", 2, true,
+            AddOperator(StringConstants.MULITPLY_OP, 2, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return values[0].ToDouble() * values[1].ToDouble();
                     });
 
-            AddOperator("^", 3, true,
+            AddOperator(StringConstants.POWER_OP, 3, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return Math.Pow(values[0].ToDouble(),values[1].ToDouble());
                     });
 
-            AddOperator("/", 2, true,
+            AddOperator(StringConstants.DIVIDE_OP, 2, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return values[0].ToDouble() / values[1].ToDouble();
                     });
 
-            AddOperator("!", 2, true,
+            AddOperator(StringConstants.NOT_OP, 2, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return !values[0].ToBoolean();
                     },1);
 
-            AddOperator(">", 0, true,
+            AddOperator(StringConstants.GREATER_OP, 0, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return values[0].ToDouble()>values[1].ToDouble();
                     });
-            AddOperator("<", 0, true,
+            AddOperator(StringConstants.LESSER_OP, 0, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);
                         return values[0].ToDouble() < values[1].ToDouble();
                     });
 
-            AddOperator("=", 0, true,
+            AddOperator(StringConstants.EQUAL_OP, 0, true,
                 (values, op) =>
                     {
                         op.ValidateParameters(values.Length);

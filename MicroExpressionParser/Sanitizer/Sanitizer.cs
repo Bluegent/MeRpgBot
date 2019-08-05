@@ -22,10 +22,10 @@ namespace MicroExpressionParser.Sanitizer
         {
             Token[] result = new Token[5];
             result[0] = new Token(StringConstants.GET_PROP_F);
-            result[1] = new Token("(");
+            result[1] = new Token(char.ToString(StringConstants.LEFT_PAREN));
             result[2] = new Token(entity.Key);
             result[3] = token;
-            result[4] = new Token(")");
+            result[4] = new Token(char.ToString(StringConstants.RIGHT_PAREN));
             return result;
         }
 
@@ -34,11 +34,11 @@ namespace MicroExpressionParser.Sanitizer
             List<Token> result = new List<Token>();
             foreach (Token token in tokens)
             {
-                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(ParserConstants.SPECIAL_CHAR)))
+                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(StringConstants.SPECIAL_CHAR)))
                 {
-                    if(token.Value.Equals(ParserConstants.TargetKeyword))
+                    if(token.Value.Equals(StringConstants.TargetKeyword))
                         result.Add(new Token(target.Key));
-                    else if (token.Value.Equals(ParserConstants.CasterKeyword))
+                    else if (token.Value.Equals(StringConstants.CasterKeyword))
                         result.Add(new Token(caster.Key));
                 }
                 else
@@ -51,7 +51,7 @@ namespace MicroExpressionParser.Sanitizer
 
         public MeVariable SanitizeSkill(string skill, Entity caster, Entity target)
         {
-            string[] lines = skill.Split(ParserConstants.FUNCTION_SEPARATOR);
+            string[] lines = skill.Split(StringConstants.FUNCTION_SEPARATOR);
             MeVariable var = null;
             foreach (string expr in lines)
             {

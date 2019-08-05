@@ -2,6 +2,18 @@
 {
     public static class StringConstants
     {
+        //Operators
+        public const string PLUS_OP = "+";
+        public const string MINUS_OP = "-";
+        public const string MULITPLY_OP = "*";
+        public const string POWER_OP = "^";
+        public const string DIVIDE_OP = "/";
+        public const string GREATER_OP = ">";
+        public const string LESSER_OP = "<";
+        public const string EQUAL_OP = "=";
+        public const string NOT_OP = "!";
+
+        //Functions
         public const string HARM_F = "HARM";
         public const string HEAL_F = "HEAL";
         public const string MAX_F = "MAX";
@@ -17,5 +29,16 @@
         public const string ARR_RANDOM_F = "ARR_RANDOM";
         public const string CHANCE_F = "CHANCE";
         public const string CAST_F = "CAST";
+
+        public const char PARAM_SEPARATOR = ',';
+        public const char LEFT_PAREN = '(';
+        public const char RIGHT_PAREN = ')';
+        public const char SPECIAL_CHAR = '$';
+
+        public static readonly string TargetKeyword = SPECIAL_CHAR + "TARGET";
+
+        public static readonly string CasterKeyword = SPECIAL_CHAR + "CASTER";
+
+        public const char FUNCTION_SEPARATOR = ';';
     }
 }

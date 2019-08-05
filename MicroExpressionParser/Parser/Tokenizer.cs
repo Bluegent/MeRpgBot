@@ -13,8 +13,8 @@ namespace MicroExpressionParser
     public class Token
     {
         public TokenType Type { get; set; }
-        public String Value { get; set; }
-        public static TokenType GetType(String str)
+        public string Value { get; set; }
+        public static TokenType GetType(string str)
         {
             if (ParserConstants.IsFunction(str))
                 return TokenType.Function;
@@ -28,7 +28,7 @@ namespace MicroExpressionParser
                 return TokenType.Separator;
             return TokenType.Variable;
         }
-        public Token(String value)
+        public Token(string value)
         {
             Value = value;
             Type = GetType(value);
@@ -38,17 +38,16 @@ namespace MicroExpressionParser
     public class Tokenizer
     {
 
-
-        private static String Sanitize(String expression)
+        private static string Sanitize(string expression)
         {
             return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim();
         }
 
-        public static Token[] Tokenize(String expression)
+        public static Token[] Tokenize(string expression)
         {
             List<Token> result = new List<Token>();
-            String sanitized = Sanitize(expression);            
-            String current = "";
+            string sanitized = Sanitize(expression);            
+            string current = "";
             foreach (char c in sanitized)
             {
                 if (!ParserConstants.IsSpecialChar(c))
@@ -71,7 +70,7 @@ namespace MicroExpressionParser
                         throw new Exception("Found minus after function with no (, function: " + prev.Value);
                     else if (prev.Type == TokenType.Variable || prev.Type == TokenType.RightParen)
                     {
-                        result.Add(new Token(Char.ToString(c)));
+                        result.Add(new Token(char.ToString(c)));
                     }
                     else
                     {
@@ -86,7 +85,7 @@ namespace MicroExpressionParser
                         result.Add(new Token(current));
                         current = "";                       
                     }
-                    result.Add(new Token(Char.ToString(c)));
+                    result.Add(new Token(char.ToString(c)));
                 }
             }
             if (current.Length != 0)
