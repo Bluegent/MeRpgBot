@@ -5,6 +5,7 @@ using System.Text;
 
 namespace MicroExpressionParser.Sanitizer
 {
+    using MicroExpressionParser.Core;
     using System.Runtime.CompilerServices;
 
     public class Sanitizer
@@ -20,7 +21,7 @@ namespace MicroExpressionParser.Sanitizer
         public Token[] ConvertToGetProp(Token token, Entity entity)
         {
             Token[] result = new Token[5];
-            result[0] = new Token("GET_PROP");
+            result[0] = new Token(StringConstants.GET_PROP_F);
             result[1] = new Token("(");
             result[2] = new Token(entity.Key);
             result[3] = token;

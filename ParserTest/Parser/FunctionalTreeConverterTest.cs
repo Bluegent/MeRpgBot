@@ -155,7 +155,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
-            string expression = $"{StringConstants.IF_F}(1>3,10,HARM({MockPlayer.Key},{MockPlayer.Key},P,10))";
+            string expression = $"{StringConstants.IF_F}(1>3,10,{StringConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
             double exepectedHp = MockPlayer.GetProperty("CHP").Value-10;
             FunctionalTreeConverter.ResolveTree(expression, Engine);
             Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
