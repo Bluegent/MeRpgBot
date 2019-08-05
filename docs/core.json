@@ -91,6 +91,7 @@
             "key": "M",
 			"mitigation": "NON_NEG($VALUE-GET_PROP($TARGET,MDEF))",
             "crit":"10",
+            "crit_multiplier":"3",
 			"name": "Magic",
 			"description": "Magical damage, mitigated by a target's MDEF attribute."
 		},
