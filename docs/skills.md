@@ -22,8 +22,8 @@ Skills can be levled up at trainer NPCs (TBD), therefore these block provide the
         "values_by_level":
         [
             {
-                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+10+GET_PROP($CASTER,STR)/2)",
+                "cooldown":"30/GET_PROP($S,ATT_SPEED)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+10+GET_PROP($S,STR)/2)",
                 "needed_level":1
             },
             ...
@@ -32,7 +32,7 @@ Skills can be levled up at trainer NPCs (TBD), therefore these block provide the
 Details:
 * `"cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",` - How long it takes before the skill can be used again, in seconds.
     *If this line is missing or the value is lower than 1, the skill has 1 second of cooldown (to avoid the possibility someone spamming).
-* `"formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+10+GET_PROP($CASTER,STR)/2)",` - The script that details what the skill does.
+* `"formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+10+GET_PROP($S,STR)/2)",` - The script that details what the skill does.
     *In this example case, "Basic Punch" harms the caster's target for the caster's Base damage + 10 + half of the caster's strength. Damage type is Physical.
 * "needed_level":1 - At what level the skill can be purchased from the trainer NPC.
 
@@ -50,7 +50,7 @@ Cast skill with longer duration.\
                 "duration":"10",
                 "push_back":"3",
                 "interrupt":"true",
-                "formula":"HEAL($TARGET,$CASTER,10+GET_PROP($CASTER,INT)*5)",
+                "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*5)",
                 "needed_level":5,
                 "cost":{"key":"MP","value":"10"}
             },
@@ -81,7 +81,7 @@ Channelling skill example.\
             {
                 "cooldown":"1200",
                 "duration":"60",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+GET_PROP($CASTER,STR)/2)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+GET_PROP($S,STR)/2)",
                 "needed_level":15,
                 "interval":"1+NON_NEG(9-DEX/20)"
             },

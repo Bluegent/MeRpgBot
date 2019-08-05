@@ -33,7 +33,7 @@ namespace ParserTest
             string expression = $"{StringConstants.ABS_F}(10-100)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = SYConverter.ToPostfix(infix);
-            string[] expected = { "(", "10", "100","-", StringConstants.ABS_F };
+            string[] expected = { "(", "10", "100", "-", StringConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -58,7 +58,7 @@ namespace ParserTest
             string expression = $"{StringConstants.ABS_F}({StringConstants.MAX_F}(STR,INT))";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = SYConverter.ToPostfix(infix);
-            string[] expected = { "(","(","STR","INT", StringConstants.MAX_F, StringConstants.ABS_F };
+            string[] expected = { "(", "(", "STR", "INT", StringConstants.MAX_F, StringConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -70,7 +70,7 @@ namespace ParserTest
             string expression = $"{StringConstants.ABS_F}({StringConstants.MAX_F}(STR,INT)+{StringConstants.MIN_F}(10,-20))";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = SYConverter.ToPostfix(infix);
-            string[] expected = { "(", "(", "STR", "INT", StringConstants.MAX_F,"(","10","-20", StringConstants.MIN_F, "+",StringConstants.ABS_F };
+            string[] expected = { "(", "(", "STR", "INT", StringConstants.MAX_F, "(", "10", "-20", StringConstants.MIN_F, "+", StringConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -83,7 +83,7 @@ namespace ParserTest
             string expression = "10*(2+3+4)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = SYConverter.ToPostfix(infix);
-            string[] expected = { "10","2","3","+","4","+","*"};
+            string[] expected = { "10", "2", "3", "+", "4", "+", "*" };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -95,7 +95,7 @@ namespace ParserTest
             string expression = "!(X+Y)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = SYConverter.ToPostfix(infix);
-            string[] expected = { "X","Y","+","!" };
+            string[] expected = { "X", "Y", "+", "!" };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);

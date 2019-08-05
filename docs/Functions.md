@@ -48,12 +48,12 @@ Functions:
           
 Keywords:
 * skill:
-    * $TARGET - represents the target entity
+    * $T - represents the target entity
         * HEAL($TARGET,10) - resolves to healing the target of the skill
-    * $CASTER - represents the caster entity
+    * $S - represents the caster entity
         * HEAL($TARGET,10) - resolves to healing whoever casts the skill
 * damage types:
-    * $TARGET - the entity being damaged
+    * $T - the entity being damaged
     * $VALUE - the value of the damage before it is mitigated
         * $VALUE-GET_PROP($TARGET,DEF) - reduces the value of the damage by the DEF stat of the target
 * boss scripts:

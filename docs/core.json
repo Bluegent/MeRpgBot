@@ -81,15 +81,15 @@
 
 	"damage_types": [{
             "key": "P",
-			"mitigation": "NON_NEG($VALUE-GET_PROP($TARGET,DEF))",
-            "dodge":"GET_PROP($TARGET,DEX)/1000",
+			"mitigation": "NON_NEG($V-GET_PROP($T,DEF))",
+            "dodge":"GET_PROP($T,DEX)/1000",
             "crit":"GET_PROP($SOURCE,DEX)/1000",
 			"name": "Physical",
 			"description": "Physical damage, mitigated by a target's DEF attribute."
 		},
 		{
             "key": "M",
-			"mitigation": "NON_NEG($VALUE-GET_PROP($TARGET,MDEF))",
+			"mitigation": "NON_NEG($V-GET_PROP($T,MDEF))",
             "crit":"10",
             "crit_multiplier":"3",
 			"name": "Magic",

@@ -8,18 +8,18 @@
         "values_by_level":
         [
             {
-                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+10+GET_PROP($CASTER,STR)/2)",
+                "cooldown":"30/GET_PROP($S,ATT_SPEED)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+10+GET_PROP($S,STR)/2)",
                 "needed_level":1
             },
             {
-                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",  
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+15+GET_PROP($CASTER,STR)/2)",
+                "cooldown":"30/GET_PROP($S,ATT_SPEED)",  
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+15+GET_PROP($S,STR)/2)",
                 "needed_level":5
             },
             {
-                "cooldown":"30/GET_PROP(CASTER,ATT_SPEED)",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+50+GET_PROP($CASTER,STR)/2)",
+                "cooldown":"30/GET_PROP($S,ATT_SPEED)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+50+GET_PROP($S,STR)/2)",
                 "needed_level":30
             }
         ]
@@ -35,13 +35,13 @@
             {
                 "cooldown":"600",
                 "duration":"300",
-                "formula":"HARM($TARGET,$CASTER,P,STR*100)",
+                "formula":"HARM($T,$S,P,STR*100)",
                 "needed_level":5
             },
             {
                 "cooldown":"300",
                 "duration":"600",
-                "formula":"HARM($TARGET,$CASTER,P,STR*200)",
+                "formula":"HARM($T,$S,P,STR*200)",
                 "needed_level":20
             }
         ]
@@ -57,14 +57,14 @@
             {
                 "cooldown":"1200",
                 "duration":"60",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+GET_PROP($CASTER,STR)/2)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+GET_PROP($S,STR)/2)",
                 "needed_level":15,
                 "interval":"1+NON_NEG(9-DEX/20)"
             },
             {
                 "cooldown":"60",
                 "duration":"60",
-                "formula":"HARM($TARGET,$CASTER,P,GET_PROP($CASTER,B_DMG)+GET_PROP($CASTER,STR)/2)",
+                "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+GET_PROP($S,STR)/2)",
                 "needed_level":50,
                 "interval":"1+NON_NEG(9-DEX/10)"
             }
@@ -81,7 +81,7 @@
             {
                 "cooldown":"216000",
                 "duration":"10",
-                "formula":"APPLYSTATUS($CASTER,shonen_powerup,60,ARRAY(10,10,-5))",
+                "formula":"APPLYSTATUS($S,shonen_powerup,60,ARRAY(10,10,-5))",
                 "needed_level":10
             }
         ]
@@ -99,7 +99,7 @@
                 "duration":"10",
                 "push_back":"3",
                 "interrupt":"true",
-                "formula":"HEAL($TARGET,$CASTER,10+GET_PROP($CASTER,INT)*5)",
+                "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*5)",
                 "needed_level":5,
                 "cost":{"key":"MP","value":"10"}
             },
@@ -108,7 +108,7 @@
                 "duration":"10",
                 "push_back":"3",
                 "interrupt":"false",
-                "formula":"HEAL($TARGET,$CASTER,10+GET_PROP($CASTER,INT)*10)",
+                "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*10)",
                 "needed_level":20,
                 "cost":{"key":"MP","value":"25"}
             }

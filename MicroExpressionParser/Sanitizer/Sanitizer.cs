@@ -38,7 +38,7 @@ namespace MicroExpressionParser.Sanitizer
                 {
                     if(token.Value.Equals(StringConstants.TargetKeyword))
                         result.Add(new Token(target.Key));
-                    else if (token.Value.Equals(StringConstants.CasterKeyword))
+                    else if (token.Value.Equals(StringConstants.SourceKeyword))
                         result.Add(new Token(caster.Key));
                 }
                 else

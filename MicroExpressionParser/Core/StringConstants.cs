@@ -35,9 +35,9 @@
         public const char RIGHT_PAREN = ')';
         public const char SPECIAL_CHAR = '$';
 
-        public static readonly string TargetKeyword = SPECIAL_CHAR + "TARGET";
+        public static readonly string TargetKeyword = SPECIAL_CHAR + "T";
 
-        public static readonly string CasterKeyword = SPECIAL_CHAR + "CASTER";
+        public static readonly string SourceKeyword = SPECIAL_CHAR + "S";
 
         public const char FUNCTION_SEPARATOR = ';';
     }
