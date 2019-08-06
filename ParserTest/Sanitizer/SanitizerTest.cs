@@ -7,7 +7,6 @@ namespace ParserTest
 {
     using MicroExpressionParser;
     using MicroExpressionParser.Core;
-    using MicroExpressionParser.Sanitizer;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MicroExpressionParser.Sanitizer
+namespace MicroExpressionParser
 {
     using MicroExpressionParser.Core;
     using System.Runtime.CompilerServices;
@@ -61,6 +61,20 @@ namespace MicroExpressionParser.Sanitizer
             }
 
             return var;
+        }
+
+
+        public void SanitizeSkillEntities(FunctionalNode tree, Entity caster, Entity target)
+        {
+            foreach(FunctionalNode leaf in tree.Leaves)
+                SanitizeSkillEntities(leaf,caster,target);
+            if(tree.Value.Type == VariableType.PlaceHolder)
+            {
+                if (tree.Value.ToPlaceholder() == StringConstants.TargetKeyword)
+                    tree.Value = target;
+                else if (tree.Value.ToPlaceholder() == StringConstants.SourceKeyword)
+                    tree.Value = caster;
+            }
         }
 
         public Token[] ReplaceProperties(Token[] tokens, Entity entity)
@@ -125,16 +139,11 @@ namespace MicroExpressionParser.Sanitizer
             }
             return valueMap;
         }
-        public MeVariable[] ResolveStatus(FunctionalNode[] trees, double[] values)
+        public MeVariable ResolveStatus(FunctionalNode tree, double[] values)
         {
             Dictionary<string, double> valueMap = GetNumericValueMap(values);
-            List<MeVariable> results = new List<MeVariable>();
-            foreach (FunctionalNode tree in trees)
-            {
-                ReplaceNumericPlaceholders(tree, valueMap);
-                results.Add(FunctionalTreeConverter.ResolveNode(tree, 0).Value);
-            }
-            return results.ToArray();
+            ReplaceNumericPlaceholders(tree, valueMap);
+            return FunctionalTreeConverter.ResolveNode(tree,0).Value;
         }
     }
 }

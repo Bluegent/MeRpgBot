@@ -377,7 +377,7 @@ namespace MicroExpressionParser
                    double amount = values[1].ToDouble();
                    StatModifier mod = new StatModifier() { amount = amount, key = stat };
                    return new MeVariable { Type = VariableType.StatModifier, Value = mod };
-               }, 3);
+               }, 2);
             AddFunction(StringConstants.APPLY_F,
                (values, func) =>
                {

@@ -1,7 +1,5 @@
-﻿using System;
+﻿using MicroExpressionParser.Core;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MicroExpressionParser
 {
@@ -24,7 +22,7 @@ namespace MicroExpressionParser
 
         public abstract EntityProperty GetProperty(string key);
 
-        public abstract void ApplyStatus(StatusTemplate status, double duration, double[] values);
+        public abstract void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values);
 
         public abstract void Update();
 
@@ -32,8 +30,6 @@ namespace MicroExpressionParser
 
     public class StatusTemplate
     {
-        internal FunctionalNode[] formula;
-
         public FunctionalNode[] formulas { get; set; }
         public int interval { get; set; }
     }
@@ -47,10 +43,11 @@ namespace MicroExpressionParser
     public class AppliedStatus
     {
         public StatusTemplate status { get; set; }
-        public FunctionalNode[] resolved { get; set; }
+        public MeVariable[] resolved { get; set; }
         public double[] values { get; set; }
         public long removeTime { get; set; }
         public long lastTick { get; set; }
+        public Entity source { get; set; }
     }
 
     public class MockEntity : Entity
@@ -71,20 +68,21 @@ namespace MicroExpressionParser
                               { "DEF",10},
                               { "MDEF",0 }
                           };
-            FinalStats = new Dictionary<string, double>();
+            FinalStats = new Dictionary<string, double>(StatMap);
             Engine = engine;
+            statuses = new List<AppliedStatus>();
 
 
         }
 
         public override void TakeDamage(double amount, DamageType type, Entity source)
         {
-            StatMap["CHP"] -= amount;
+            FinalStats["CHP"] -= amount;
         }
 
         public override void GetHealed(double amount, Entity source)
         {
-            StatMap["CHP"] += amount;
+            FinalStats["CHP"] += amount;
         }
 
         public override void Cast(Entity target, string skillKey)
@@ -94,21 +92,21 @@ namespace MicroExpressionParser
 
         public override EntityProperty GetProperty(string key)
         {
-            if(StatMap.ContainsKey(key))
-                return new EntityProperty(){Key = key, Value = StatMap[key]};
+            if(FinalStats.ContainsKey(key))
+                return new EntityProperty(){Key = key, Value = FinalStats[key]};
             return null;
         }
 
-        public override void ApplyStatus(StatusTemplate status, double duration, double[] values)
+        public override void ApplyStatus(StatusTemplate status,Entity source, double duration, double[] values)
         {
-            long now = Engine.getTimer().GetNow();
-            AppliedStatus newStatus = new AppliedStatus() { lastTick = 0,removeTime = now+(long)duration,status=status,values = values };
+            long now = Engine.GetTimer().GetNow();
+            AppliedStatus newStatus = new AppliedStatus() { source= source, lastTick = 0,removeTime = now+(long)duration,status=status,values = values };
             statuses.Add(newStatus);
         }
 
         private void RemoveExpiredStatuses()
         {
-            long now = Engine.getTimer().GetNow();
+            long now = Engine.GetTimer().GetNow();
             List<AppliedStatus> remove = new List<AppliedStatus>();
             foreach(AppliedStatus status in statuses)
             {
@@ -120,18 +118,84 @@ namespace MicroExpressionParser
                 statuses.Remove(status);
         }
 
+        private void ResetFinalStatMap()
+        {
+            foreach(KeyValuePair<string,double> pair in StatMap)
+            {
+
+                FinalStats[pair.Key] = StatMap[pair.Key];
+            }
+        }
+
+        private bool IsTime(AppliedStatus status)
+        {
+            if (status.lastTick == 0)
+                return true;
+            if (Engine.GetTimer().GetNow() - status.lastTick > status.status.interval)
+                return true;
+            return false;
+        }
+
         private void ApplyModifiers()
         {
+            //first apply modifiers
+            foreach (AppliedStatus status in statuses)
+            {
+                if (IsTime(status))
+                {
+                    foreach (FunctionalNode tree in status.status.formulas)
+                    {
+                        if (tree.Value.Type == VariableType.Function
+                            && tree.Value.Value == ParserConstants.Functions[StringConstants.MOD_VALUE_F])
+                        {
+                            StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.values).ToModifier();
+                            FinalStats[mod.key] += mod.amount;
+                        }
+                    }
+                }
+            }
+        }
+        private void ApplyHealAndHarm()
+        {
+            foreach (AppliedStatus status in statuses)
+            {
+                if (IsTime(status))
+                {
+                    foreach (FunctionalNode tree in status.status.formulas)
+                    {
+                        if (tree.Value.Type == VariableType.Function
+                            && (tree.Value.Value == ParserConstants.Functions[StringConstants.HARM_F]
+                                || tree.Value.Value == ParserConstants.Functions[StringConstants.HEAL_F]))
+                        {
+                            Engine.GetSanitizer().SanitizeSkillEntities(tree, status.source, this);
+                            FunctionalTreeConverter.ResolveNode(tree, 0);
+                        }
+                    }
+                   
+                }
+            }
+        }
 
+
+        private void SetLastTicks()
+        {
+            foreach (AppliedStatus status in statuses)
+            {
+                if (IsTime(status))
+                {
+                    status.lastTick = Engine.GetTimer().GetNow();
+                }
+            }
         }
 
         public override void Update()
         {
             RemoveExpiredStatuses();
             //tick cooldowns
-            //refresh new stat map
-            //calculate stats by applying modifiers
-            //apply harmful ticks
+            ResetFinalStatMap();
+            ApplyModifiers();
+            ApplyHealAndHarm();
+            SetLastTicks();
         }
     }
 }

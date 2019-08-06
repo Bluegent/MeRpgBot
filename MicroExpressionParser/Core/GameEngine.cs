@@ -6,7 +6,6 @@ using System.Text;
 namespace MicroExpressionParser
 {
     using MicroExpressionParser.Core;
-    using MicroExpressionParser.Sanitizer;
     using System.Dynamic;
 
     public interface IGameEngine
@@ -19,7 +18,9 @@ namespace MicroExpressionParser
         DamageType GeDamageType(string key);
         Entity GetEntityByKey(string key);
         StatusTemplate GetStatusByKey(string key);
-        ITimer getTimer();
+        void AddStatus(StatusTemplate status, string key);
+        ITimer GetTimer();
+        Sanitizer GetSanitizer();
 
     }
     public class GameEngine : IGameEngine
@@ -27,10 +28,10 @@ namespace MicroExpressionParser
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
-        private Sanitizer.Sanitizer Sanit { get; set; }
+        private Sanitizer Sanit { get; set; }
 
         public ITimer Timer { get; set; }
-        private StatusTemplate test;
+        private Dictionary<string,StatusTemplate> statuses;
         public GameEngine()
         {
             ParserConstants.Init(this);
@@ -40,11 +41,9 @@ namespace MicroExpressionParser
             DamageTypes.Add("P", new DamageType() { Key = "P", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, DEF))" });
             DamageTypes.Add("M", new DamageType() { Key = "M", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, MDEF))" });
             DamageTypes.Add("T", new DamageType() { Key = "T", MitigationFormula = "$VALUE" });
-            string expression = "MOD_VALUE(STR,$0)";
-            Sanit = new Sanitizer.Sanitizer(this);
-            FunctionalNode[] statuses = Sanit.SplitStatus(expression);
-            test = new StatusTemplate() { formula = statuses };
             Timer = new MockTimer();
+            Sanit = new Sanitizer(this);
+            statuses = new Dictionary<string, StatusTemplate>();
      
         }
 
@@ -77,14 +76,27 @@ namespace MicroExpressionParser
             return null;
         }
 
-        StatusTemplate IGameEngine.GetStatusByKey(string key)
+        public StatusTemplate GetStatusByKey(string key)
         {
-            return test;
+            return statuses.ContainsKey(key)?statuses[key]:null;
         }
 
-        public ITimer getTimer()
+        public ITimer GetTimer()
         {
             return Timer;
+        }
+
+        public Sanitizer GetSanitizer()
+        {
+            return Sanit;
+        }
+
+        public void AddStatus(StatusTemplate status, string key)
+        {
+            if (!statuses.ContainsKey(key))
+                statuses.Add(key, status);
+            else
+                statuses[key] = status;
         }
     }
 }
