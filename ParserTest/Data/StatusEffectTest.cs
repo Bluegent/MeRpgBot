@@ -10,7 +10,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_Succes()
         {
-            string json = "{\"key\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"max_stack\":10, \"formula\":\"STR\"}";
+            string json = "{\"StatKey\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"max_stack\":10, \"formula\":\"STR\"}";
             StatusEffect expected = new StatusEffect() { Key = "test", Name = "Test", Description = "Description", Formula = "STR", MaxStack = 10 };
             StatusEffect result = StatusEffect.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -36,7 +36,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoName()
         {
-            string json = "{\"key\":\"test\", \"description\":\"Description\", \"max_stack\":10, \"formula\":\"STR\"}";
+            string json = "{\"StatKey\":\"test\", \"description\":\"Description\", \"max_stack\":10, \"formula\":\"STR\"}";
             StatusEffect expected = new StatusEffect() { Key = "test", Name = null, Description = "Description", Formula = "STR", MaxStack = 10 };
             StatusEffect result = StatusEffect.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -49,7 +49,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoDescription()
         {
-            string json = "{\"key\":\"test\", \"name\":\"Test\", \"max_stack\":10, \"formula\":\"STR\"}";
+            string json = "{\"StatKey\":\"test\", \"name\":\"Test\", \"max_stack\":10, \"formula\":\"STR\"}";
             StatusEffect expected = new StatusEffect() { Key = "test", Name = "Test", Description = null, Formula = "STR", MaxStack = 10 };
             StatusEffect result = StatusEffect.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -62,7 +62,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoFormula()
         {
-            string json = "{\"key\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"max_stack\":10}";
+            string json = "{\"StatKey\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"max_stack\":10}";
             StatusEffect expected = new StatusEffect() { Key = "test", Name = "Test", Description = "Description", Formula = null, MaxStack = 10 };
             StatusEffect result = StatusEffect.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -75,7 +75,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoMaxStack()
         {
-            string json = "{\"key\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"formula\":\"STR\"}";
+            string json = "{\"StatKey\":\"test\", \"name\":\"Test\", \"description\":\"Description\", \"formula\":\"STR\"}";
             StatusEffect expected = new StatusEffect() { Key = "test", Name = "Test", Description = "Description", Formula = "STR", MaxStack = 0 };
             StatusEffect result = StatusEffect.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);

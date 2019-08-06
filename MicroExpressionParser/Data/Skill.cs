@@ -8,7 +8,7 @@ namespace MicroExpressionParser
 {
     public partial class Skill
     {
-        [JsonProperty("key")]
+        [JsonProperty("StatKey")]
         [DefaultValue(null)]
         public string Key { get; set; }
 

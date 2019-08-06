@@ -14,9 +14,9 @@ namespace MicroExpressionParser
         public string Key { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
 
-        public abstract void TakeDamage(double amount, DamageType type,Entity source);
+        public abstract void TakeDamage(double amount, DamageType type, Entity source);
 
-        public abstract void GetHealed(double amount,Entity source);
+        public abstract void GetHealed(double amount, Entity source);
 
         public abstract void Cast(Entity target, string skillKey);
 
@@ -27,32 +27,39 @@ namespace MicroExpressionParser
         public abstract void Update();
 
     }
-
+    public enum StackingType
+    {
+        None, //The buff does not stack, so when it is applied while another stack of it exists on the target, nothing happens.
+        Refresh, //The duration of existing stacks is refreshed.
+        Independent, //Status stacks have independent durations, so applying a new one will not affect the others.
+    }
     public class StatusTemplate
     {
-        public FunctionalNode[] formulas { get; set; }
-        public int interval { get; set; }
+        public FunctionalNode[] ComponentFormulas { get; set; }
+        public FunctionalNode Interval { get; set; }
+        public FunctionalNode MaxStacks { get; set; }
+        public StackingType Type { get; set; }
     }
 
     public class StatModifier
     {
-        public string key { get; set; }
-        public double amount { get; set; }
+        public string StatKey { get; set; }
+        public double Amount { get; set; }
     }
 
     public class AppliedStatus
     {
-        public StatusTemplate status { get; set; }
-        public MeVariable[] resolved { get; set; }
-        public double[] values { get; set; }
-        public long removeTime { get; set; }
-        public long lastTick { get; set; }
-        public Entity source { get; set; }
+        public StatusTemplate Template { get; set; }
+        public double[] NumericValues { get; set; }
+        public long RemovalTime { get; set; }
+        public long LastTick { get; set; }
+        public Entity Source { get; set; }
+        public long Interval { get; set; }
     }
 
     public class MockEntity : Entity
     {
-        public List<AppliedStatus> statuses;
+        public List<AppliedStatus> Statuses;
         public Dictionary<string, double> FinalStats { get; set; }
         public IGameEngine Engine { get; set; }
 
@@ -70,7 +77,7 @@ namespace MicroExpressionParser
                           };
             FinalStats = new Dictionary<string, double>(StatMap);
             Engine = engine;
-            statuses = new List<AppliedStatus>();
+            Statuses = new List<AppliedStatus>();
 
 
         }
@@ -93,35 +100,38 @@ namespace MicroExpressionParser
 
         public override EntityProperty GetProperty(string key)
         {
-            if(FinalStats.ContainsKey(key))
-                return new EntityProperty(){Key = key, Value = FinalStats[key]};
+            if (FinalStats.ContainsKey(key))
+                return new EntityProperty() { Key = key, Value = FinalStats[key] };
             return null;
         }
 
-        public override void ApplyStatus(StatusTemplate status,Entity source, double duration, double[] values)
+        public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
         {
-            long removeTime = Engine.GetTimer().GetNow() + (long)duration*1000;
-            AppliedStatus newStatus = new AppliedStatus() { source= source, lastTick = 0,removeTime = removeTime,status=status,values = values };
-            statuses.Add(newStatus);
+            long removeTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
+            
+            AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
+            FunctionalNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
+            newStatus.Interval = (long)FunctionalTreeConverter.ResolveNode(intervalTree, 0).Value.ToDouble();
+            Statuses.Add(newStatus);
         }
 
         private void RemoveExpiredStatuses()
         {
             long now = Engine.GetTimer().GetNow();
             List<AppliedStatus> remove = new List<AppliedStatus>();
-            foreach(AppliedStatus status in statuses)
+            foreach (AppliedStatus status in Statuses)
             {
-                if (status.removeTime < now)
+                if (status.RemovalTime < now)
                     remove.Add(status);
             }
-        
+
             foreach (AppliedStatus status in remove)
-                statuses.Remove(status);
+                Statuses.Remove(status);
         }
 
         private void ResetFinalStatMap()
         {
-            foreach(KeyValuePair<string,double> pair in StatMap)
+            foreach (KeyValuePair<string, double> pair in StatMap)
             {
 
                 FinalStats[pair.Key] = StatMap[pair.Key];
@@ -130,26 +140,26 @@ namespace MicroExpressionParser
 
         private bool IsTime(AppliedStatus status)
         {
-            if (status.lastTick == 0)
+            if (status.LastTick == 0)
                 return true;
-            if (Engine.GetTimer().GetNow() - status.lastTick > status.status.interval*1000)
+            if (Engine.GetTimer().GetNow() - status.LastTick > status.Interval * 1000)
                 return true;
             return false;
         }
 
         private void ApplyModifiers()
         {
-            foreach (AppliedStatus status in statuses)
+            foreach (AppliedStatus status in Statuses)
             {
                 if (IsTime(status))
                 {
-                    foreach (FunctionalNode tree in status.status.formulas)
+                    foreach (FunctionalNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
                             && tree.Value.Value == ParserConstants.Functions[StringConstants.MOD_VALUE_F])
                         {
-                            StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.values).ToModifier();
-                            FinalStats[mod.key] += mod.amount;
+                            StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
+                            FinalStats[mod.StatKey] += mod.Amount;
                         }
                     }
                 }
@@ -157,22 +167,22 @@ namespace MicroExpressionParser
         }
         private void ApplyHealAndHarm()
         {
-            foreach (AppliedStatus status in statuses)
+            foreach (AppliedStatus status in Statuses)
             {
                 if (IsTime(status))
                 {
-                    foreach (FunctionalNode tree in status.status.formulas)
+                    foreach (FunctionalNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
                             && (tree.Value.Value == ParserConstants.Functions[StringConstants.HARM_F]
                                 || tree.Value.Value == ParserConstants.Functions[StringConstants.HEAL_F]))
                         {
-                            Engine.GetSanitizer().SanitizeSkillEntities(tree, status.source, this);
-                            Engine.GetSanitizer().ReplaceNumericPlaceholders(tree,status.values);
-                            FunctionalTreeConverter.ResolveNode(tree, 0);
+                            FunctionalNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
+                            Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
+                            FunctionalTreeConverter.ResolveNode(newTree, 0);
                         }
                     }
-                   
+
                 }
             }
         }
@@ -180,23 +190,27 @@ namespace MicroExpressionParser
 
         private void SetLastTicks()
         {
-            foreach (AppliedStatus status in statuses)
+            foreach (AppliedStatus status in Statuses)
             {
                 if (IsTime(status))
                 {
-                    status.lastTick = Engine.GetTimer().GetNow();
+                    status.LastTick = Engine.GetTimer().GetNow();
                 }
             }
         }
 
         public override void Update()
         {
+            //Template handling
             RemoveExpiredStatuses();
-            //tick cooldowns
             ResetFinalStatMap();
             ApplyModifiers();
             ApplyHealAndHarm();
             SetLastTicks();
+            //tick cooldowns
+            //tick casting/channeling timers
+            //set isFree flag
+
         }
     }
 }

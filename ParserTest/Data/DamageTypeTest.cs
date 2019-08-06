@@ -9,7 +9,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_Succes()
         {
-            string json = "{\"key\":\"P\",\"name\":\"Physical\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
+            string json = "{\"StatKey\":\"P\",\"name\":\"Physical\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
             DamageType expected = new DamageType() { Key = "P", Name="Physical", MitigationFormula= "NONNEG(VALUE-DEF)" };
             DamageType result = DamageType.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -20,7 +20,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoMitigationFormula()
         {
-            string json = "{\"key\":\"P\",\"name\":\"Physical\"}";
+            string json = "{\"StatKey\":\"P\",\"name\":\"Physical\"}";
             DamageType expected = new DamageType() { Key = "P", Name = "Physical", MitigationFormula = null };
             DamageType result = DamageType.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -31,7 +31,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoName()
         {
-            string json = "{\"key\":\"P\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
+            string json = "{\"StatKey\":\"P\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
             DamageType expected = new DamageType() { Key = "P", Name = null, MitigationFormula = "NONNEG(VALUE-DEF)" };
             DamageType result = DamageType.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
+// set of attributes. Change these attribute NumericValues to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MicroExpressionParser")]
 [assembly: AssemblyDescription("")]
@@ -22,14 +22,14 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("766b4ddb-1c02-4b22-8b7d-b3d0ce5f77fa")]
 
-// Version information for an assembly consists of the following four values:
+// Version information for an assembly consists of the following four NumericValues:
 //
 //      Major Version
 //      Minor Version 
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the NumericValues or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]

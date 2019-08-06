@@ -9,7 +9,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_Succes()
         {
-            string json = "{\"key\":\"B_DMG\",\"value\":10}";
+            string json = "{\"StatKey\":\"B_DMG\",\"value\":10}";
             BaseValue expected = new BaseValue() { Key = "B_DMG", Value = 10 };
             BaseValue result = BaseValue.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -19,7 +19,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoValue()
         {
-            string json = "{\"key\":\"B_DMG\"}";
+            string json = "{\"StatKey\":\"B_DMG\"}";
             BaseValue expected = new BaseValue() { Key = "B_DMG", Value = 0 };
             BaseValue result = BaseValue.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);

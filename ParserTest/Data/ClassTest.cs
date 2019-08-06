@@ -11,7 +11,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_Succes()
         {
-            string json = "{\"key\":\"test\", \"base_values\": [{\"key\":\"B_DMG\", \"value\":10}], \"basic_attributes\":[{\"key\":\"STR\",\"value\":5}], \"skills\":[\"test\"]}";
+            string json = "{\"StatKey\":\"test\", \"base_values\": [{\"StatKey\":\"B_DMG\", \"value\":10}], \"basic_attributes\":[{\"StatKey\":\"STR\",\"value\":5}], \"skills\":[\"test\"]}";
             Class expected = new Class() { Key = "test", BaseValues = new List<BaseValue>() { new BaseValue() { Key = "B_DMG", Value = 10 } }, BasicAttributes = new List<BaseValue>() { new BaseValue() { Key = "STR", Value = 5 } }, Skills =new List<string>() { "test"} };
             Class result = Class.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);

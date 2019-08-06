@@ -9,7 +9,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_Succes()
         {
-            string json = "{\"key\":\"DEF\",\"formula\":\"B_DEF\"}";
+            string json = "{\"StatKey\":\"DEF\",\"formula\":\"B_DEF\"}";
             CompoundStat expected = new CompoundStat() { Key = "DEF", Formula = "B_DEF" };
             CompoundStat result = CompoundStat.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
@@ -19,7 +19,7 @@ namespace ParserTest
         [TestMethod]
         public void FromJsonTest_IncompleteJson_NoFormula()
         {
-            string json = "{\"key\":\"DEF\"}";
+            string json = "{\"StatKey\":\"DEF\"}";
             CompoundStat expected = new CompoundStat() { Key = "DEF", Formula = null };
             CompoundStat result = CompoundStat.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);

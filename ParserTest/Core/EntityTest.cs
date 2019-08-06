@@ -15,7 +15,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 };
             ent.ApplyStatus(test, ent,5,values);
             double expected = ent.GetProperty("STR").Value+10;
@@ -29,7 +29,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 };
             int duration = 5;
             ent.ApplyStatus(test, ent, duration, values);
@@ -51,7 +51,7 @@ namespace ParserTest.Core
             string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             int duration = 5;
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 };
             ent.ApplyStatus(test, ent, duration, values);
             ent.ApplyStatus(test, ent, duration, values);
@@ -72,7 +72,8 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0);{StringConstants.MOD_VALUE_F}(AGI,$1)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 ,5};
             ent.ApplyStatus(test, ent, 5, values);
             double expectedStr = ent.GetProperty("STR").Value + values[0];
@@ -90,7 +91,7 @@ namespace ParserTest.Core
             double damage = 10;
             string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,{damage})";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             ent.ApplyStatus(test,ent,5,null);
             double expectedHp = ent.GetProperty("CHP").Value - damage;
             ent.Update();
@@ -103,7 +104,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0);{StringConstants.MOD_VALUE_F}(STR,$1)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 20, 10 };
             ent.ApplyStatus(test, ent, 5, values);
             double expectedHp = ent.GetProperty("CHP").Value - values[0];
@@ -122,7 +123,7 @@ namespace ParserTest.Core
             int[] timeValues = { 10, 5 };
             string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = timeValues[1] };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = FunctionalTreeConverter.BuildTree(timeValues[0].ToString(), Engine) };
             double[] values = { 20};
             ent.ApplyStatus(test, ent, timeValues[0], values);
             double expectedHp = ent.GetProperty("CHP").Value - values[0];
@@ -135,6 +136,29 @@ namespace ParserTest.Core
             ent.Update();
             
             Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+        }
+
+        [TestMethod]
+        public void EntityTestHarmStatusIntervalIsFormula()
+        {
+            MockEntity ent = new MockEntity(Engine);
+            double damage = 10;
+            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,{damage})";
+            FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
+            string intervalExpression = $"10-{StringConstants.GET_PROP_F}({StringConstants.SourceKeyword},INT)*2";
+            FunctionalNode intervalNode = FunctionalTreeConverter.BuildTree(intervalExpression, Engine);
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = intervalNode };
+            ent.ApplyStatus(test, ent, 5, null);
+            double expectedHp = ent.GetProperty("CHP").Value - damage;
+            double expectedHp2 = ent.GetProperty("CHP").Value - damage*2;
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+
+            ent.Update();
+            timer.ForceTick();
+            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+
+            ent.Update();
+            Assert.AreEqual(expectedHp2, ent.GetProperty("CHP").Value);
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
+    using System.Diagnostics.Eventing.Reader;
+
     using MicroExpressionParser.Core;
     using System.Runtime.CompilerServices;
 
@@ -64,17 +66,33 @@ namespace MicroExpressionParser
         }
 
 
-        public void SanitizeSkillEntities(FunctionalNode tree, Entity caster, Entity target)
+        public FunctionalNode SanitizeSkillEntities(FunctionalNode tree, Entity caster, Entity target)
         {
+            List<FunctionalNode> leaves = new List<FunctionalNode>();
             foreach(FunctionalNode leaf in tree.Leaves)
-                SanitizeSkillEntities(leaf,caster,target);
+                leaves.Add(SanitizeSkillEntities(leaf,caster,target));
+            FunctionalNode node = null;
             if(tree.Value.Type == VariableType.PlaceHolder)
             {
                 if (tree.Value.ToPlaceholder() == StringConstants.TargetKeyword)
-                    tree.Value = target;
+                {
+                    node = new FunctionalNode(target);
+                }
                 else if (tree.Value.ToPlaceholder() == StringConstants.SourceKeyword)
-                    tree.Value = caster;
+                {
+                    node = new FunctionalNode(caster);
+                }
+                else
+                {
+                    node = new FunctionalNode(tree.Value);
+                }
             }
+            else
+            {
+                node = new FunctionalNode(tree.Value);
+            }
+            node.Leaves.AddRange(leaves);
+            return node;
         }
 
         public Token[] ReplaceProperties(Token[] tokens, Entity entity)

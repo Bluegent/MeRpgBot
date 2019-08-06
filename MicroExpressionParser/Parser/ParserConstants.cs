@@ -371,17 +371,17 @@ namespace MicroExpressionParser
             AddFunction(StringConstants.MOD_VALUE_F,
                (values, func) =>
                {
-                   //MOD_VALUE(stat,amount)
+                   //MOD_VALUE(stat,Amount)
                    func.ValidateParameters(values.Length);
                    string stat = values[0].ToString();
                    double amount = values[1].ToDouble();
-                   StatModifier mod = new StatModifier() { amount = amount, key = stat };
+                   StatModifier mod = new StatModifier() { Amount = amount, StatKey = stat };
                    return new MeVariable { Type = VariableType.StatModifier, Value = mod };
                }, 2);
             AddFunction(StringConstants.APPLY_F,
                (values, func) =>
                {
-                   //APPLYSTATUS(target,source,status_key,duration,amounts)
+                   //APPLYSTATUS(target,Source,status_key,duration,amounts)
                    Entity target = values[0].ToEntity();
                    Entity source = values[1].ToEntity();
                    StatusTemplate effect = engine.GetStatusByKey(values[2].ToString());

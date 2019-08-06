@@ -9,7 +9,7 @@ namespace MicroExpressionParser
 {
     public partial class CompoundStat
     {
-        [JsonProperty("key")]
+        [JsonProperty("StatKey")]
         [DefaultValue(null)]
         public string Key { get; set; }
 
