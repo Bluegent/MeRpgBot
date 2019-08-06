@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ParserTest.Core
 {
+    using RPGEngine.Language;
+
     [TestClass]
     public class EntityTest
     {
@@ -13,7 +15,7 @@ namespace ParserTest.Core
         public void EntityTestModifierStatusEffect()
         {
             MockEntity ent = new MockEntity(Engine);
-            string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 };
@@ -27,7 +29,7 @@ namespace ParserTest.Core
         public void EntityTestModifierStatusEffectsRemoved()
         {
             MockEntity ent = new MockEntity(Engine);
-            string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 10 };
@@ -48,7 +50,7 @@ namespace ParserTest.Core
         public void EntityTestModifierStatusEffectsMultiple()
         {
             MockEntity ent = new MockEntity(Engine);
-            string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             int duration = 5;
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
@@ -70,7 +72,7 @@ namespace ParserTest.Core
         public void EntityTestModifierMultipleStatusEffects()
         {
             MockEntity ent = new MockEntity(Engine);
-            string expression = $"{StringConstants.MOD_VALUE_F}(STR,$0);{StringConstants.MOD_VALUE_F}(AGI,$1)";
+            string expression = $"{Constants.MOD_VALUE_F}(STR,$0);{Constants.MOD_VALUE_F}(AGI,$1)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
 
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
@@ -89,7 +91,7 @@ namespace ParserTest.Core
         {
             MockEntity ent = new MockEntity(Engine);
             double damage = 10;
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,{damage})";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             ent.ApplyStatus(test,ent,5,null);
@@ -102,7 +104,7 @@ namespace ParserTest.Core
         public void EntityTestModifierAndHarm()
         {
             MockEntity ent = new MockEntity(Engine);
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0);{StringConstants.MOD_VALUE_F}(STR,$1)";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0);{Constants.MOD_VALUE_F}(STR,$1)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = FunctionalTreeConverter.BuildTree("0", Engine)};
             double[] values = { 20, 10 };
@@ -121,7 +123,7 @@ namespace ParserTest.Core
         {
             MockEntity ent = new MockEntity(Engine);
             int[] timeValues = { 10, 5 };
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0)";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0)";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = FunctionalTreeConverter.BuildTree(timeValues[0].ToString(), Engine) };
             double[] values = { 20};
@@ -143,9 +145,9 @@ namespace ParserTest.Core
         {
             MockEntity ent = new MockEntity(Engine);
             double damage = 10;
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,{damage})";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            string intervalExpression = $"10-{StringConstants.GET_PROP_F}({StringConstants.SourceKeyword},INT)*2";
+            string intervalExpression = $"10-{Constants.GET_PROP_F}({Constants.SourceKeyword},INT)*2";
             FunctionalNode intervalNode = FunctionalTreeConverter.BuildTree(intervalExpression, Engine);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = intervalNode };
             ent.ApplyStatus(test, ent, 5, null);

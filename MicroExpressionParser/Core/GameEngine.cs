@@ -8,6 +8,8 @@ namespace MicroExpressionParser
     using MicroExpressionParser.Core;
     using System.Dynamic;
 
+    using RPGEngine.Language;
+
     public interface IGameEngine
     {
         void AddPlayer(Entity entity);
@@ -34,7 +36,8 @@ namespace MicroExpressionParser
         private Dictionary<string,StatusTemplate> statuses;
         public GameEngine()
         {
-            ParserConstants.Init(this);
+            Parser.ParserConstants.Init(this);
+            Definer.Get().Init(this);
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();

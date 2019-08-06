@@ -10,6 +10,9 @@ namespace MicroExpressionParser
     using MicroExpressionParser.Core;
     using System.Runtime.CompilerServices;
 
+    using RPGEngine.Language;
+    using RPGEngine.Parser;
+
     public class Sanitizer
     {
         private IGameEngine _engine;
@@ -23,11 +26,11 @@ namespace MicroExpressionParser
         public Token[] ConvertToGetProp(Token token, Entity entity)
         {
             Token[] result = new Token[5];
-            result[0] = new Token(StringConstants.GET_PROP_F);
-            result[1] = new Token(char.ToString(StringConstants.LEFT_PAREN));
+            result[0] = new Token(Constants.GET_PROP_F);
+            result[1] = new Token(char.ToString(Constants.LEFT_PAREN));
             result[2] = new Token(entity.Key);
             result[3] = token;
-            result[4] = new Token(char.ToString(StringConstants.RIGHT_PAREN));
+            result[4] = new Token(char.ToString(Constants.RIGHT_PAREN));
             return result;
         }
 
@@ -36,11 +39,11 @@ namespace MicroExpressionParser
             List<Token> result = new List<Token>();
             foreach (Token token in tokens)
             {
-                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(StringConstants.SPECIAL_CHAR)))
+                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(Constants.SPECIAL_CHAR)))
                 {
-                    if(token.Value.Equals(StringConstants.TargetKeyword))
+                    if(token.Value.Equals(Constants.TargetKeyword))
                         result.Add(new Token(target.Key));
-                    else if (token.Value.Equals(StringConstants.SourceKeyword))
+                    else if (token.Value.Equals(Constants.SourceKeyword))
                         result.Add(new Token(caster.Key));
                 }
                 else
@@ -53,7 +56,7 @@ namespace MicroExpressionParser
 
         public MeVariable SanitizeSkill(string skill, Entity caster, Entity target)
         {
-            string[] lines = skill.Split(StringConstants.FUNCTION_SEPARATOR);
+            string[] lines = skill.Split(Constants.FUNCTION_SEPARATOR);
             MeVariable var = null;
             foreach (string expr in lines)
             {
@@ -74,11 +77,11 @@ namespace MicroExpressionParser
             FunctionalNode node = null;
             if(tree.Value.Type == VariableType.PlaceHolder)
             {
-                if (tree.Value.ToPlaceholder() == StringConstants.TargetKeyword)
+                if (tree.Value.ToPlaceholder() == Constants.TargetKeyword)
                 {
                     node = new FunctionalNode(target);
                 }
-                else if (tree.Value.ToPlaceholder() == StringConstants.SourceKeyword)
+                else if (tree.Value.ToPlaceholder() == Constants.SourceKeyword)
                 {
                     node = new FunctionalNode(caster);
                 }
@@ -129,7 +132,7 @@ namespace MicroExpressionParser
 
         public FunctionalNode[] SplitStatus(string expression)
         {
-            string[] lines = expression.Split(StringConstants.FUNCTION_SEPARATOR);
+            string[] lines = expression.Split(Constants.FUNCTION_SEPARATOR);
             List<FunctionalNode> result = new List<FunctionalNode>();
             foreach (string expr in lines)
             {

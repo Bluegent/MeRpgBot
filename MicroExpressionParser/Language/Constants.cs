@@ -1,6 +1,6 @@
-﻿namespace MicroExpressionParser.Core
+﻿namespace RPGEngine.Language
 {
-    public static class StringConstants
+    public static class Constants
     {
         //Operators
         public const string PLUS_OP = "+";

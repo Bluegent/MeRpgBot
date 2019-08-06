@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace MicroExpressionParser.Parser
 {
+    using System;
+    using System.Collections.Generic;
+
+    using RPGEngine.Parser;
+
     public static class SYConverter
     {
         public class ConverterException : Exception

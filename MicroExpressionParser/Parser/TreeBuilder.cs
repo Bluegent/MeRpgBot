@@ -5,6 +5,10 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
+    using MicroExpressionParser.Parser;
+
+    using RPGEngine.Parser;
+
     public class TreeBuilderException : Exception
     {
         public TreeBuilderException(String msg) : base(msg) { }

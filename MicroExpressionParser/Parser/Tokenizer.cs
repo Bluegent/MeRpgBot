@@ -1,43 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace RPGEngine.Parser
 {
-    public enum TokenType
-    {
-        Variable, LeftParen, RightParen, Separator, Function, Operator
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    public class Token
-    {
-        public TokenType Type { get; set; }
-        public string Value { get; set; }
-        public static TokenType GetType(string str)
-        {
-            if (ParserConstants.IsFunction(str))
-                return TokenType.Function;
-            if (ParserConstants.IsOperator(str))
-                return TokenType.Operator;
-            if (ParserConstants.IsLeftParen(str))
-                return TokenType.LeftParen;
-            if (ParserConstants.IsRightParen(str))
-                return TokenType.RightParen;
-            if (ParserConstants.IsSeparator(str))
-                return TokenType.Separator;
-            return TokenType.Variable;
-        }
-        public Token(string value)
-        {
-            Value = value;
-            Type = GetType(value);
-        }
-    }
+    using MicroExpressionParser.Parser;
 
     public class Tokenizer
     {
-
         private static string Sanitize(string expression)
         {
             return expression.Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim();

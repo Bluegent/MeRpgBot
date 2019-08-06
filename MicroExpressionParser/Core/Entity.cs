@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace MicroExpressionParser
 {
+    using MicroExpressionParser.Parser;
+
+    using RPGEngine.Language;
+
     public class EntityProperty
     {
         public string Key { get; set; }
@@ -156,7 +160,7 @@ namespace MicroExpressionParser
                     foreach (FunctionalNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && tree.Value.Value == ParserConstants.Functions[StringConstants.MOD_VALUE_F])
+                            && tree.Value.Value == ParserConstants.Functions[Constants.MOD_VALUE_F])
                         {
                             StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
                             FinalStats[mod.StatKey] += mod.Amount;
@@ -174,8 +178,8 @@ namespace MicroExpressionParser
                     foreach (FunctionalNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && (tree.Value.Value == ParserConstants.Functions[StringConstants.HARM_F]
-                                || tree.Value.Value == ParserConstants.Functions[StringConstants.HEAL_F]))
+                            && (tree.Value.Value == ParserConstants.Functions[Constants.HARM_F]
+                                || tree.Value.Value == ParserConstants.Functions[Constants.HEAL_F]))
                         {
                             FunctionalNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);

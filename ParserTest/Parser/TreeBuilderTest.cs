@@ -3,11 +3,12 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MicroExpressionParser.Core;
 
 namespace ParserTest
 {
     using MicroExpressionParser;
+
+    using RPGEngine.Language;
 
     /// <summary>
     /// Summary description for UnitTest1
@@ -25,20 +26,20 @@ namespace ParserTest
         [TestMethod]
         public void TreeBuilderTestSingleParamFunction()
         {
-            string expression = $"{StringConstants.ABS_F}(STR)";
+            string expression = $"{Constants.ABS_F}(STR)";
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR" };
-            Assert.AreEqual(StringConstants.ABS_F,tree.Token.Value);
+            Assert.AreEqual(Constants.ABS_F,tree.Token.Value);
             for(int i=0 ; i<tree.Parameters.Count;++i)
                 Assert.AreEqual(expected[i],tree.Parameters[i].Token.Value);
         }
         [TestMethod]
         public void TreeBuilderTestMultipleParamFunction()
         {
-            string expression = $"{StringConstants.MAX_F}(STR,10,INT)";
+            string expression = $"{Constants.MAX_F}(STR,10,INT)";
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR","10","INT" };
-            Assert.AreEqual(StringConstants.MAX_F, tree.Token.Value);
+            Assert.AreEqual(Constants.MAX_F, tree.Token.Value);
             Assert.AreEqual(expected.Length,tree.Parameters.Count);
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
@@ -76,9 +77,9 @@ namespace ParserTest
         [TestMethod]
         public void TreeBuilderTestNestedOperatorsAndFunctions()
         {
-            string expression = $"STR+{StringConstants.MAX_F}(10,11,12)";
+            string expression = $"STR+{Constants.MAX_F}(10,11,12)";
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            string[] expected = { "STR", StringConstants.MAX_F };
+            string[] expected = { "STR", Constants.MAX_F };
             string[] nestedExpect = { "10", "11","12" };
             Assert.AreEqual("+", tree.Token.Value);
             Assert.AreEqual(expected.Length, tree.Parameters.Count);
@@ -93,11 +94,11 @@ namespace ParserTest
         [TestMethod]
         public void TreeBuilderTestNestedFunctions()
         {
-            string expression = $"{StringConstants.ABS_F}({StringConstants.MAX_F}(STR,INT,AGI))";
+            string expression = $"{Constants.ABS_F}({Constants.MAX_F}(STR,INT,AGI))";
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            string[] expected = { StringConstants.MAX_F };
+            string[] expected = { Constants.MAX_F };
             string[] nestedExpect = { "STR", "INT", "AGI" };
-            Assert.AreEqual(StringConstants.ABS_F, tree.Token.Value);
+            Assert.AreEqual(Constants.ABS_F, tree.Token.Value);
             Assert.AreEqual(expected.Length, tree.Parameters.Count);
           
             for (int i = 0; i < tree.Parameters.Count; ++i)
@@ -111,9 +112,9 @@ namespace ParserTest
         [TestMethod]
         public void TreeBuilderMixOfOperatorsAndFunctions()
         {
-            string expression = $"{StringConstants.MAX_F}(STR,AGI) + {StringConstants.MIN_F}(10,INT)";
+            string expression = $"{Constants.MAX_F}(STR,AGI) + {Constants.MIN_F}(10,INT)";
             SyntacticNode tree = TreeBuilder.ExprToTree(expression);
-            string[] expected = {StringConstants.MAX_F, StringConstants.MIN_F };
+            string[] expected = {Constants.MAX_F, Constants.MIN_F };
             string[] nestedExpect = { "STR", "AGI" };
             string[] nestedExpect2 = { "10", "INT" };
             Assert.AreEqual("+", tree.Token.Value);

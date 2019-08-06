@@ -6,9 +6,11 @@ using System.Text;
 namespace ParserTest
 {
     using MicroExpressionParser;
-    using MicroExpressionParser.Core;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using RPGEngine.Language;
+    using RPGEngine.Parser;
 
     [TestClass]
     public class SanitizerTest
@@ -29,7 +31,7 @@ namespace ParserTest
         public void SanitizerTestSanitizeSimpleCompoundStat()
         {
             string expression = "10+STR/4";
-            string[] expected = { "10", "+", StringConstants.GET_PROP_F, "(", MockPlayer.Key, "STR", ")", "/", "4" };
+            string[] expected = { "10", "+", Constants.GET_PROP_F, "(", MockPlayer.Key, "STR", ")", "/", "4" };
             Token[] actual = SanitizerInstance.ReplaceProperties(Tokenizer.Tokenize(expression), MockPlayer);
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < actual.Length; ++i)
@@ -49,8 +51,8 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestSanitizeSimpleSkill()
         {
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.SourceKeyword}, P, {StringConstants.GET_PROP_F}({StringConstants.SourceKeyword}, STR))";
-            string[] expected = { StringConstants.HARM_F, "(", MockEnemy.Key, ",", MockPlayer.Key, ",", "P", ",", StringConstants.GET_PROP_F, "(", MockPlayer.Key, ",", "STR", ")", ")" };
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
+            string[] expected = { Constants.HARM_F, "(", MockEnemy.Key, ",", MockPlayer.Key, ",", "P", ",", Constants.GET_PROP_F, "(", MockPlayer.Key, ",", "STR", ")", ")" };
             Token[] actual = SanitizerInstance.ReplaceEntities(Tokenizer.Tokenize(expression), MockPlayer, MockEnemy);
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < actual.Length; ++i)
@@ -60,7 +62,7 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveSimpleSkill()
         {
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.SourceKeyword}, P, {StringConstants.GET_PROP_F}({StringConstants.SourceKeyword}, STR))";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
@@ -69,16 +71,11 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveMutlipleCalls()
         {
-            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.SourceKeyword}, P, {StringConstants.GET_PROP_F}({StringConstants.SourceKeyword}, STR));{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.SourceKeyword}, P, {StringConstants.GET_PROP_F}({StringConstants.SourceKeyword}, STR))";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR));{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value * 2;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
         }
 
-        [TestMethod]
-        public void SanitizerTestStatus()
-        {
-            string expression = "APPLYSTATUS($S,shonen_powerup,60,ARRAY(10,10,-5))";
-        }
     }
 }

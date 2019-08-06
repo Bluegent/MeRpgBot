@@ -5,6 +5,9 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
+    using MicroExpressionParser.Parser;
+
+    using RPGEngine.Parser;
 
     public class ValueResolverException : Exception
     {

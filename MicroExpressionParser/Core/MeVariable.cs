@@ -7,6 +7,8 @@ namespace MicroExpressionParser
 {
     using System.Threading;
 
+    using MicroExpressionParser.Parser;
+
     public class MeException : Exception
     {
         public MeException(string message) : base(message) { }

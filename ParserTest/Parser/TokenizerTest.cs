@@ -1,9 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MicroExpressionParser;
-
-namespace ParserTest
+﻿namespace EngineTest.Parser
 {
+    using System;
+
+    using MicroExpressionParser;
+
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using RPGEngine.Parser;
+
     [TestClass]
     public class TokenizerTest
     {
@@ -12,6 +16,7 @@ namespace ParserTest
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
+            Engine.GetSanitizer();
         }
 
         [TestMethod]
