@@ -67,7 +67,6 @@ namespace MicroExpressionParser.Sanitizer
         {
             List<Token> result = new List<Token>();
             foreach (Token token in tokens)
-
             {
                 if (token.Type == TokenType.Variable)
                 {
@@ -96,9 +95,46 @@ namespace MicroExpressionParser.Sanitizer
 
         }
 
-        public Token[] SanitizeStatus(Entity target, double[] values)
+        public FunctionalNode[] SplitStatus(string expression)
         {
-            return null;
+            string[] lines = expression.Split(StringConstants.FUNCTION_SEPARATOR);
+            List<FunctionalNode> result = new List<FunctionalNode>();
+            foreach (string expr in lines)
+            {
+                Token[] tokens = Tokenizer.Tokenize(expr);
+                result.Add(FunctionalTreeConverter.BuildTree(tokens, _engine));
+            }
+
+            return result.ToArray();
+        }
+
+        public void ReplaceNumericPlaceholders(FunctionalNode tree,Dictionary<string,double> valueMap)
+        {
+            foreach (FunctionalNode leaf in tree.Leaves)
+                ReplaceNumericPlaceholders(leaf, valueMap);
+            if (tree.Value.Type == VariableType.PlaceHolder)
+                tree.Value = new MeVariable() { Value = valueMap[tree.Value.ToPlaceholder()], Type = VariableType.NumericValue };
+        }
+
+        private Dictionary<string, double> GetNumericValueMap(double[] values)
+        {
+            Dictionary<string, double> valueMap = new Dictionary<string, double>();
+            for (int i = 0; i < values.Length; ++i)
+            {
+                valueMap.Add($"${i}", values[i]);
+            }
+            return valueMap;
+        }
+        public MeVariable[] ResolveStatus(FunctionalNode[] trees, double[] values)
+        {
+            Dictionary<string, double> valueMap = GetNumericValueMap(values);
+            List<MeVariable> results = new List<MeVariable>();
+            foreach (FunctionalNode tree in trees)
+            {
+                ReplaceNumericPlaceholders(tree, valueMap);
+                results.Add(FunctionalTreeConverter.ResolveNode(tree, 0).Value);
+            }
+            return results.ToArray();
         }
     }
 }

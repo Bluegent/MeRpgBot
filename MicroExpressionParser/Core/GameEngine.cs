@@ -5,6 +5,8 @@ using System.Text;
 
 namespace MicroExpressionParser
 {
+    using MicroExpressionParser.Core;
+    using MicroExpressionParser.Sanitizer;
     using System.Dynamic;
 
     public interface IGameEngine
@@ -17,20 +19,33 @@ namespace MicroExpressionParser
         DamageType GeDamageType(string key);
         Entity GetEntityByKey(string key);
         StatusTemplate GetStatusByKey(string key);
+        ITimer getTimer();
+
     }
     public class GameEngine : IGameEngine
     {
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
+        private Sanitizer.Sanitizer Sanit { get; set; }
+
+        public ITimer Timer { get; set; }
+        private StatusTemplate test;
         public GameEngine()
         {
+            ParserConstants.Init(this);
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();
             DamageTypes.Add("P", new DamageType() { Key = "P", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, DEF))" });
             DamageTypes.Add("M", new DamageType() { Key = "M", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, MDEF))" });
             DamageTypes.Add("T", new DamageType() { Key = "T", MitigationFormula = "$VALUE" });
+            string expression = "MOD_VALUE(STR,$0)";
+            Sanit = new Sanitizer.Sanitizer(this);
+            FunctionalNode[] statuses = Sanit.SplitStatus(expression);
+            test = new StatusTemplate() { formula = statuses };
+            Timer = new MockTimer();
+     
         }
 
         public void AddPlayer(Entity entity)
@@ -60,6 +75,16 @@ namespace MicroExpressionParser
             if(Enemies.ContainsKey(key))
                 return Enemies[key];
             return null;
+        }
+
+        StatusTemplate IGameEngine.GetStatusByKey(string key)
+        {
+            return test;
+        }
+
+        public ITimer getTimer()
+        {
+            return Timer;
         }
     }
 }

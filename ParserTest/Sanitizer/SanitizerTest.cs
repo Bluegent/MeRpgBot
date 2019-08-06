@@ -16,13 +16,12 @@ namespace ParserTest
     {
         public static readonly GameEngine Engine = new GameEngine();
         public static readonly Sanitizer SanitizerInstance = new Sanitizer(Engine);
-        public static readonly Entity MockPlayer = new MockEntity() { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-        public static readonly Entity MockEnemy = new MockEntity() { Name = "ENEMY", Key = "MOCK_ENEMY" };
+        public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+        public static readonly Entity MockEnemy = new MockEntity(Engine) { Name = "ENEMY", Key = "MOCK_ENEMY" };
 
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
-            ParserConstants.Init(Engine);
             Engine.AddPlayer(MockPlayer);
             Engine.AddEnemy(MockEnemy);
         }

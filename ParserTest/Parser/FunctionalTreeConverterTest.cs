@@ -13,14 +13,13 @@ namespace ParserTest
     {
         public static readonly GameEngine Engine = new GameEngine();
 
-        public static readonly Entity MockPlayer = new MockEntity() { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+        public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
 
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
 
             Engine.AddPlayer(MockPlayer);
-            ParserConstants.Init(Engine);
         }
 
         [TestMethod]

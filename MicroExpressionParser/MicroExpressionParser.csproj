@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ITimer.cs" />
     <Compile Include="Core\StringConstants.cs" />
     <Compile Include="Data\Class.cs" />
     <Compile Include="Core\MeVariable.cs" />

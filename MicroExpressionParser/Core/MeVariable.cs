@@ -24,7 +24,8 @@ namespace MicroExpressionParser
         String,
         Boolean,
         Status,
-        StatModifier
+        StatModifier,
+        PlaceHolder
     }
 
     public class MeVariable
@@ -133,6 +134,12 @@ namespace MicroExpressionParser
         {
             ValidateType(VariableType.StatModifier);
             return (StatModifier)Value;
+        }
+
+        public string ToPlaceholder()
+        {
+            ValidateType(VariableType.PlaceHolder);
+            return (string)Value;
         }
 
         public static double[] ToDoubleArray(MeVariable[] array)

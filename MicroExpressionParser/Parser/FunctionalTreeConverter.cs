@@ -67,6 +67,12 @@ namespace MicroExpressionParser
                             break;
                         }
 
+                        if (node.Token.Value.StartsWith("$"))
+                        {
+                            newNode = new FunctionalNode(
+                              new MeVariable() { Value = node.Token.Value, Type = VariableType.PlaceHolder });
+                            break;
+                        }
                         Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
                         if (tryEntity != null)
                         {

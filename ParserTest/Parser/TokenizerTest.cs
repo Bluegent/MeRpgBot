@@ -12,7 +12,6 @@ namespace ParserTest
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
-            ParserConstants.Init(Engine);
         }
 
         [TestMethod]

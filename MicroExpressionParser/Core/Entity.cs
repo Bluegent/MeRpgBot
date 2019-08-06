@@ -24,13 +24,18 @@ namespace MicroExpressionParser
 
         public abstract EntityProperty GetProperty(string key);
 
-        public abstract void ApplyStatus(StatusTemplate status, double duration);
+        public abstract void ApplyStatus(StatusTemplate status, double duration, double[] values);
+
+        public abstract void Update();
 
     }
 
     public class StatusTemplate
     {
-        public FunctionalNode formula { get; set; }
+        internal FunctionalNode[] formula;
+
+        public FunctionalNode[] formulas { get; set; }
+        public int interval { get; set; }
     }
 
     public class StatModifier
@@ -42,16 +47,19 @@ namespace MicroExpressionParser
     public class AppliedStatus
     {
         public StatusTemplate status { get; set; }
+        public FunctionalNode[] resolved { get; set; }
         public double[] values { get; set; }
         public long removeTime { get; set; }
+        public long lastTick { get; set; }
     }
 
     public class MockEntity : Entity
     {
-
+        public List<AppliedStatus> statuses;
         public Dictionary<string, double> FinalStats { get; set; }
+        public IGameEngine Engine { get; set; }
 
-        public MockEntity()
+        public MockEntity(IGameEngine engine)
         {
             StatMap = new Dictionary<string, double>
                           {
@@ -64,6 +72,7 @@ namespace MicroExpressionParser
                               { "MDEF",0 }
                           };
             FinalStats = new Dictionary<string, double>();
+            Engine = engine;
 
 
         }
@@ -90,9 +99,39 @@ namespace MicroExpressionParser
             return null;
         }
 
-        public override void ApplyStatus(StatusTemplate status, double duration)
+        public override void ApplyStatus(StatusTemplate status, double duration, double[] values)
         {
-            throw new NotImplementedException();
+            long now = Engine.getTimer().GetNow();
+            AppliedStatus newStatus = new AppliedStatus() { lastTick = 0,removeTime = now+(long)duration,status=status,values = values };
+            statuses.Add(newStatus);
+        }
+
+        private void RemoveExpiredStatuses()
+        {
+            long now = Engine.getTimer().GetNow();
+            List<AppliedStatus> remove = new List<AppliedStatus>();
+            foreach(AppliedStatus status in statuses)
+            {
+                if (status.removeTime < now)
+                    remove.Add(status);
+            }
+        
+            foreach (AppliedStatus status in remove)
+                statuses.Remove(status);
+        }
+
+        private void ApplyModifiers()
+        {
+
+        }
+
+        public override void Update()
+        {
+            RemoveExpiredStatuses();
+            //tick cooldowns
+            //refresh new stat map
+            //calculate stats by applying modifiers
+            //apply harmful ticks
         }
     }
 }
