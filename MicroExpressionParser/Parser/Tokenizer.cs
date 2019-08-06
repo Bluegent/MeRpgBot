@@ -6,7 +6,7 @@
 
     using MicroExpressionParser.Parser;
 
-    public class Tokenizer
+    public static class Tokenizer
     {
         private static string Sanitize(string expression)
         {
@@ -36,16 +36,17 @@
                         }
                     }
                     Token prev = result.Last();
-                    if (prev.Type == TokenType.Function)
-                        throw new Exception("Found minus after function with no (, function: " + prev.Value);
-                    else if (prev.Type == TokenType.Variable || prev.Type == TokenType.RightParen)
+                    switch (prev.Type)
                     {
-                        result.Add(new Token(char.ToString(c)));
-                    }
-                    else
-                    {
-                        
-                        current = "-";
+                        case TokenType.Function:
+                            throw new Exception($"Found minus after function with no (, function:\"{prev.Value}\".");
+                        case TokenType.Variable:
+                        case TokenType.RightParen:
+                            result.Add(new Token(char.ToString(c)));
+                            break;
+                        default:
+                            current = "-";
+                            break;
                     }
                 }
                 else

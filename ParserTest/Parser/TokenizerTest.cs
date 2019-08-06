@@ -11,7 +11,7 @@
     [TestClass]
     public class TokenizerTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        private static readonly GameEngine Engine = new GameEngine();
 
         [ClassInitialize]
         public static void StartUp(TestContext context)
