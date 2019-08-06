@@ -78,6 +78,7 @@ namespace MicroExpressionParser
         public override void TakeDamage(double amount, DamageType type, Entity source)
         {
             FinalStats["CHP"] -= amount;
+            StatMap["CHP"] -= amount;
         }
 
         public override void GetHealed(double amount, Entity source)
@@ -99,8 +100,8 @@ namespace MicroExpressionParser
 
         public override void ApplyStatus(StatusTemplate status,Entity source, double duration, double[] values)
         {
-            long now = Engine.GetTimer().GetNow();
-            AppliedStatus newStatus = new AppliedStatus() { source= source, lastTick = 0,removeTime = now+(long)duration,status=status,values = values };
+            long removeTime = Engine.GetTimer().GetNow() + (long)duration*1000;
+            AppliedStatus newStatus = new AppliedStatus() { source= source, lastTick = 0,removeTime = removeTime,status=status,values = values };
             statuses.Add(newStatus);
         }
 
@@ -131,14 +132,13 @@ namespace MicroExpressionParser
         {
             if (status.lastTick == 0)
                 return true;
-            if (Engine.GetTimer().GetNow() - status.lastTick > status.status.interval)
+            if (Engine.GetTimer().GetNow() - status.lastTick > status.status.interval*1000)
                 return true;
             return false;
         }
 
         private void ApplyModifiers()
         {
-            //first apply modifiers
             foreach (AppliedStatus status in statuses)
             {
                 if (IsTime(status))
@@ -168,6 +168,7 @@ namespace MicroExpressionParser
                                 || tree.Value.Value == ParserConstants.Functions[StringConstants.HEAL_F]))
                         {
                             Engine.GetSanitizer().SanitizeSkillEntities(tree, status.source, this);
+                            Engine.GetSanitizer().ReplaceNumericPlaceholders(tree,status.values);
                             FunctionalTreeConverter.ResolveNode(tree, 0);
                         }
                     }

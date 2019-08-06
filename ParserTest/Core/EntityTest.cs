@@ -39,7 +39,7 @@ namespace ParserTest.Core
             ent.Update();
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
             for(int i=0;i<= duration; ++i)
-                timer.forceTick();
+                timer.ForceTick();
             ent.Update();
             Assert.AreEqual(removedExpected, ent.GetProperty("STR").Value);
         }
@@ -61,7 +61,7 @@ namespace ParserTest.Core
             ent.Update();
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
             for (int i = 0; i <= duration; ++i)
-                timer.forceTick();
+                timer.ForceTick();
             ent.Update();
             Assert.AreEqual(removedExpected, ent.GetProperty("STR").Value);
         }
@@ -84,7 +84,7 @@ namespace ParserTest.Core
         }
 
         [TestMethod]
-        public void EntityTestModifierHarm()
+        public void EntityTestHarmStatusEffect()
         {
             MockEntity ent = new MockEntity(Engine);
             double damage = 10;
@@ -95,8 +95,46 @@ namespace ParserTest.Core
             double expectedHp = ent.GetProperty("CHP").Value - damage;
             ent.Update();
             Assert.AreEqual(expectedHp,ent.GetProperty("CHP").Value);
-            
+        }
 
+        [TestMethod]
+        public void EntityTestModifierAndHarm()
+        {
+            MockEntity ent = new MockEntity(Engine);
+            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0);{StringConstants.MOD_VALUE_F}(STR,$1)";
+            FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
+            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = 0 };
+            double[] values = { 20, 10 };
+            ent.ApplyStatus(test, ent, 5, values);
+            double expectedHp = ent.GetProperty("CHP").Value - values[0];
+            double expected = ent.GetProperty("STR").Value + values[1];
+
+            ent.Update();
+
+            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, ent.GetProperty("STR").Value);
+        }
+
+        [TestMethod]
+        public void EntityTestModifierHarmTickrate()
+        {
+            MockEntity ent = new MockEntity(Engine);
+            int[] timeValues = { 10, 5 };
+            string expression = $"{StringConstants.HARM_F}({StringConstants.TargetKeyword},{StringConstants.TargetKeyword},T,$0)";
+            FunctionalNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
+            StatusTemplate test = new StatusTemplate() { formulas = statuses, interval = timeValues[1] };
+            double[] values = { 20};
+            ent.ApplyStatus(test, ent, timeValues[0], values);
+            double expectedHp = ent.GetProperty("CHP").Value - values[0];
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+            ent.Update();
+            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+
+            timer.ForceTick();
+            timer.ForceTick();
+            ent.Update();
+            
+            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
         }
     }
 }

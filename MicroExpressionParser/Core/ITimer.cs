@@ -11,19 +11,19 @@ namespace MicroExpressionParser.Core
     }
     public class MockTimer : ITimer
     {
-        private long fakeTime;
+        private long _fakeTime;
         public MockTimer()
         {
-            fakeTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            _fakeTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }
 
-        public void forceTick()
+        public void ForceTick()
         {
-            ++fakeTime;
+            _fakeTime+=1000;
         }
         public long GetNow()
         {
-            return fakeTime;
+            return _fakeTime;
         }
     }
 }

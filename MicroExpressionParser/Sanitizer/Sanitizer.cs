@@ -139,6 +139,12 @@ namespace MicroExpressionParser
             }
             return valueMap;
         }
+
+        public void ReplaceNumericPlaceholders(FunctionalNode tree, double[] values)
+        {
+            if(values!=null)
+                ReplaceNumericPlaceholders(tree,GetNumericValueMap(values));
+        }
         public MeVariable ResolveStatus(FunctionalNode tree, double[] values)
         {
             Dictionary<string, double> valueMap = GetNumericValueMap(values);
