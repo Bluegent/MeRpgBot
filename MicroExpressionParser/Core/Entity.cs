@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace MicroExpressionParser
 {
+    using System;
+    using System.Runtime.CompilerServices;
+
     using MicroExpressionParser.Parser;
 
     using RPGEngine.Core;
@@ -36,7 +39,7 @@ namespace MicroExpressionParser
     public enum StackingType
     {
         None, //The buff does not stack, so when it is applied while another stack of it exists on the target, nothing happens.
-        Refresh, //The duration of existing stacks is refreshed.
+        Refresh, //The duration of existing stacks is refreshed. The formula IS NOT recalculated!
         Independent, //Status stacks have independent durations, so applying a new one will not affect the others.
     }
     public class StatusTemplate
@@ -45,6 +48,7 @@ namespace MicroExpressionParser
         public MeNode Interval { get; set; }
         public MeNode MaxStacks { get; set; }
         public StackingType Type { get; set; }
+        public string Key { get; set; }
     }
 
     public class StatModifier
@@ -111,14 +115,77 @@ namespace MicroExpressionParser
             return null;
         }
 
-        public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
+        private AppliedStatus GetStatusInstance(string key)
+        {
+
+            foreach (AppliedStatus myStatus in Statuses)
+            {
+                if (myStatus.Template.Key.Equals(key))
+                {
+                    return myStatus;
+                }
+            }
+
+            return null;
+        }
+
+        private int GetStatusStackCount(string key)
+        {
+            int count = 0;
+            foreach (AppliedStatus myStatus in Statuses)
+            {
+                if (myStatus.Template.Key.Equals(key))
+                {
+                    ++count;
+                }
+            }
+
+            return count;
+        }
+
+        private void AddStatusFromTemplate(StatusTemplate status, Entity source, double duration, double[] values)
         {
             long removeTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
-            
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
             MeNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
+        }
+
+        public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
+        {
+            switch (status.Type)
+            {
+                case StackingType.Refresh:
+                    {
+                        AppliedStatus refresh = GetStatusInstance(status.Key);
+                        if(refresh!=null)
+                            refresh.RemovalTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
+                        break;
+                    }
+                case StackingType.None:
+                    {
+                        AppliedStatus refresh = GetStatusInstance(status.Key);
+                        if (refresh == null)
+                        {
+                            AddStatusFromTemplate(status, source, duration, values);
+                        }
+
+                        break;
+                    }
+                case StackingType.Independent:
+                    {
+                        long maxStacks = status.MaxStacks.Resolve().Value.ToLong();
+                        int currentStacks = GetStatusStackCount(status.Key);
+                        if (maxStacks == 0 || maxStacks > currentStacks)
+                        {
+                            AddStatusFromTemplate(status, source, duration, values);
+                        }
+
+                        break;
+                    }
+            }
+            
         }
 
         private void RemoveExpiredStatuses()

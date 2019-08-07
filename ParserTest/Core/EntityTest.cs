@@ -55,7 +55,8 @@ namespace ParserTest.Core
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             int duration = 5;
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine),Type = StackingType.Independent,MaxStacks =  TreeConverter.Build("0",Engine)};
+            test.Key = "shonen_powerup";
             double[] values = { 10 };
             ent.ApplyStatus(test, ent, duration, values);
             ent.ApplyStatus(test, ent, duration, values);
