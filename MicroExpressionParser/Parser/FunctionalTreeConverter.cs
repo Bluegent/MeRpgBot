@@ -155,7 +155,7 @@ namespace MicroExpressionParser
 
         public static FunctionalNode BuildTree(Token[] tokens, IGameEngine engine)
         {
-            SyntacticNode tree = TreeBuilder.MakeTree(SYConverter.ToPostfix(tokens));
+            SyntacticNode tree = TreeBuilder.MakeTree(InfixToPostfix.ToPostfix(tokens));
             return Convert(null, tree, engine);
         }
 

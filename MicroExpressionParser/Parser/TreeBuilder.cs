@@ -31,7 +31,7 @@ namespace MicroExpressionParser
 
         public static SyntacticNode ExprToTree(String expression)
         {
-            Token[] postFix = SYConverter.ExprToPostifx(expression);
+            Token[] postFix = InfixToPostfix.ExprToPostifx(expression);
             return MakeTree(postFix);
         }
 

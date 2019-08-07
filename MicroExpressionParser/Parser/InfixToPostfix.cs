@@ -5,15 +5,9 @@
 
     using RPGEngine.Parser;
 
-    public static class SYConverter
-    {
-        public class ConverterException : Exception
-        {
-            public ConverterException(String msg) : base(msg) { }
-        }
-
-
-        public static Token[] ExprToPostifx(String expression)
+    public static class InfixToPostfix
+    { 
+    public static Token[] ExprToPostifx(string expression)
         {
             Token[] list = Tokenizer.Tokenize((expression));
             return ToPostfix(list);
@@ -31,21 +25,6 @@
                 postfix.Add(opStack.Pop());
                 nextTok = opStack.Count == 0 ? null : opStack.Peek();
             }
-        }
-
-        public static void Debug(List<Token> postfix, Stack<Token> stack, Token lf, Token pt, Token toke)
-        {
-            System.Console.Write("Expr: ");
-            foreach(Token tok in postfix)
-            {
-                System.Console.Write(tok.Value + " ");
-            }
-            System.Console.Write("\nStack:");
-            foreach (Token tok in stack)
-            {
-                System.Console.Write(tok.Value + " ");
-            }
-            System.Console.WriteLine("\nCT= "+toke.Value+" LF=" + (lf == null? "-" : lf.Value) + " PT = " + (pt == null? "-": pt.Value)+"\n");
         }
 
         public static Token[] ToPostfix(Token[] infix)
@@ -74,7 +53,7 @@
                     case TokenType.Separator:
                         {
                             if (prevTok != null && prevTok.Type == TokenType.Operator)
-                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.Value + " .");
+                                throw new MeException("Missing parameter(s) for operator " + prevTok.Value + " .");
                             while (opStack.Count != 0 && opStack.Peek().Type != TokenType.LeftParen)
                             {
                                 postFix.Add(opStack.Pop());
@@ -83,11 +62,11 @@
                             {
                                 if (lastFunction == null)
                                 {
-                                    throw new ConverterException("Unexpected separator Character.");
+                                    throw new MeException("Unexpected separator Character.");
                                 }
                                 else
                                 {
-                                    throw new ConverterException("Error while parsing function " + lastFunction.Value + " .");
+                                    throw new MeException("Error while parsing function " + lastFunction.Value + " .");
                                 }
                             }
                             break;
@@ -97,7 +76,7 @@
                         {
                             if (prevTok != null && (prevTok.Type == TokenType.Separator || prevTok.Type == TokenType.LeftParen))
                             {
-                                throw new ConverterException("Missing parameter(s) for operator " + tok.Value + " .");
+                                throw new MeException("Missing parameter(s) for operator " + tok.Value + " .");
                             }
 
                             Operator op = ParserConstants.Operators[tok.Value];
@@ -119,7 +98,7 @@
                         {
                             if (prevTok != null && prevTok.Type == TokenType.Operator)
                             {
-                                throw new ConverterException("Missing parameter(s) for operator " + prevTok.Value + " .");
+                                throw new MeException("Missing parameter(s) for operator " + prevTok.Value + " .");
                             }
                             while(opStack.Count != 0 && opStack.Peek().Type != TokenType.LeftParen)
                             {
@@ -127,7 +106,7 @@
                             }
                             if(opStack.Count == 0)
                             {
-                                throw new ConverterException("Missmatched parenthesis after" + prevTok.Value + " .");
+                                throw new MeException("Mismatched parenthesis after" + prevTok.Value + " .");
                             }
                             opStack.Pop();
                             if(opStack.Count != 0  && opStack.Peek().Type == TokenType.Function)
@@ -144,7 +123,7 @@
             {
                 Token tok = opStack.Pop();
                 if (tok.Type == TokenType.LeftParen || tok.Type  == TokenType.RightParen)
-                   throw new ConverterException("Missmatched parenthesis after" + prevTok.Value + " .");
+                   throw new MeException("Mismatched parenthesis after" + prevTok.Value + " .");
                 postFix.Add(tok);
             }
             return postFix.ToArray();
