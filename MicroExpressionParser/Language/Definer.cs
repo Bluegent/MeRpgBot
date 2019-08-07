@@ -293,9 +293,7 @@
                 {
                     func.ValidateParameters(values.Length);
                     double chance = values[0].ToDouble() * 10;
-                    int dice = new Random().Next(0, 1000);
-
-                    return dice < chance;
+                    return Utils.Utility.Chance(chance);
 
                 }, 1);
 

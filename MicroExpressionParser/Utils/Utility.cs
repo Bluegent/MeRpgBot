@@ -5,12 +5,15 @@ using System.Text;
 
 namespace RPGEngine.Utils
 {
+    using System.Runtime.InteropServices;
+
     public class Utility
     {
+        private static readonly Random Generator = new Random();
         public static bool Chance(double chance)
         {
-            double input = chance * 10;
-            int dice = new Random().Next(0, 1000);
+            double input = chance*10; //multiply by 10 so we can get chance that's .1% at least
+            int dice = Generator.Next(0, 1000);
             return dice < input;
         }
     }

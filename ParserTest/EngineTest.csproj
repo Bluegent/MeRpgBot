@@ -68,6 +68,7 @@
     <Compile Include="Data\ClassTest.cs" />
     <Compile Include="Data\ValueByLevelTest.cs" />
     <Compile Include="Sanitizer\SanitizerTest.cs" />
+    <Compile Include="Utils\UtilityTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroExpressionParser\RPGEngine.csproj">
