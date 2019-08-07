@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\MeNode.cs" />
+    <Compile Include="Core\StatusTemplate.cs" />
     <Compile Include="Language\Function.cs" />
     <Compile Include="Language\Definer.cs" />
     <Compile Include="Language\Operator.cs" />

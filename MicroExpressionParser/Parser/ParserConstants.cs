@@ -6,6 +6,7 @@
 
     using MicroExpressionParser.Core;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
 
     public class Operator

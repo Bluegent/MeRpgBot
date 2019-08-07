@@ -9,6 +9,8 @@ namespace MicroExpressionParser
 
     using MicroExpressionParser.Parser;
 
+    using RPGEngine.Core;
+
     public class MeException : Exception
     {
         public MeException(string message) : base(message) { }

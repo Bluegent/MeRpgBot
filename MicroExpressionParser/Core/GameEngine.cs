@@ -8,6 +8,7 @@ namespace MicroExpressionParser
     using MicroExpressionParser.Core;
     using System.Dynamic;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
 
     public interface IGameEngine

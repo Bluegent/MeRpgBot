@@ -9,6 +9,7 @@ namespace ParserTest
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
 

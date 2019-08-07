@@ -6,6 +6,8 @@
 
     using MicroExpressionParser;
 
+    using RPGEngine.Core;
+
     public class Definer
     {
         private static readonly  Definer Instance = new Definer();
