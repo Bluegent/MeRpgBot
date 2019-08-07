@@ -10,6 +10,7 @@ namespace MicroExpressionParser
     using MicroExpressionParser.Core;
     using System.Runtime.CompilerServices;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
 
@@ -62,37 +63,37 @@ namespace MicroExpressionParser
             {
                 Token[] tokens = Tokenizer.Tokenize(expr);
                 Token[] sanitizedTokens = ReplaceEntities(tokens, caster, target);
-                var = FunctionalTreeConverter.ResolveTree(sanitizedTokens, _engine).Value;
+                var = TreeConverter.ResolveTree(sanitizedTokens, _engine).Value;
             }
 
             return var;
         }
 
 
-        public FunctionalNode SanitizeSkillEntities(FunctionalNode tree, Entity caster, Entity target)
+        public MeNode SanitizeSkillEntities(MeNode tree, Entity caster, Entity target)
         {
-            List<FunctionalNode> leaves = new List<FunctionalNode>();
-            foreach(FunctionalNode leaf in tree.Leaves)
+            List<MeNode> leaves = new List<MeNode>();
+            foreach(MeNode leaf in tree.Leaves)
                 leaves.Add(SanitizeSkillEntities(leaf,caster,target));
-            FunctionalNode node = null;
+            MeNode node = null;
             if(tree.Value.Type == VariableType.PlaceHolder)
             {
                 if (tree.Value.ToPlaceholder() == Constants.TargetKeyword)
                 {
-                    node = new FunctionalNode(target);
+                    node = new MeNode(target);
                 }
                 else if (tree.Value.ToPlaceholder() == Constants.SourceKeyword)
                 {
-                    node = new FunctionalNode(caster);
+                    node = new MeNode(caster);
                 }
                 else
                 {
-                    node = new FunctionalNode(tree.Value);
+                    node = new MeNode(tree.Value);
                 }
             }
             else
             {
-                node = new FunctionalNode(tree.Value);
+                node = new MeNode(tree.Value);
             }
             node.Leaves.AddRange(leaves);
             return node;
@@ -126,26 +127,26 @@ namespace MicroExpressionParser
         {
             Token[] tokens = Tokenizer.Tokenize(expression);
             Token[] sanitizedTokens = ReplaceProperties(tokens, entity);
-            return FunctionalTreeConverter.ResolveTree(sanitizedTokens,_engine).Value.ToDouble();
+            return TreeConverter.ResolveTree(sanitizedTokens,_engine).Value.ToDouble();
 
         }
 
-        public FunctionalNode[] SplitStatus(string expression)
+        public MeNode[] SplitStatus(string expression)
         {
             string[] lines = expression.Split(Constants.FUNCTION_SEPARATOR);
-            List<FunctionalNode> result = new List<FunctionalNode>();
+            List<MeNode> result = new List<MeNode>();
             foreach (string expr in lines)
             {
                 Token[] tokens = Tokenizer.Tokenize(expr);
-                result.Add(FunctionalTreeConverter.BuildTree(tokens, _engine));
+                result.Add(TreeConverter.BuildTree(tokens, _engine));
             }
 
             return result.ToArray();
         }
 
-        public void ReplaceNumericPlaceholders(FunctionalNode tree,Dictionary<string,double> valueMap)
+        public void ReplaceNumericPlaceholders(MeNode tree,Dictionary<string,double> valueMap)
         {
-            foreach (FunctionalNode leaf in tree.Leaves)
+            foreach (MeNode leaf in tree.Leaves)
                 ReplaceNumericPlaceholders(leaf, valueMap);
             if (tree.Value.Type == VariableType.PlaceHolder)
                 tree.Value = new MeVariable() { Value = valueMap[tree.Value.ToPlaceholder()], Type = VariableType.NumericValue };
@@ -161,16 +162,16 @@ namespace MicroExpressionParser
             return valueMap;
         }
 
-        public void ReplaceNumericPlaceholders(FunctionalNode tree, double[] values)
+        public void ReplaceNumericPlaceholders(MeNode tree, double[] values)
         {
             if(values!=null)
                 ReplaceNumericPlaceholders(tree,GetNumericValueMap(values));
         }
-        public MeVariable ResolveStatus(FunctionalNode tree, double[] values)
+        public MeVariable ResolveStatus(MeNode tree, double[] values)
         {
             Dictionary<string, double> valueMap = GetNumericValueMap(values);
             ReplaceNumericPlaceholders(tree, valueMap);
-            return FunctionalTreeConverter.ResolveNode(tree,0).Value;
+            return TreeConverter.ResolveNode(tree,0).Value;
         }
     }
 }

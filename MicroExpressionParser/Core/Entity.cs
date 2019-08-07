@@ -5,7 +5,9 @@ namespace MicroExpressionParser
 {
     using MicroExpressionParser.Parser;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
+    using RPGEngine.Parser;
 
     public class EntityProperty
     {
@@ -39,9 +41,9 @@ namespace MicroExpressionParser
     }
     public class StatusTemplate
     {
-        public FunctionalNode[] ComponentFormulas { get; set; }
-        public FunctionalNode Interval { get; set; }
-        public FunctionalNode MaxStacks { get; set; }
+        public MeNode[] ComponentFormulas { get; set; }
+        public MeNode Interval { get; set; }
+        public MeNode MaxStacks { get; set; }
         public StackingType Type { get; set; }
     }
 
@@ -114,8 +116,8 @@ namespace MicroExpressionParser
             long removeTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
             
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
-            FunctionalNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
-            newStatus.Interval = (long)FunctionalTreeConverter.ResolveNode(intervalTree, 0).Value.ToDouble();
+            MeNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
+            newStatus.Interval = (long)TreeConverter.ResolveNode(intervalTree, 0).Value.ToDouble();
             Statuses.Add(newStatus);
         }
 
@@ -157,7 +159,7 @@ namespace MicroExpressionParser
             {
                 if (IsTime(status))
                 {
-                    foreach (FunctionalNode tree in status.Template.ComponentFormulas)
+                    foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
                             && tree.Value.Value == ParserConstants.Functions[Constants.MOD_VALUE_F])
@@ -175,15 +177,15 @@ namespace MicroExpressionParser
             {
                 if (IsTime(status))
                 {
-                    foreach (FunctionalNode tree in status.Template.ComponentFormulas)
+                    foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
                             && (tree.Value.Value == ParserConstants.Functions[Constants.HARM_F]
                                 || tree.Value.Value == ParserConstants.Functions[Constants.HEAL_F]))
                         {
-                            FunctionalNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
+                            MeNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
-                            FunctionalTreeConverter.ResolveNode(newTree, 0);
+                            TreeConverter.ResolveNode(newTree, 0);
                         }
                     }
 

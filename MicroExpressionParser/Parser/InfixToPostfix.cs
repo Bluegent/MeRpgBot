@@ -1,9 +1,9 @@
-﻿namespace MicroExpressionParser.Parser
+﻿namespace RPGEngine.Parser
 {
-    using System;
     using System.Collections.Generic;
 
-    using RPGEngine.Parser;
+    using MicroExpressionParser;
+    using MicroExpressionParser.Parser;
 
     public static class InfixToPostfix
     { 

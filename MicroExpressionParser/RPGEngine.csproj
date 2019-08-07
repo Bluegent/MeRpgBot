@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\MeNode.cs" />
     <Compile Include="Language\Function.cs" />
     <Compile Include="Language\Definer.cs" />
     <Compile Include="Language\Operator.cs" />
@@ -58,10 +59,11 @@
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Data\Skill.cs" />
     <Compile Include="Data\StatusEffect.cs" />
-    <Compile Include="Parser\SYConverter.cs" />
-    <Compile Include="Parser\FunctionalTreeConverter.cs" />
+    <Compile Include="Parser\InfixToPostfix.cs" />
+    <Compile Include="Parser\TreeConverter.cs" />
     <Compile Include="Parser\ParserConstants.cs" />
     <Compile Include="Parser\Token.cs" />
+    <Compile Include="Parser\TreeResolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\Tokenizer.cs" />

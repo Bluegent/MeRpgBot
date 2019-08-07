@@ -1,48 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace RPGEngine.Parser
 {
+    using System;
+    using System.Collections.Generic;
+
+    using MicroExpressionParser;
     using MicroExpressionParser.Parser;
 
-    using RPGEngine.Parser;
+    using RPGEngine.Core;
 
-    public class ValueResolverException : Exception
-    {
-        public ValueResolverException(string msg) : base(msg) { }
-    }
-
-    public class FunctionalNode
-    {
-        public MeVariable Value { get; set; }
-        public List<FunctionalNode> Leaves { get; }
-        public FunctionalNode Parent { get; set; }
-
-        public FunctionalNode(MeVariable value)
-        {
-            Leaves = new List<FunctionalNode>();
-            this.Value = value;
-        }
-
-        public double ToValue()
-        {
-            return Value.ToDouble();
-        }
-    }
-
-    public static class FunctionalTreeConverter
+    public static class TreeConverter
     {
 
-        public static FunctionalNode Convert(FunctionalNode parent, SyntacticNode node, IGameEngine engine)
+        public static MeNode Convert(MeNode parent, SyntacticNode node, IGameEngine engine)
         {
-            FunctionalNode newNode = null;
+            MeNode newNode = null;
             switch (node.Token.Type)
             {
                 case TokenType.Function:
                     {
-                        newNode = new FunctionalNode(new MeVariable()
+                        newNode = new MeNode(new MeVariable()
                         {
                             Value = ParserConstants.Functions[node.Token.Value],
                             Type = VariableType.Function
@@ -52,7 +28,7 @@ namespace MicroExpressionParser
 
                 case TokenType.Operator:
                     {
-                        newNode = new FunctionalNode(new MeVariable()
+                        newNode = new MeNode(new MeVariable()
                         {
                             Value = ParserConstants.Operators[node.Token.Value],
                             Type = VariableType.Operator
@@ -65,21 +41,21 @@ namespace MicroExpressionParser
                         bool success = double.TryParse(node.Token.Value, out result);
                         if (success)
                         {
-                            newNode = new FunctionalNode(
+                            newNode = new MeNode(
                                 new MeVariable() { Value = result, Type = VariableType.NumericValue });
                             break;
                         }
 
                         if (node.Token.Value.StartsWith("$"))
                         {
-                            newNode = new FunctionalNode(
+                            newNode = new MeNode(
                               new MeVariable() { Value = node.Token.Value, Type = VariableType.PlaceHolder });
                             break;
                         }
                         Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
                         if (tryEntity != null)
                         {
-                            newNode = new FunctionalNode(
+                            newNode = new MeNode(
                                 new MeVariable() { Value = tryEntity, Type = VariableType.Entity });
                             break;
                         }
@@ -87,12 +63,12 @@ namespace MicroExpressionParser
                         DamageType tryDamageType = engine.GeDamageType(node.Token.Value);
                         if (tryDamageType != null)
                         {
-                            newNode = new FunctionalNode(
+                            newNode = new MeNode(
                                 new MeVariable() { Value = tryDamageType, Type = VariableType.DamageType });
                             break;
                         }
 
-                        newNode = new FunctionalNode(
+                        newNode = new MeNode(
                                 new MeVariable() { Value = node.Token.Value, Type = VariableType.String });
                         break;
                     }
@@ -107,7 +83,7 @@ namespace MicroExpressionParser
             return newNode;
         }
 
-        public static FunctionalNode ResolveNode(FunctionalNode node, int index)
+        public static MeNode ResolveNode(MeNode node, int index)
         {
             for(int i=0;i<node.Leaves.Count;++i)
             {
@@ -119,11 +95,11 @@ namespace MicroExpressionParser
                 if (!node.Parent.Value.ToFunction().ExecuteSubNode(index))
                 {
                     List<MeVariable> parameters = new List<MeVariable>();
-                    foreach (FunctionalNode subNode in node.Leaves)
+                    foreach (MeNode subNode in node.Leaves)
                     {
                         parameters.Add(subNode.Value);
                     }
-                    return new FunctionalNode(new MeFunction(node.Value, parameters.ToArray())); ;
+                    return new MeNode(new MeFunction(node.Value, parameters.ToArray()));
                 }
             }
             switch (node.Value.Type)
@@ -131,20 +107,20 @@ namespace MicroExpressionParser
                 case VariableType.Function:
 
                     List<MeVariable> parameters = new List<MeVariable>();
-                    foreach (FunctionalNode subNode in node.Leaves)
+                    foreach (MeNode subNode in node.Leaves)
                     {
                         parameters.Add(subNode.Value);
                     }
-                    return new FunctionalNode(node.Value.ToFunction().Execute(parameters.ToArray()));
+                    return new MeNode(node.Value.ToFunction().Execute(parameters.ToArray()));
                 case VariableType.Operator:
                     {
 
                         List<MeVariable> opParameters = new List<MeVariable>();
-                        foreach (FunctionalNode subNode in node.Leaves)
+                        foreach (MeNode subNode in node.Leaves)
                         {
                             opParameters.Add(subNode.Value);
                         }
-                        return new FunctionalNode(node.Value.ToOperator().Execute(opParameters.ToArray()));
+                        return new MeNode(node.Value.ToOperator().Execute(opParameters.ToArray()));
                     }
                 default:
                     {
@@ -153,23 +129,23 @@ namespace MicroExpressionParser
             }
         }
 
-        public static FunctionalNode BuildTree(Token[] tokens, IGameEngine engine)
+        public static MeNode BuildTree(Token[] tokens, IGameEngine engine)
         {
             SyntacticNode tree = TreeBuilder.MakeTree(InfixToPostfix.ToPostfix(tokens));
             return Convert(null, tree, engine);
         }
 
-        public static FunctionalNode BuildTree(string expression, IGameEngine engine)
+        public static MeNode BuildTree(string expression, IGameEngine engine)
         {
             return BuildTree(Tokenizer.Tokenize(expression), engine);
         }
 
-        public static FunctionalNode ResolveTree(Token[] tokens, IGameEngine engine)
+        public static MeNode ResolveTree(Token[] tokens, IGameEngine engine)
         {
-            return ResolveNode(BuildTree(tokens, engine), 0); ;
+            return ResolveNode(BuildTree(tokens, engine), 0);
         }
 
-        public static FunctionalNode ResolveTree(string expression, IGameEngine engine)
+        public static MeNode ResolveTree(string expression, IGameEngine engine)
         {
             return ResolveTree(Tokenizer.Tokenize(expression),engine);
         }
