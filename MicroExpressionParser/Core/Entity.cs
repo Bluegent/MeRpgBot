@@ -117,7 +117,7 @@ namespace MicroExpressionParser
             
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
             MeNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
-            newStatus.Interval = (long)TreeConverter.ResolveNode(intervalTree, 0).Value.ToDouble();
+            newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
         }
 
@@ -185,7 +185,7 @@ namespace MicroExpressionParser
                         {
                             MeNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
-                            TreeConverter.ResolveNode(newTree, 0);
+                            newTree.Resolve();
                         }
                     }
 

@@ -19,7 +19,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             ent.ApplyStatus(test, ent,5,values);
             double expected = ent.GetProperty("STR").Value+10;
@@ -33,7 +33,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             int duration = 5;
             ent.ApplyStatus(test, ent, duration, values);
@@ -55,7 +55,7 @@ namespace ParserTest.Core
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             int duration = 5;
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             ent.ApplyStatus(test, ent, duration, values);
             ent.ApplyStatus(test, ent, duration, values);
@@ -77,7 +77,7 @@ namespace ParserTest.Core
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0);{Constants.MOD_VALUE_F}(AGI,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
 
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 ,5};
             ent.ApplyStatus(test, ent, 5, values);
             double expectedStr = ent.GetProperty("STR").Value + values[0];
@@ -95,7 +95,7 @@ namespace ParserTest.Core
             double damage = 10;
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             ent.ApplyStatus(test,ent,5,null);
             double expectedHp = ent.GetProperty("CHP").Value - damage;
             ent.Update();
@@ -108,7 +108,7 @@ namespace ParserTest.Core
             MockEntity ent = new MockEntity(Engine);
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0);{Constants.MOD_VALUE_F}(STR,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.BuildTree("0", Engine)};
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 20, 10 };
             ent.ApplyStatus(test, ent, 5, values);
             double expectedHp = ent.GetProperty("CHP").Value - values[0];
@@ -127,7 +127,7 @@ namespace ParserTest.Core
             int[] timeValues = { 10, 5 };
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.BuildTree(timeValues[0].ToString(), Engine) };
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build(timeValues[0].ToString(), Engine) };
             double[] values = { 20};
             ent.ApplyStatus(test, ent, timeValues[0], values);
             double expectedHp = ent.GetProperty("CHP").Value - values[0];
@@ -150,7 +150,7 @@ namespace ParserTest.Core
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitStatus(expression);
             string intervalExpression = $"10-{Constants.GET_PROP_F}({Constants.SourceKeyword},INT)*2";
-            MeNode intervalNode = TreeConverter.BuildTree(intervalExpression, Engine);
+            MeNode intervalNode = TreeConverter.Build(intervalExpression, Engine);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = intervalNode };
             ent.ApplyStatus(test, ent, 5, null);
             double expectedHp = ent.GetProperty("CHP").Value - damage;

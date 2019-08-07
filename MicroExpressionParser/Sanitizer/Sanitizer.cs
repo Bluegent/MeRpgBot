@@ -63,7 +63,7 @@ namespace MicroExpressionParser
             {
                 Token[] tokens = Tokenizer.Tokenize(expr);
                 Token[] sanitizedTokens = ReplaceEntities(tokens, caster, target);
-                var = TreeConverter.ResolveTree(sanitizedTokens, _engine).Value;
+                var = TreeResolver.Resolve(sanitizedTokens, _engine).Value;
             }
 
             return var;
@@ -127,7 +127,7 @@ namespace MicroExpressionParser
         {
             Token[] tokens = Tokenizer.Tokenize(expression);
             Token[] sanitizedTokens = ReplaceProperties(tokens, entity);
-            return TreeConverter.ResolveTree(sanitizedTokens,_engine).Value.ToDouble();
+            return TreeResolver.Resolve(sanitizedTokens,_engine).Value.ToDouble();
 
         }
 
@@ -138,7 +138,7 @@ namespace MicroExpressionParser
             foreach (string expr in lines)
             {
                 Token[] tokens = Tokenizer.Tokenize(expr);
-                result.Add(TreeConverter.BuildTree(tokens, _engine));
+                result.Add(TreeConverter.Build(tokens, _engine));
             }
 
             return result.ToArray();
@@ -171,7 +171,7 @@ namespace MicroExpressionParser
         {
             Dictionary<string, double> valueMap = GetNumericValueMap(values);
             ReplaceNumericPlaceholders(tree, valueMap);
-            return TreeConverter.ResolveNode(tree,0).Value;
+            return TreeResolver.Resolve(tree,0).Value;
         }
     }
 }

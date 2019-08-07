@@ -7,6 +7,8 @@ namespace RPGEngine.Core
 {
     using MicroExpressionParser;
 
+    using RPGEngine.Parser;
+
     public class MeNode
     {
         public MeVariable Value { get; set; }
@@ -16,12 +18,12 @@ namespace RPGEngine.Core
         public MeNode(MeVariable value)
         {
             Leaves = new List<MeNode>();
-            this.Value = value;
+            Value = value;
         }
 
-        public double ToValue()
+        public MeNode Resolve()
         {
-            return Value.ToDouble();
+            return TreeResolver.Resolve(this);
         }
     }
 }

@@ -72,6 +72,11 @@ namespace MicroExpressionParser
                 throw new MeException($"Exception when converting variable of type {Type} to {type}.");
         }
 
+        public long ToLong()
+        {
+            ValidateType(VariableType.NumericValue);
+            return (long)(double)Value;
+        }
         public double ToDouble()
         {
             ValidateType(VariableType.NumericValue);

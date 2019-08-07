@@ -29,14 +29,14 @@ namespace ParserTest
         public void FunctionalTreeConverterTestGetPropertyTest()
         {
             string expression = $"{Constants.GET_PROP_F}({MockPlayer.Key},STR)";
-            Assert.AreEqual(5, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(5, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestComplexFunctionWithAttributes()
         {
             string expression = $"{Constants.GET_PROP_F}({MockPlayer.Key},STR)*100+{Constants.MAX_F}({Constants.GET_PROP_F}({MockPlayer.Key},AGI),3)";
-            Assert.AreEqual(505, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(505, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
 
@@ -44,42 +44,42 @@ namespace ParserTest
         public void FunctionalTreeConverterTestSimpleFunction()
         {
             string expression = $"{Constants.MAX_F}(10,20)";
-            Assert.AreEqual(20, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(20, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestSimpleOperation()
         {
             string expression = "10*13";
-            Assert.AreEqual(130, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(130, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestSimpleOperationNegativeResult()
         {
             string expression = "10-13";
-            Assert.AreEqual(-3, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(-3, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestNestedOperation()
         {
             string expression = "10*13+10";
-            Assert.AreEqual(140, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(140, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestNestedFunctions()
         {
             string expression = $"{Constants.MAX_F}(10,{Constants.MAX_F}(3,4))";
-            Assert.AreEqual(10, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(10, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestOperatorAndFunction()
         {
             string expression = $"{Constants.ABS_F}(10-100)";
-            Assert.AreEqual(90, TreeConverter.ResolveTree(expression, Engine).Value.ToDouble());
+            Assert.AreEqual(90, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
 
@@ -88,7 +88,7 @@ namespace ParserTest
         {
             string expression = $"{Constants.ARRAY_F}(10,10,10)";
             double[] expected = { 10, 10, 10 };
-            double[] actual = MeVariable.ToDoubleArray(TreeConverter.ResolveTree(expression, Engine).Value.ToArray());
+            double[] actual = MeVariable.ToDoubleArray(TreeResolver.Resolve(expression, Engine).Value.ToArray());
             Assert.AreEqual(expected.Length, actual.Length);
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -98,7 +98,7 @@ namespace ParserTest
         {
             string expression = $"{Constants.ARRAY_F}(10,{Constants.MAX_F}(10,20),10)";
             double[] expected = { 10, 20, 10 };
-            double[] actual = MeVariable.ToDoubleArray(TreeConverter.ResolveTree(expression, Engine).Value.ToArray());
+            double[] actual = MeVariable.ToDoubleArray(TreeResolver.Resolve(expression, Engine).Value.ToArray());
             Assert.AreEqual(expected.Length, actual.Length);
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -107,7 +107,7 @@ namespace ParserTest
         {
             string expression = $"{Constants.GET_PLAYERS_F}()";
             string expected = "MOCK_PLAYER";
-            MeVariable player = TreeConverter.ResolveTree(expression, Engine).Value.ToArray()[0];
+            MeVariable player = TreeResolver.Resolve(expression, Engine).Value.ToArray()[0];
             Assert.AreEqual(expected, player.ToEntity().Name);
         }
 
@@ -116,7 +116,7 @@ namespace ParserTest
         {
             string expression = $"{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,20)";
             double expected = MockPlayer.GetProperty("CHP").Value - 20;
-            TreeConverter.ResolveTree(expression, Engine);
+            TreeResolver.Resolve(expression, Engine);
 
             Assert.AreEqual(expected, MockPlayer.GetProperty("CHP").Value);
         }
@@ -125,7 +125,7 @@ namespace ParserTest
         public void FunctionalTreeConverterTestBooleanOperator()
         {
             string expression = "10>3";
-            bool actual = TreeConverter.ResolveTree(expression, Engine).Value.ToBoolean();
+            bool actual = TreeResolver.Resolve(expression, Engine).Value.ToBoolean();
             Assert.AreEqual(true, actual);
         }
 
@@ -133,7 +133,7 @@ namespace ParserTest
         public void FunctionalTreeConverterTestBooleanAndUnaryOperator()
         {
             string expression = "!(10>3+8)";
-            bool actual = TreeConverter.ResolveTree(expression, Engine).Value.ToBoolean();
+            bool actual = TreeResolver.Resolve(expression, Engine).Value.ToBoolean();
             Assert.AreEqual(true, actual);
         }
 
@@ -141,7 +141,7 @@ namespace ParserTest
         public void FunctionalTreeConverterTestExecuteLater()
         {
             string expression = $"{Constants.IF_F}(10>3,10,11)";
-            double actual = TreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
+            double actual = TreeResolver.Resolve(expression, Engine).Value.ToDouble();
             Assert.AreEqual(10, actual);
         }
 
@@ -149,27 +149,27 @@ namespace ParserTest
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatDoesntChangeThings()
         {
             string expression = $"{Constants.IF_F}(10>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
-            double exepectedHp = MockPlayer.GetProperty("CHP").Value;
-            TreeConverter.ResolveTree(expression, Engine);
-            Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
+            double expectedHp = MockPlayer.GetProperty("CHP").Value;
+            TreeResolver.Resolve(expression, Engine);
+            Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
             string expression = $"{Constants.IF_F}(1>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
-            double exepectedHp = MockPlayer.GetProperty("CHP").Value-10;
-            TreeConverter.ResolveTree(expression, Engine);
-            Assert.AreEqual(exepectedHp, MockPlayer.GetProperty("CHP").Value);
+            double expectedHp = MockPlayer.GetProperty("CHP").Value-10;
+            TreeResolver.Resolve(expression, Engine);
+            Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestNestedIf()
         {
             string expression = $"{Constants.IF_F}({Constants.MAX_F}(10,3)>3,{Constants.IF_F}(10>3,10,20),30)";
-            double exepected = 10;
-            double actual = TreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
-            Assert.AreEqual(exepected, actual);
+            double expected = 10;
+            double actual = TreeResolver.Resolve(expression, Engine).Value.ToDouble();
+            Assert.AreEqual(expected, actual);
         }
 
 
@@ -177,9 +177,9 @@ namespace ParserTest
         public void FunctionalTreeConverterTestPowerOperator()
         {
             string expression = "10^3";
-            double exepected = 1000;
-            double actual = TreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
-            Assert.AreEqual(exepected, actual);
+            double expected = 1000;
+            double actual = TreeResolver.Resolve(expression, Engine).Value.ToDouble();
+            Assert.AreEqual(expected, actual);
         }
 
 
@@ -187,9 +187,9 @@ namespace ParserTest
         public void FunctionalTreeConverterTestPowerOperatorCombination()
         {
             string expression = "10+10^3+10";
-            double exepected = 1020;
-            double actual = TreeConverter.ResolveTree(expression, Engine).Value.ToDouble();
-            Assert.AreEqual(exepected, actual);
+            double expected = 1020;
+            double actual = TreeResolver.Resolve(expression, Engine).Value.ToDouble();
+            Assert.AreEqual(expected, actual);
         }
 
 
@@ -198,8 +198,8 @@ namespace ParserTest
         {
             string expression = "11+10";
             double[] expected = { 11, 10 };
-            MeNode tree = TreeConverter.BuildTree(expression, Engine);
-            MeNode copy = TreeConverter.ResolveNode(tree, 0);
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            MeNode copy = tree.Resolve();
             Assert.AreEqual(tree.Value.ToOperator().Character, "+");
             Assert.AreEqual(2, tree.Leaves.Count);
             for (int i = 0; i < expected.Length; ++i)
