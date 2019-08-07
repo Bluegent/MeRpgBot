@@ -21,6 +21,24 @@ namespace RPGEngine.Parser
             return Resolve(Tokenizer.Tokenize(expression), engine);
         }
 
+
+        public static MeNode ResolveGivenFunction(MeNode node, string functionName, int index = 0)
+        {
+            for (int i = 0; i < node.Leaves.Count; ++i)
+            {
+                node.Leaves[i] = ResolveGivenFunction(node.Leaves[i], functionName, i);
+            }
+
+            if (node.Value.Type == VariableType.Function && node.Value.ToFunction().Name.Equals(functionName))
+            {
+                return node.Resolve();
+            }
+            else
+            {
+                return node;
+            }
+        }
+
         public static MeNode Resolve(MeNode node, int index = 0)
         {
             for (int i = 0; i < node.Leaves.Count; ++i)

@@ -77,7 +77,7 @@ namespace MicroExpressionParser
                               { "MHP", 100 },
                               { "STR", 5 },
                               { "INT", 5 },
-                              { "AGI", 5 },
+                              { "AGI", 10 },
                               { "DEF",10},
                               { "MDEF",0 }
                           };

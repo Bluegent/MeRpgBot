@@ -14,7 +14,7 @@ namespace MicroExpressionParser.Core
         private long _fakeTime;
         public MockTimer()
         {
-            _fakeTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            _fakeTime = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
         }
 
         public void ForceTick()

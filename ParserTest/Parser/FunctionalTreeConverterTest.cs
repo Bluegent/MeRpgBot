@@ -36,7 +36,8 @@ namespace ParserTest
         public void FunctionalTreeConverterTestComplexFunctionWithAttributes()
         {
             string expression = $"{Constants.GET_PROP_F}({MockPlayer.Key},STR)*100+{Constants.MAX_F}({Constants.GET_PROP_F}({MockPlayer.Key},AGI),3)";
-            Assert.AreEqual(505, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
+            double expected = MockPlayer.GetProperty("STR").Value * 100 + (MockPlayer.GetProperty("AGI").Value>3? MockPlayer.GetProperty("AGI").Value : 3);
+            Assert.AreEqual(expected, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
 

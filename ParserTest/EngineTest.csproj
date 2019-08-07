@@ -56,6 +56,7 @@
     <Compile Include="Core\EntityTest.cs" />
     <Compile Include="Parser\ConverterTest.cs" />
     <Compile Include="Parser\FunctionalTreeConverterTest.cs" />
+    <Compile Include="Parser\TreeResolverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\TokenizerTest.cs" />
     <Compile Include="Parser\TreeBuilderTest.cs" />
