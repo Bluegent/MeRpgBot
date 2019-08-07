@@ -1,10 +1,9 @@
-﻿using System;
-using MicroExpressionParser;
-using MicroExpressionParser.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ParserTest.Core
+﻿namespace EngineTest.Core
 {
+    using MicroExpressionParser.Core;
+
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
@@ -13,6 +12,19 @@ namespace ParserTest.Core
     public class EntityTest
     {
         public static readonly GameEngine Engine = new GameEngine();
+        public static readonly MockEntity MockEntity = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+        
+        [ClassInitialize]
+        public static void StartUp(TestContext context)
+        {
+            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageType alwaysCrit = new DamageType(Engine, "AC", null, null, "100", "2");
+            DamageType alwaysDodge = new DamageType(Engine, "AD", null, "100", null, null);
+            Engine.AddDamageType(trueDamage);
+            Engine.AddDamageType(alwaysCrit);
+            Engine.AddDamageType(alwaysDodge);
+            Engine.AddPlayer(MockEntity);
+        }
         [TestMethod]
         public void EntityTestModifierStatusEffect()
         {
@@ -164,6 +176,28 @@ namespace ParserTest.Core
 
             ent.Update();
             Assert.AreEqual(expectedHp2, ent.GetProperty("CHP").Value);
+        }
+
+        [TestMethod]
+        public void EntityTestAlwaysDodge()
+        {
+            string expression = $"{Constants.HARM_F}({MockEntity.Key},{MockEntity.Key},AD,20)";
+            double expected = MockEntity.GetProperty("CHP").Value;
+            TreeResolver.Resolve(expression, Engine);
+
+            Assert.AreEqual(expected, MockEntity.GetProperty("CHP").Value);
+        }
+
+        [TestMethod]
+        public void EntityTestAlwaysCrit()
+        {
+
+            double amt = 20;
+            string expression = $"{Constants.HARM_F}({MockEntity.Key},{MockEntity.Key},AC,{amt})";
+            double expected = MockEntity.GetProperty("CHP").Value - amt*2;
+            TreeResolver.Resolve(expression, Engine);
+
+            Assert.AreEqual(expected, MockEntity.GetProperty("CHP").Value);
         }
     }
 }

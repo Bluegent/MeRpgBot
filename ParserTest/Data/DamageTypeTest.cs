@@ -6,6 +6,7 @@ namespace ParserTest
     [TestClass]
     public class DamageTypeTest
     {
+        /*
         [TestMethod]
         public void FromJsonTest_Succes()
         {
@@ -77,5 +78,6 @@ namespace ParserTest
             Assert.AreEqual(expected, result);
 
         }
+        */
     }
 }

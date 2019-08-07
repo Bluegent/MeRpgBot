@@ -41,6 +41,8 @@
 
         public static readonly string SourceKeyword = SPECIAL_CHAR + "S";
 
+        public static readonly string ValueKeyword = SPECIAL_CHAR + "V";
+
         public const char FUNCTION_SEPARATOR = ';';
     }
 }

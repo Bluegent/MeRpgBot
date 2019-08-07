@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace RPGEngine.Core
 {
-    using MicroExpressionParser.Core;
-    using System.Dynamic;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    using RPGEngine.Core;
+    using MicroExpressionParser;
+    using MicroExpressionParser.Core;
+
     using RPGEngine.Language;
 
     public interface IGameEngine
@@ -16,6 +13,8 @@ namespace MicroExpressionParser
         void AddPlayer(Entity entity);
 
         void AddEnemy(Entity entity);
+
+        void AddDamageType(DamageType type);
         Entity[] GetAllPlayers();
 
         DamageType GeDamageType(string key);
@@ -37,14 +36,11 @@ namespace MicroExpressionParser
         private Dictionary<string,StatusTemplate> statuses;
         public GameEngine()
         {
-            Parser.ParserConstants.Init(this);
+            MicroExpressionParser.Parser.ParserConstants.Init(this);
             Definer.Get().Init(this);
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();
-            DamageTypes.Add("P", new DamageType() { Key = "P", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, DEF))" });
-            DamageTypes.Add("M", new DamageType() { Key = "M", MitigationFormula = "NON_NEG($VALUE - GET_PROP($TARGET, MDEF))" });
-            DamageTypes.Add("T", new DamageType() { Key = "T", MitigationFormula = "$VALUE" });
             Timer = new MockTimer();
             Sanit = new Sanitizer(this);
             statuses = new Dictionary<string, StatusTemplate>();
@@ -59,6 +55,11 @@ namespace MicroExpressionParser
         public void AddEnemy(Entity entity)
         {
             Enemies.Add(entity.Key, entity);
+        }
+
+        public void AddDamageType(DamageType type)
+        {
+            DamageTypes.Add(type.Key,type);
         }
 
         public Entity[] GetAllPlayers()

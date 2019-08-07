@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ParserTest
+﻿namespace EngineTest
 {
     using MicroExpressionParser;
 
@@ -26,6 +21,8 @@ namespace ParserTest
         {
             Engine.AddPlayer(MockPlayer);
             Engine.AddEnemy(MockEnemy);
+            DamageType trueDamage = new DamageType(Engine,"T",null,null,null,null);
+            Engine.AddDamageType(trueDamage);
         }
 
         [TestMethod]
@@ -52,8 +49,8 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestSanitizeSimpleSkill()
         {
-            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
-            string[] expected = { Constants.HARM_F, "(", MockEnemy.Key, ",", MockPlayer.Key, ",", "P", ",", Constants.GET_PROP_F, "(", MockPlayer.Key, ",", "STR", ")", ")" };
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, T, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
+            string[] expected = { Constants.HARM_F, "(", MockEnemy.Key, ",", MockPlayer.Key, ",", "T", ",", Constants.GET_PROP_F, "(", MockPlayer.Key, ",", "STR", ")", ")" };
             Token[] actual = SanitizerInstance.ReplaceEntities(Tokenizer.Tokenize(expression), MockPlayer, MockEnemy);
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < actual.Length; ++i)
@@ -63,7 +60,7 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveSimpleSkill()
         {
-            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, T, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
@@ -72,7 +69,7 @@ namespace ParserTest
         [TestMethod]
         public void SanitizerTestResolveMutlipleCalls()
         {
-            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR));{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, P, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
+            string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, T, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR));{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword}, T, {Constants.GET_PROP_F}({Constants.SourceKeyword}, STR))";
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value * 2;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);

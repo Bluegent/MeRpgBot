@@ -6,6 +6,7 @@
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using RPGEngine.Core;
     using RPGEngine.Parser;
 
     [TestClass]

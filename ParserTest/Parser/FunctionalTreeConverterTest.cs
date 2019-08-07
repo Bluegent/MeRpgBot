@@ -1,11 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MicroExpressionParser;
-
-namespace ParserTest
+﻿namespace EngineTest.Parser
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using MicroExpressionParser;
+
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using RPGEngine.Core;
     using RPGEngine.Language;
@@ -23,6 +20,8 @@ namespace ParserTest
         {
 
             Engine.AddPlayer(MockPlayer);
+            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            Engine.AddDamageType(trueDamage);
         }
 
         [TestMethod]
@@ -115,7 +114,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestHarmEntity()
         {
-            string expression = $"{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,20)";
+            string expression = $"{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,20)";
             double expected = MockPlayer.GetProperty("CHP").Value - 20;
             TreeResolver.Resolve(expression, Engine);
 
@@ -149,7 +148,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatDoesntChangeThings()
         {
-            string expression = $"{Constants.IF_F}(10>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
+            string expression = $"{Constants.IF_F}(10>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,10))";
             double expectedHp = MockPlayer.GetProperty("CHP").Value;
             TreeResolver.Resolve(expression, Engine);
             Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);
@@ -158,7 +157,7 @@ namespace ParserTest
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
-            string expression = $"{Constants.IF_F}(1>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,10))";
+            string expression = $"{Constants.IF_F}(1>3,10,{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,10))";
             double expectedHp = MockPlayer.GetProperty("CHP").Value-10;
             TreeResolver.Resolve(expression, Engine);
             Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);

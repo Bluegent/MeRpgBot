@@ -8,6 +8,7 @@ namespace ParserTest
 {
     using MicroExpressionParser;
 
+    using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
 

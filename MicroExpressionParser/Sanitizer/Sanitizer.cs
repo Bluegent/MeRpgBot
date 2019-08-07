@@ -173,5 +173,34 @@ namespace MicroExpressionParser
             ReplaceNumericPlaceholders(tree, valueMap);
             return TreeResolver.Resolve(tree,0).Value;
         }
+
+        public MeNode SanitizeMitigation(MeNode tree,Entity target, Entity caster, double amount)
+        {
+            List<MeNode> leaves = new List<MeNode>();
+            foreach (MeNode leaf in tree.Leaves)
+                leaves.Add(SanitizeSkillEntities(leaf, caster, target));
+            MeNode node = null;
+            if (tree.Value.Type == VariableType.PlaceHolder)
+            {
+                if (tree.Value.ToPlaceholder() == Constants.TargetKeyword)
+                {
+                    node = new MeNode(target);
+                }
+                else if (tree.Value.ToPlaceholder() == Constants.SourceKeyword)
+                {
+                    node = new MeNode(caster);
+                }
+                else if(tree.Value.ToPlaceholder()==Constants.ValueKeyword)
+                {
+                    node = new MeNode(amount);
+                }
+            }
+            else
+            {
+                node = new MeNode(tree.Value);
+            }
+            node.Leaves.AddRange(leaves);
+            return node;
+        }
     }
 }

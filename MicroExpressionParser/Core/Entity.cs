@@ -59,8 +59,11 @@
 
         public override void TakeDamage(double amount, DamageType type, Entity source)
         {
-            FinalStats["CHP"] -= amount;
-            StatMap["CHP"] -= amount;
+            if (type.GetDodge(source, this))
+                return;
+            double actualAmount = type.GetMitigatedAmount(amount, source, this);
+            FinalStats["CHP"] -= actualAmount;
+            StatMap["CHP"] -= actualAmount;
         }
 
         public override void GetHealed(double amount, Entity source)

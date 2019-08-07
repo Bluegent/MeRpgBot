@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
+    <Compile Include="Core\DamageType.cs" />
     <Compile Include="Core\MeNode.cs" />
     <Compile Include="Core\StatusTemplate.cs" />
     <Compile Include="Language\Function.cs" />
@@ -56,7 +57,6 @@
     <Compile Include="Core\MeVariable.cs" />
     <Compile Include="Data\BaseValue.cs" />
     <Compile Include="Data\CompoundStat.cs" />
-    <Compile Include="Data\DamageType.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Data\Skill.cs" />
@@ -72,6 +72,7 @@
     <Compile Include="Parser\TreeBuilder.cs" />
     <Compile Include="Data\ValueByLevel.cs" />
     <Compile Include="Sanitizer\Sanitizer.cs" />
+    <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
