@@ -9,6 +9,7 @@ namespace ParserTest
     using MicroExpressionParser;
 
     using RPGEngine.Language;
+    using RPGEngine.Parser;
 
     /// <summary>
     /// Summary description for UnitTest1
@@ -27,7 +28,7 @@ namespace ParserTest
         public void TreeBuilderTestSingleParamFunction()
         {
             string expression = $"{Constants.ABS_F}(STR)";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR" };
             Assert.AreEqual(Constants.ABS_F,tree.Token.Value);
             for(int i=0 ; i<tree.Parameters.Count;++i)
@@ -37,7 +38,7 @@ namespace ParserTest
         public void TreeBuilderTestMultipleParamFunction()
         {
             string expression = $"{Constants.MAX_F}(STR,10,INT)";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR","10","INT" };
             Assert.AreEqual(Constants.MAX_F, tree.Token.Value);
             Assert.AreEqual(expected.Length,tree.Parameters.Count);
@@ -49,7 +50,7 @@ namespace ParserTest
         public void TreeBuilderTestOperator()
         {
             string expression = "STR+INT";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR","INT" };
             Assert.AreEqual("+", tree.Token.Value);
             Assert.AreEqual(expected.Length, tree.Parameters.Count);
@@ -61,7 +62,7 @@ namespace ParserTest
         public void TreeBuilderTestNestedOperators()
         {
             string expression = "STR+INT*10";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR", "*" };
             string[] nestedExpect = {"INT","10"};
             Assert.AreEqual("+", tree.Token.Value);
@@ -69,7 +70,7 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[0];
+            TokenNode subNode = tree.Parameters[0];
             for (int i=0;i< subNode.Parameters.Count;++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
         }
@@ -78,7 +79,7 @@ namespace ParserTest
         public void TreeBuilderTestNestedOperatorsAndFunctions()
         {
             string expression = $"STR+{Constants.MAX_F}(10,11,12)";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "STR", Constants.MAX_F };
             string[] nestedExpect = { "10", "11","12" };
             Assert.AreEqual("+", tree.Token.Value);
@@ -86,7 +87,7 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[1];
+            TokenNode subNode = tree.Parameters[1];
             for (int i = 0; i < subNode.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
         }
@@ -95,7 +96,7 @@ namespace ParserTest
         public void TreeBuilderTestNestedFunctions()
         {
             string expression = $"{Constants.ABS_F}({Constants.MAX_F}(STR,INT,AGI))";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { Constants.MAX_F };
             string[] nestedExpect = { "STR", "INT", "AGI" };
             Assert.AreEqual(Constants.ABS_F, tree.Token.Value);
@@ -104,7 +105,7 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[0];
+            TokenNode subNode = tree.Parameters[0];
             for (int i = 0; i < subNode.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
         }
@@ -113,7 +114,7 @@ namespace ParserTest
         public void TreeBuilderMixOfOperatorsAndFunctions()
         {
             string expression = $"{Constants.MAX_F}(STR,AGI) + {Constants.MIN_F}(10,INT)";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = {Constants.MAX_F, Constants.MIN_F };
             string[] nestedExpect = { "STR", "AGI" };
             string[] nestedExpect2 = { "10", "INT" };
@@ -123,12 +124,12 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[0];
+            TokenNode subNode = tree.Parameters[0];
             for (int i = 0; i < subNode.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
 
 
-            SyntacticNode subNode2 = tree.Parameters[1];
+            TokenNode subNode2 = tree.Parameters[1];
             for (int i = 0; i < subNode2.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect2[i], subNode2.Parameters[i].Token.Value);
         }
@@ -137,7 +138,7 @@ namespace ParserTest
         public void TreeBuilderUnaryOperator()
         {
             string expression = "!(X>Y)";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { ">"};
             string[] nestedExpect = { "X", "Y" };
             Assert.AreEqual("!", tree.Token.Value);
@@ -146,7 +147,7 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[0];
+            TokenNode subNode = tree.Parameters[0];
             for (int i = 0; i < subNode.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);
         }
@@ -155,7 +156,7 @@ namespace ParserTest
         public void TreeBuilderBooleanOperatorPrecedence()
         {
             string expression = "X>Y+Z";
-            SyntacticNode tree = TreeBuilder.ExprToTree(expression);
+            TokenNode tree = TreeBuilder.ExprToTree(expression);
             string[] expected = { "X","+" };
             string[] nestedExpect = { "Y", "Z" };
             Assert.AreEqual(">", tree.Token.Value);
@@ -164,7 +165,7 @@ namespace ParserTest
             for (int i = 0; i < tree.Parameters.Count; ++i)
                 Assert.AreEqual(expected[i], tree.Parameters[i].Token.Value);
 
-            SyntacticNode subNode = tree.Parameters[1];
+            TokenNode subNode = tree.Parameters[1];
             Assert.AreEqual(nestedExpect.Length, subNode.Parameters.Count);
             for (int i = 0; i < subNode.Parameters.Count; ++i)
                 Assert.AreEqual(nestedExpect[i], subNode.Parameters[i].Token.Value);

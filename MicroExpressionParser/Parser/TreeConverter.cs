@@ -11,7 +11,7 @@
     public static class TreeConverter
     {
 
-        public static MeNode Convert(MeNode parent, SyntacticNode node, IGameEngine engine)
+        public static MeNode Convert(MeNode parent, TokenNode node, IGameEngine engine)
         {
             MeNode newNode = null;
             switch (node.Token.Type)
@@ -74,7 +74,7 @@
                     }
             }
 
-            foreach (SyntacticNode subNode in node.Parameters)
+            foreach (TokenNode subNode in node.Parameters)
             {
                 newNode.Leaves.Add(Convert(newNode, subNode, engine));
             }
@@ -131,7 +131,7 @@
 
         public static MeNode BuildTree(Token[] tokens, IGameEngine engine)
         {
-            SyntacticNode tree = TreeBuilder.MakeTree(InfixToPostfix.ToPostfix(tokens));
+            TokenNode tree = TreeBuilder.MakeTree(InfixToPostfix.ToPostfix(tokens));
             return Convert(null, tree, engine);
         }
 

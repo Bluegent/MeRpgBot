@@ -1,60 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace RPGEngine.Parser
 {
+    using System;
+    using System.Collections.Generic;
+
+    using MicroExpressionParser;
     using MicroExpressionParser.Parser;
 
-    using RPGEngine.Parser;
-
-    public class TreeBuilderException : Exception
-    {
-        public TreeBuilderException(String msg) : base(msg) { }
-    }
-
-    public class SyntacticNode
+    public class TokenNode
     {
         public Token Token { get; }
-        public List<SyntacticNode> Parameters { get; }
+        public List<TokenNode> Parameters { get; }
 
-        public SyntacticNode(Token token)
+        public TokenNode(Token token)
         {
-            this.Token = token;
-            this.Parameters = new List<SyntacticNode>();
+            Token = token;
+            Parameters = new List<TokenNode>();
         }
     }
 
     public static class TreeBuilder
     {
 
-        public static SyntacticNode ExprToTree(String expression)
+        public static TokenNode ExprToTree(string expression)
         {
             Token[] postFix = InfixToPostfix.ExprToPostifx(expression);
             return MakeTree(postFix);
         }
 
-        public static SyntacticNode MakeTree(Token[] postfix)
+        public static TokenNode MakeTree(Token[] postfix)
         {
-            Stack<SyntacticNode> nodeStack = new Stack<SyntacticNode>();
+            Stack<TokenNode> nodeStack = new Stack<TokenNode>();
             foreach(Token tok in postfix)
             {
                 switch (tok.Type)
                 {
                     case TokenType.LeftParen:
                         {
-                            nodeStack.Push(new SyntacticNode(tok));
+                            nodeStack.Push(new TokenNode(tok));
                             break;
                         }
 
                     case TokenType.Operator:
                         {
-                            SyntacticNode node = new SyntacticNode(tok);
+                            TokenNode node = new TokenNode(tok);
                             for (int i = 0; i < ParserConstants.Operators[tok.Value].OperatorCount;++i)
                             {
                                 if(nodeStack.Count == 0 || nodeStack.Peek().Token.Type == TokenType.LeftParen)
-                                    throw new TreeBuilderException("Paramether(s) missing for operator " + tok.Value + " .");
+                                    throw new MeException("Parameter(s) missing for operator " + tok.Value + " .");
                                 node.Parameters.Add(nodeStack.Pop());
                             }
                             nodeStack.Push(node);
@@ -63,7 +55,7 @@ namespace MicroExpressionParser
                         }
                     case TokenType.Function:
                         {
-                            SyntacticNode node = new SyntacticNode(tok);
+                            TokenNode node = new TokenNode(tok);
                             while (nodeStack.Count != 0 && nodeStack.Peek().Token.Type != TokenType.LeftParen)
                             {
                                 node.Parameters.Add(nodeStack.Pop());
@@ -71,7 +63,7 @@ namespace MicroExpressionParser
 
                             if (nodeStack.Count == 0)
                             {
-                                throw new TreeBuilderException("No parenthesis found for function "+tok.Value+" .");
+                                throw new MeException("No parenthesis found for function "+tok.Value+" .");
                             }
                             nodeStack.Pop();
                             node.Parameters.Reverse();
@@ -81,7 +73,7 @@ namespace MicroExpressionParser
 
                     case TokenType.Variable:
                         {
-                            nodeStack.Push(new SyntacticNode(tok));
+                            nodeStack.Push(new TokenNode(tok));
                             break;
                         }
                 }
