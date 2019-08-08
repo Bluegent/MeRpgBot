@@ -1,5 +1,6 @@
 ﻿namespace RPGEngine.Core
 {
+    using System;
     using System.Collections.Generic;
 
     using MicroExpressionParser;
@@ -113,13 +114,22 @@
 
         private void AddStatusFromTemplate(StatusTemplate status, Entity source, double duration, double[] values)
         {
-            long removeTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
+            long removeTime = GetRemoveTime(duration);
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
             MeNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
         }
 
+        private long GetRemoveTime(double duration)
+        {
+            if(duration >0.0)
+                return Engine.GetTimer().GetNow() + (long)duration * 1000;
+            else
+            {
+                return 0;
+            }
+        }
         public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
         {
             switch (status.Type)
@@ -162,7 +172,7 @@
             List<AppliedStatus> remove = new List<AppliedStatus>();
             foreach (AppliedStatus status in Statuses)
             {
-                if (status.RemovalTime < now)
+                if (status.RemovalTime !=0 && status.RemovalTime < now)
                     remove.Add(status);
             }
 
