@@ -1,11 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MicroExpressionParser;
-using MicroExpressionParser.Core;
-
-namespace ParserTest
+﻿namespace EngineTest.Parser
 {
-    using MicroExpressionParser.Parser;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using RPGEngine.Core;
     using RPGEngine.Language;

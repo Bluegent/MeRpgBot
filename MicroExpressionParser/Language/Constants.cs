@@ -10,7 +10,7 @@
         public const string DIVIDE_OP = "/";
         public const string GREATER_OP = ">";
         public const string LESSER_OP = "<";
-        public const string EQUAL_OP = "=";
+        public const string EQUAL_OP = "==";
         public const string NOT_OP = "!";
 
         //Functions

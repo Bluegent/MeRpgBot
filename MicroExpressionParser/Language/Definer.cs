@@ -13,6 +13,8 @@
         private static readonly  Definer Instance = new Definer();
         public Dictionary<string, Operator> Operators;
         public Dictionary<string, Function> Functions;
+
+        private List<char> operatorChars;
         private bool _initialized;
 
         public static Definer Get()
@@ -23,11 +25,20 @@
         private Definer()
         {
             _initialized = false;
+            operatorChars = new List<char>();
+
+            Operators = new Dictionary<string, Operator>();
+            Functions = new Dictionary<string, Function>();
+        }
+
+        public bool IsOperatorChar(char c)
+        {
+            return operatorChars.Contains(c);
         }
 
         public bool IsSpecialChar(char c)
         {
-            return c == Constants.PARAM_SEPARATOR || c == Constants.LEFT_PAREN || c == Constants.RIGHT_PAREN || IsOperator(char.ToString(c));
+            return c == Constants.PARAM_SEPARATOR || c == Constants.LEFT_PAREN || c == Constants.RIGHT_PAREN || IsOperatorChar(c);
         }
 
         public bool IsSeparator(string str)
@@ -77,6 +88,11 @@
             Operator op = new Operator(character, precedence, leftAssoc, opCount);
             op.Operation = operation;
             Operators.Add(op.Character, op);
+            foreach (char c in character)
+            {
+                if(!operatorChars.Contains(c))
+                    operatorChars.Add(c);
+            }
         }
 
         private void AddFunction(string name, Func<MeVariable[], Function, MeVariable> operation, int parameterCount = -1, bool[] executeInPlace = null)
@@ -91,8 +107,6 @@
                 return;
             _initialized = true;
 
-            Operators = new Dictionary<string, Operator>();
-            Functions = new Dictionary<string, Function>();
 
             AddOperator(Constants.PLUS_OP, 1, true,
             (values, op) =>
@@ -233,6 +247,7 @@
                     func.ValidateParameters(values.Length);
                     Entity[] players = engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
+                    Console.WriteLine($"player num {players.Length} {engine.ToString()}");
                     foreach (Entity entity in players)
                     {
                         playerList.Add(entity);

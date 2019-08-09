@@ -3,7 +3,9 @@
     using System.Collections.Generic;
 
     using MicroExpressionParser;
-    using MicroExpressionParser.Parser;
+
+    using RPGEngine.Core;
+    using RPGEngine.Language;
 
     public static class InfixToPostfix
     { 
@@ -18,8 +20,8 @@
             Token nextTok = opStack.Count == 0 ? null : opStack.Peek();
             while (nextTok != null &&
                 nextTok.Type == TokenType.Operator &&
-                ((op.LeftAsoc && op.Precedence <= ParserConstants.Operators[nextTok.Value].Precedence)
-                || (op.Precedence < ParserConstants.Operators[nextTok.Value].Precedence))
+                ((op.LeftAsoc && op.Precedence <= Definer.Get().Operators[nextTok.Value].Precedence)
+                || (op.Precedence < Definer.Get().Operators[nextTok.Value].Precedence))
                 )
             {
                 postfix.Add(opStack.Pop());
@@ -79,7 +81,7 @@
                                 throw new MeException("Missing parameter(s) for operator " + tok.Value + " .");
                             }
 
-                            Operator op = ParserConstants.Operators[tok.Value];
+                            Operator op = Definer.Get().Operators[tok.Value];
                             ShuntOperators(postFix, opStack, op);
                             opStack.Push(tok);
                             break;

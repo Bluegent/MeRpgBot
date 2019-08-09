@@ -1,5 +1,6 @@
 ﻿namespace RPGEngine.Core
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -36,7 +37,6 @@
         private Dictionary<string,StatusTemplate> statuses;
         public GameEngine()
         {
-            MicroExpressionParser.Parser.ParserConstants.Init(this);
             Definer.Get().Init(this);
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
@@ -49,6 +49,7 @@
 
         public void AddPlayer(Entity entity)
         {
+            Console.WriteLine($"Adding player with key {entity.Key}");
             Players.Add(entity.Key, entity);
         }
 

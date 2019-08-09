@@ -61,7 +61,6 @@ namespace RPGEngine.Parser
             switch (node.Value.Type)
             {
                 case VariableType.Function:
-
                     List<MeVariable> parameters = new List<MeVariable>();
                     foreach (MeNode subNode in node.Leaves)
                     {

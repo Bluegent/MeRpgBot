@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MicroExpressionParser
+﻿namespace RPGEngine.Core
 {
-    using System.Threading;
+    using System;
 
-    using MicroExpressionParser.Parser;
-
-    using RPGEngine.Core;
+    using RPGEngine.Language;
 
     public class MeException : Exception
     {
@@ -103,10 +96,10 @@ namespace MicroExpressionParser
             return (Operator)Value;
         }
 
-        public AbstractFunction ToFunction()
+        public Function ToFunction()
         {
             ValidateType(VariableType.Function);
-            return (AbstractFunction)Value;
+            return (Function)Value;
         }
 
         public MeVariable[] ToArray()

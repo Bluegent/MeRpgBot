@@ -4,6 +4,8 @@
 
     using MicroExpressionParser;
 
+    using RPGEngine.Core;
+
     public class Operator
     {
         public string Character { get; }

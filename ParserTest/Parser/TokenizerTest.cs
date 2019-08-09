@@ -114,6 +114,17 @@
                 Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
         }
 
+        [TestMethod]
+        public void TokenizerTestMulticharOperator()
+        {
+            string expression = "10 == 3";
+            Token[] resultTokens = Tokenizer.Tokenize(expression);
+            String[] expectedTokens = { "10", "==","3" };
+            Assert.AreEqual(expectedTokens.Length, resultTokens.Length);
+            for (int i = 0; i < resultTokens.Length; ++i)
+                Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
+        }
+
 
     }
 }

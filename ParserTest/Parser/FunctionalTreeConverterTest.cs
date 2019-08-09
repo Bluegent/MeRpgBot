@@ -1,6 +1,6 @@
 ﻿namespace EngineTest.Parser
 {
-    using MicroExpressionParser;
+    using System;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,14 +11,15 @@
     [TestClass]
     public class FunctionalTreeConverterTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
-
-        public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+        public static GameEngine Engine;
+        public static Entity MockPlayer;
 
         [ClassInitialize]
-        public static void StartUp(TestContext context)
+        public static void StartUp(TestContext ctx)
         {
-
+            Console.WriteLine("START UP");
+            Engine = new GameEngine();
+            MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             Engine.AddPlayer(MockPlayer);
             DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
             Engine.AddDamageType(trueDamage);
@@ -105,10 +106,13 @@
         [TestMethod]
         public void FunctionalTreeConverterTestFunctionWithNoParameters()
         {
+            
             string expression = $"{Constants.GET_PLAYERS_F}()";
             string expected = "MOCK_PLAYER";
-            MeVariable player = TreeResolver.Resolve(expression, Engine).Value.ToArray()[0];
-            Assert.AreEqual(expected, player.ToEntity().Name);
+            Token[] tokens = Tokenizer.Tokenize(expression);
+            MeVariable[] players = TreeResolver.Resolve(tokens, Engine).Value.ToArray();
+            Assert.AreEqual(1,players.Length);
+            Assert.AreEqual(expected, players[0].ToEntity().Name);
         }
 
         [TestMethod]

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
 
     using MicroExpressionParser;
-    using MicroExpressionParser.Parser;
 
     using RPGEngine.Language;
 
@@ -123,7 +122,7 @@
 
         private long GetRemoveTime(double duration)
         {
-            if(duration >0.0)
+            if (duration > 0.0)
                 return Engine.GetTimer().GetNow() + (long)duration * 1000;
             else
             {
@@ -137,7 +136,7 @@
                 case StackingType.Refresh:
                     {
                         AppliedStatus refresh = GetStatusInstance(status.Key);
-                        if(refresh!=null)
+                        if (refresh != null)
                             refresh.RemovalTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
                         break;
                     }
@@ -163,7 +162,7 @@
                         break;
                     }
             }
-            
+
         }
 
         private void RemoveExpiredStatuses()
@@ -172,7 +171,7 @@
             List<AppliedStatus> remove = new List<AppliedStatus>();
             foreach (AppliedStatus status in Statuses)
             {
-                if (status.RemovalTime !=0 && status.RemovalTime < now)
+                if (status.RemovalTime != 0 && status.RemovalTime < now)
                     remove.Add(status);
             }
 
@@ -207,7 +206,7 @@
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && tree.Value.Value == ParserConstants.Functions[Constants.MOD_VALUE_F])
+                            && tree.Value.Value == Definer.Get().Functions[Constants.MOD_VALUE_F])
                         {
                             StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
                             FinalStats[mod.StatKey] += mod.Amount;
@@ -225,8 +224,8 @@
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && (tree.Value.Value == ParserConstants.Functions[Constants.HARM_F]
-                                || tree.Value.Value == ParserConstants.Functions[Constants.HEAL_F]))
+                            && (tree.Value.Value == Definer.Get().Functions[Constants.HARM_F]
+                                || tree.Value.Value == Definer.Get().Functions[Constants.HEAL_F]))
                         {
                             MeNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);

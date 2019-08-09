@@ -4,9 +4,8 @@
     using System.Collections.Generic;
 
     using MicroExpressionParser;
-    using MicroExpressionParser.Parser;
-
     using RPGEngine.Core;
+    using RPGEngine.Language;
 
     public static class TreeConverter
     {
@@ -20,7 +19,7 @@
                     {
                         newNode = new MeNode(new MeVariable()
                         {
-                            Value = ParserConstants.Functions[node.Token.Value],
+                            Value = Definer.Get().Functions[node.Token.Value],
                             Type = VariableType.Function
                         });
                         break;
@@ -30,7 +29,7 @@
                     {
                         newNode = new MeNode(new MeVariable()
                         {
-                            Value = ParserConstants.Operators[node.Token.Value],
+                            Value = Definer.Get().Operators[node.Token.Value],
                             Type = VariableType.Operator
                         });
                         break;

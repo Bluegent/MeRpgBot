@@ -63,7 +63,6 @@
     <Compile Include="Data\StatusEffect.cs" />
     <Compile Include="Parser\InfixToPostfix.cs" />
     <Compile Include="Parser\TreeConverter.cs" />
-    <Compile Include="Parser\ParserConstants.cs" />
     <Compile Include="Parser\Token.cs" />
     <Compile Include="Parser\TreeResolver.cs" />
     <Compile Include="Program.cs" />

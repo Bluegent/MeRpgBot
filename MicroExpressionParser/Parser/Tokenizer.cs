@@ -3,8 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices;
 
-    using MicroExpressionParser.Parser;
+    using RPGEngine.Language;
 
     public static class Tokenizer
     {
@@ -18,9 +19,11 @@
             List<Token> result = new List<Token>();
             string sanitized = Sanitize(expression);            
             string current = "";
-            foreach (char c in sanitized)
+            int i = 0;
+            while (i< sanitized.Length)
             {
-                if (!ParserConstants.IsSpecialChar(c))
+                char c = sanitized[i];
+                if (!Definer.Get().IsSpecialChar(c))
                 {
                     current += c;
                 }
@@ -48,6 +51,7 @@
                             current = "-";
                             break;
                     }
+                    //eventually consider -=
                 }
                 else
                 {
@@ -56,8 +60,25 @@
                         result.Add(new Token(current));
                         current = "";                       
                     }
-                    result.Add(new Token(char.ToString(c)));
+                    if (i < sanitized.Length - 1 &&Definer.Get().IsOperatorChar(c) &&Definer.Get().IsOperatorChar(sanitized[i + 1]))
+                    {
+                        string possibleOp = char.ToString(c) + sanitized[i + 1];
+                        if (Definer.Get().IsOperator(possibleOp))
+                        {
+                            result.Add(new Token(possibleOp));
+                            ++i;
+                        }
+
+                       
+                    }
+                    else
+                    {
+                        result.Add(new Token(char.ToString(c)));
+                    }
+                   
                 }
+
+                ++i;
             }
             if (current.Length != 0)
                 result.Add(new Token(current));

@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
 
-    using MicroExpressionParser;
-    using MicroExpressionParser.Parser;
+    using RPGEngine.Core;
+    using RPGEngine.Language;
 
     public class TokenNode
     {
@@ -43,7 +43,7 @@
                     case TokenType.Operator:
                         {
                             TokenNode node = new TokenNode(tok);
-                            for (int i = 0; i < ParserConstants.Operators[tok.Value].OperatorCount;++i)
+                            for (int i = 0; i < Definer.Get().Operators[tok.Value].OperatorCount;++i)
                             {
                                 if(nodeStack.Count == 0 || nodeStack.Peek().Token.Type == TokenType.LeftParen)
                                     throw new MeException("Parameter(s) missing for operator " + tok.Value + " .");
@@ -80,5 +80,9 @@
             }
             return nodeStack.Pop();
         }
+    }
+
+    public class Definger
+    {
     }
 }

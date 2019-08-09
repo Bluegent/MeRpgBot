@@ -4,6 +4,8 @@
 
     using MicroExpressionParser;
 
+    using RPGEngine.Core;
+
     public class Function
     {
         public string Name { get; set; }

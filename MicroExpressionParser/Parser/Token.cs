@@ -5,8 +5,6 @@ using System.Text;
 
 namespace RPGEngine.Parser
 {
-    using MicroExpressionParser.Parser;
-
     using RPGEngine.Language;
 
     public enum TokenType
