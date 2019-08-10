@@ -18,7 +18,6 @@
         public static void StartUp(TestContext ctx)
         {
             
-            Console.WriteLine("START UP");
             Engine = new GameEngine();
             Definer.Get().Engine = Engine;
             MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };

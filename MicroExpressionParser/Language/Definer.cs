@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Language
+﻿using RPGEngine.Utils;
+
+namespace RPGEngine.Language
 {
     using System;
     using System.Collections.Generic;
@@ -177,8 +179,24 @@
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
-                    return values[0].ToDouble() == values[1].ToDouble();
+                    return Utility.DoubleEq(values[0].ToDouble(), values[1].ToDouble());
                 });
+
+            AddOperator(Constants.ASSIGN_OP, 6, true, (values, op) =>
+               {
+                   op.ValidateParameters(values.Length);
+                   string key = values[0].ToString();
+                   MeVariable engineHas = Definer.Get().Engine.GetVariable(key);
+                   if (engineHas == null)
+                   {
+                       Definer.Get().Engine.AddVariable(key,values[1]);
+                   }
+                   else
+                   {
+                       Definer.Get().Engine.SetVariable(key,values[1]);
+                   }
+                   return null;
+               },2);
 
             AddFunction(Constants.MAX_F,
                 (values, func) =>
@@ -346,6 +364,7 @@
                (values, func) =>
                {
                    //APPLYSTATUS(target,Source,status_key,duration,amounts)
+                   func.ValidateParameters(values.Length);
                    Entity target = values[0].ToEntity();
                    Entity source = values[1].ToEntity();
                    StatusTemplate effect = Definer.Get().Engine.GetStatusByKey(values[2].ToString());
@@ -356,6 +375,13 @@
                    //TODO:construct a statusEffect
                    return null;
                }, 5);
+            AddFunction(Constants.GET_F, 
+                (values, func) =>
+            {
+                func.ValidateParameters(values.Length);
+                string key = values[0].ToString();
+                return Definer.Get().Engine.GetVariable(key); ;
+            },1);
 
         }
     }

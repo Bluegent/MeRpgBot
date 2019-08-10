@@ -16,5 +16,10 @@ namespace RPGEngine.Utils
             int dice = Generator.Next(0, 1000);
             return dice < input;
         }
+
+        public static bool DoubleEq(double a, double b)
+        {
+            return Math.Abs(a - b) < 0.0000000000001;
+        }
     }
 }

@@ -131,14 +131,17 @@ namespace MicroExpressionParser
 
         }
 
-        public MeNode[] SplitStatus(string expression)
+        public MeNode[] SplitAndResolve(string expression)
         {
             string[] lines = expression.Split(Constants.FUNCTION_SEPARATOR);
             List<MeNode> result = new List<MeNode>();
             foreach (string expr in lines)
             {
-                Token[] tokens = Tokenizer.Tokenize(expr);
-                result.Add(TreeConverter.Build(tokens, _engine));
+                if (expr.Length != 0)
+                {
+                    Token[] tokens = Tokenizer.Tokenize(expr);
+                    result.Add(TreeConverter.Build(tokens, _engine));
+                }
             }
 
             return result.ToArray();

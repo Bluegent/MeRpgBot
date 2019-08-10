@@ -11,6 +11,7 @@
         public const string GREATER_OP = ">";
         public const string LESSER_OP = "<";
         public const string EQUAL_OP = "==";
+        public const string ASSIGN_OP = "=";
         public const string NOT_OP = "!";
 
         //Functions
@@ -20,7 +21,7 @@
         public const string MIN_F = "MIN";
         public const string ABS_F = "ABS";
         public const string RANDOM_F = "RANDOM";
-        public const string GET_PROP_F = "GET_PROP";
+        public const string GET_PROP_F = "PROP";
         public const string GET_PLAYERS_F = "GET_PLAYERS";
         public const string GET_ACTIVE_PLAYERS_F = "GET_ACTIVE_PLAYERS";
         public const string NON_NEG_F = "NON_NEG";
@@ -31,6 +32,8 @@
         public const string CAST_F = "CAST";
         public const string MOD_VALUE_F = "MOD_VALUE";
         public const string APPLY_F = "APPLY";
+        public const string GET_F = "GET";
+       
 
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
