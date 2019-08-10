@@ -182,7 +182,7 @@ namespace RPGEngine.Language
                     return Utility.DoubleEq(values[0].ToDouble(), values[1].ToDouble());
                 });
 
-            AddOperator(Constants.ASSIGN_OP, 6, true, (values, op) =>
+            AddOperator(Constants.ASSIGN_OP, -1, true, (values, op) =>
                {
                    op.ValidateParameters(values.Length);
                    string key = values[0].ToString();

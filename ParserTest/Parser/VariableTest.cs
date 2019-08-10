@@ -82,6 +82,28 @@ namespace EngineTest.Parser
             Assert.IsNotNull(result);
             Assert.AreEqual(numbers.Max(), result.ToDouble());
         }
+
+        [TestMethod]
+        public void VariableTestAssignFromFunctionWithOp()
+        {
+            string varName = "testVar";
+            double[] numbers = { 10, 11, 12 };
+            double addedNumber = 5;
+            StringBuilder sb = new StringBuilder();
+            foreach (double num in numbers)
+            {
+                sb.Append(num);
+                sb.Append(",");
+            }
+            sb.Remove(sb.Length - 1, 1);
+
+            string expression = $"{varName} {Constants.ASSIGN_OP} {Constants.MAX_F}({sb.ToString()})+{addedNumber}";
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            tree.Resolve();
+            MeVariable result = Engine.GetVariable(varName);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(numbers.Max()+addedNumber, result.ToDouble());
+        }
     }
 }
 
