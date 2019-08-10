@@ -16,6 +16,7 @@
 
         private List<char> operatorChars;
         private bool _initialized;
+        public IGameEngine Engine { get; set; }
 
         public static Definer Get()
         {
@@ -101,13 +102,21 @@
             func.Operation = operation;
             Functions.Add(func.Name, func);
         }
+
+        public void Deinit()
+        {
+            Operators.Clear();
+            Functions.Clear();
+            operatorChars.Clear();
+            _initialized = false;
+        }
         public void Init(IGameEngine engine)
         {
             if (_initialized)
                 return;
             _initialized = true;
 
-
+            Engine = engine;
             AddOperator(Constants.PLUS_OP, 1, true,
             (values, op) =>
             {
@@ -245,9 +254,8 @@
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
-                    Entity[] players = engine.GetAllPlayers();
+                    Entity[] players = Definer.Get().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
-                    Console.WriteLine($"player num {players.Length} {engine.ToString()}");
                     foreach (Entity entity in players)
                     {
                         playerList.Add(entity);
@@ -260,7 +268,7 @@
                 {
                     func.ValidateParameters(values.Length);
                     //TODO: Implement retrieving ONLY active players
-                    Entity[] players = engine.GetAllPlayers();
+                    Entity[] players = Definer.Get().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
                     foreach (Entity entity in players)
                     {
@@ -340,7 +348,7 @@
                    //APPLYSTATUS(target,Source,status_key,duration,amounts)
                    Entity target = values[0].ToEntity();
                    Entity source = values[1].ToEntity();
-                   StatusTemplate effect = engine.GetStatusByKey(values[2].ToString());
+                   StatusTemplate effect = Definer.Get().Engine.GetStatusByKey(values[2].ToString());
                    double duration = values[3].ToDouble();
                    double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
                    func.ValidateParameters(values.Length);
