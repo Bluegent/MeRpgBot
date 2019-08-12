@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EngineTest.Parser
@@ -21,6 +22,7 @@ namespace EngineTest.Parser
         {
 
             Engine.AddPlayer(MockPlayer);
+            Definer.Get().Engine = Engine;
         }
 
         [TestMethod]
@@ -30,6 +32,31 @@ namespace EngineTest.Parser
             MeNode tree = TreeConverter.Build(expression, Engine);
             MeNode partiallyResolved = TreeResolver.ResolveGivenFunction(tree, Constants.GET_PROP_F);
             Assert.AreEqual(tree.Value.Type, partiallyResolved.Value.Type);
+
+        }
+
+
+        [TestMethod]
+        public void TreeResolverTestArrayProperty()
+        {
+            string expression = $"{Constants.ARRAY_F}(10,11,12){Constants.PROP_OP}{Constants.ARR_LENGTH}";
+            double expected = 3;
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            MeNode result = tree.Resolve();
+            Assert.AreEqual(expected, result.Value.ToDouble());
+
+        }
+
+
+        [TestMethod]
+        public void TreeResolverTestEntityProperty()
+        {
+            string strKey = "STR";
+            string expression = $"{MockPlayer.Key}{Constants.PROP_OP}{strKey}";
+            double expected = MockPlayer.GetProperty(strKey).Value;
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            MeNode result = tree.Resolve();
+            Assert.AreEqual(expected, result.Value.ToDouble());
 
         }
     }

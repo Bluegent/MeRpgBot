@@ -66,6 +66,13 @@
                                 new MeVariable() { Value = tryDamageType, Type = VariableType.DamageType });
                             break;
                         }
+                        /*
+                        MeVariable tryVariable = engine.GetVariable(node.Token.Value);
+                        if (tryVariable != null)
+                        {
+                            newNode = new MeNode(tryVariable);
+                            break;
+                        } */          
 
                         newNode = new MeNode(
                                 new MeVariable() { Value = node.Token.Value, Type = VariableType.String });

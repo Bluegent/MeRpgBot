@@ -1,4 +1,5 @@
-﻿using RPGEngine.Utils;
+﻿using System.Windows.Markup;
+using RPGEngine.Utils;
 
 namespace RPGEngine.Language
 {
@@ -186,17 +187,48 @@ namespace RPGEngine.Language
                {
                    op.ValidateParameters(values.Length);
                    string key = values[0].ToString();
-                   MeVariable engineHas = Definer.Get().Engine.GetVariable(key);
-                   if (engineHas == null)
+                   MeVariable leftSide = Definer.Get().Engine.GetVariable(key);
+                   MeVariable rightSide = values[1];
+                   if (rightSide.Type == VariableType.String)
                    {
-                       Definer.Get().Engine.AddVariable(key,values[1]);
+                       rightSide = Definer.Get().Engine.GetVariable(rightSide.Value.ToString());
+                   }
+                   if (leftSide == null)
+                   {
+                       Definer.Get().Engine.AddVariable(key, rightSide);
                    }
                    else
                    {
-                       Definer.Get().Engine.SetVariable(key,values[1]);
+                       Definer.Get().Engine.SetVariable(key, rightSide);
                    }
                    return null;
                },2);
+
+            AddOperator(Constants.PROP_OP, 20, true, (values, op) =>
+                  {
+                  op.ValidateParameters(values.Length);
+                  string key = values[1].ToString();
+                  MeVariable var = values[0];
+                  switch (var.Type)
+                  {
+                      case VariableType.Array:
+                      {
+                          if (key.Equals(Constants.ARR_LENGTH))
+                              {
+                                  return var.ToArray().Length;
+                              }
+                          throw new MeException($"Attempting to retrieve undefined property \"{key}\" from array.");
+                      }
+                      case VariableType.Entity:
+                      {
+
+                          return var.ToEntity().GetProperty(key).Value;
+                      }    
+                             
+                    }
+                      throw new MeException($"Attempting to retrieve undefined property \"{key}\" from variable \"{var}\"");
+                  }
+            ,2);
 
             AddFunction(Constants.MAX_F,
                 (values, func) =>

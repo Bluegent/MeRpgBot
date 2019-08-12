@@ -22,7 +22,7 @@
 
         public bool Precedes(Operator other)
         {
-            return this.Precedence > other.Precedence;
+            return Precedence > other.Precedence;
         }
 
         public bool IsUnary()

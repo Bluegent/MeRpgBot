@@ -104,6 +104,26 @@ namespace EngineTest.Parser
             Assert.IsNotNull(result);
             Assert.AreEqual(numbers.Max()+addedNumber, result.ToDouble());
         }
+
+
+
+        [TestMethod]
+        public void VariableTestSimpleReference()
+        {
+            string varName = "testVar";
+            string varName2 = "otherVar";
+            double number = 3.14;
+
+            string expression = $"{varName} {Constants.ASSIGN_OP} {number}; {varName2} {Constants.ASSIGN_OP} {varName};";
+            MeNode[] trees = Engine.GetSanitizer().SplitAndResolve(expression);
+            foreach (MeNode node in trees)
+                node.Resolve();
+            MeVariable result = Engine.GetVariable(varName);
+            MeVariable other = Engine.GetVariable(varName2);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(other);
+            Assert.AreEqual(other.ToDouble(), result.ToDouble());
+        }
     }
 }
 

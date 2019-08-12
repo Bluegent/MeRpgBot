@@ -13,6 +13,7 @@
         public const string EQUAL_OP = "==";
         public const string ASSIGN_OP = "=";
         public const string NOT_OP = "!";
+        public const string PROP_OP = "::";
 
         //Functions
         public const string HARM_F = "HARM";
@@ -47,5 +48,8 @@
         public static readonly string ValueKeyword = SPECIAL_CHAR + "V";
 
         public const char FUNCTION_SEPARATOR = ';';
+
+
+        public const string ARR_LENGTH = "LENGTH";
     }
 }
