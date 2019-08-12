@@ -75,6 +75,9 @@
     <Compile Include="Core\DamageType.cs" />
     <Compile Include="Core\MeNode.cs" />
     <Compile Include="Core\StatusTemplate.cs" />
+    <Compile Include="GameConfigReader\BaseObject.cs" />
+    <Compile Include="GameConfigReader\GcConstants.cs" />
+    <Compile Include="GameConfigReader\StatusReader.cs" />
     <Compile Include="Language\Function.cs" />
     <Compile Include="Language\Definer.cs" />
     <Compile Include="Language\Operator.cs" />

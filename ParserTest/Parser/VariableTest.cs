@@ -52,7 +52,7 @@ namespace EngineTest.Parser
             double number = 3.14;
 
             string expression = $"{varName} {Constants.ASSIGN_OP} {number}; {varName2} {Constants.ASSIGN_OP} {Constants.GET_F}({varName});";
-            MeNode[] trees = Engine.GetSanitizer().SplitAndResolve(expression);
+            MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
              foreach (MeNode node in trees)
                  node.Resolve();
             MeVariable result = Engine.GetVariable(varName);
@@ -115,7 +115,7 @@ namespace EngineTest.Parser
             double number = 3.14;
 
             string expression = $"{varName} {Constants.ASSIGN_OP} {number}; {varName2} {Constants.ASSIGN_OP} {varName};";
-            MeNode[] trees = Engine.GetSanitizer().SplitAndResolve(expression);
+            MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();
             MeVariable result = Engine.GetVariable(varName);
@@ -133,7 +133,7 @@ namespace EngineTest.Parser
             string propKey = "STR";
             double expected = MockPlayer.GetProperty(propKey).Value;
             string expression = $"{varName} {Constants.ASSIGN_OP} {MockPlayer.Key}{Constants.PROP_OP}{propKey}";
-            MeNode[] trees = Engine.GetSanitizer().SplitAndResolve(expression);
+            MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();
             MeVariable result = Engine.GetVariable(varName);

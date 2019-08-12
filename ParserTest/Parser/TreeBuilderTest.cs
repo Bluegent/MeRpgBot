@@ -13,7 +13,7 @@ namespace ParserTest
     using RPGEngine.Parser;
 
     /// <summary>
-    /// Summary description for UnitTest1
+    /// Summary description for BaseObjectTest
     /// </summary>
     [TestClass]
     public class TreeBuilderTest

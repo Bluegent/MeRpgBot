@@ -63,6 +63,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Core\EntityTest.cs" />
+    <Compile Include="GameConfigReader\StatusReaderTest.cs" />
+    <Compile Include="GameConfigReader\BaseObjectTest.cs" />
     <Compile Include="Parser\ConverterTest.cs" />
     <Compile Include="Parser\FunctionalTreeConverterTest.cs" />
     <Compile Include="Parser\TreeResolverTest.cs" />
@@ -90,6 +92,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

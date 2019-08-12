@@ -131,7 +131,7 @@ namespace MicroExpressionParser
 
         }
 
-        public MeNode[] SplitAndResolve(string expression)
+        public MeNode[] SplitAndConvert(string expression)
         {
             string[] lines = expression.Split(Constants.FUNCTION_SEPARATOR);
             List<MeNode> result = new List<MeNode>();
