@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\DamageType.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
     <Compile Include="Core\StatusTemplate.cs" />
     <Compile Include="GameConfigReader\BaseObject.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Parser\TreeBuilder.cs" />
     <Compile Include="Data\ValueByLevel.cs" />
+    <Compile Include="Logging\LogHelper.cs" />
     <Compile Include="Sanitizer\Sanitizer.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>

@@ -45,7 +45,7 @@ namespace RPGEngine.Core
         public GameEngine()
         {
             Definer.Get().Init(this);
-            _log = new DiscordLogHelper(new DiscordLogger());
+            _log = new DiscordLogHelper(new ConsoleLogger());
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();

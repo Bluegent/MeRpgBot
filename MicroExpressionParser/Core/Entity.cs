@@ -60,10 +60,17 @@
         public override void TakeDamage(double amount, DamageType type, Entity source, bool log = true)
         {
             if (type.GetDodge(source, this))
+            {
+                if(log)
+                    Engine.Log().LogDodge(this,source);
                 return;
+            }
             double actualAmount = type.GetMitigatedAmount(amount, source, this);
+            double resisted = amount - actualAmount;
             FinalStats["CHP"] -= actualAmount;
             StatMap["CHP"] -= actualAmount;
+            if(log)
+                Engine.Log().LogDamage(this,source,type,amount, resisted);
         }
 
         public override void GetHealed(double amount, Entity source, bool log = true)
@@ -115,7 +122,7 @@
         {
             long removeTime = GetRemoveTime(duration);
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
-            MeNode intervalTree = Engine.GetSanitizer().SanitizeSkillEntities(status.Interval, source, this);
+            MeNode intervalTree = Engine.GetSanitizer().ReplaceTargetAndSource(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
         }
@@ -227,7 +234,7 @@
                             && (tree.Value.Value == Definer.Get().Functions[Constants.HARM_F]
                                 || tree.Value.Value == Definer.Get().Functions[Constants.HEAL_F]))
                         {
-                            MeNode newTree = Engine.GetSanitizer().SanitizeSkillEntities(tree, status.Source, this);
+                            MeNode newTree = Engine.GetSanitizer().ReplaceTargetAndSource(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
                             newTree.Resolve();
                         }

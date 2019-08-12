@@ -18,17 +18,23 @@
         public static void StartUp(TestContext context)
         {
             DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            trueDamage.Name = "true";
             DamageType alwaysCrit = new DamageType(Engine, "AC", null, null, "100", "2");
+            alwaysCrit.Name = "always_crit";
             DamageType alwaysDodge = new DamageType(Engine, "AD", null, "100", null, null);
+            alwaysDodge.Name = "always_dodge";
+            DamageType physical = new DamageType(Engine,"P", $"{Constants.NON_NEG_F}({Constants.ValueKeyword}-{Constants.TargetKeyword}{Constants.PROP_OP}DEF)",null,null,null);
+            physical.Name = "physical";
             Engine.AddDamageType(trueDamage);
             Engine.AddDamageType(alwaysCrit);
             Engine.AddDamageType(alwaysDodge);
+            Engine.AddDamageType(physical);
             Engine.AddPlayer(MockEntity);
         }
         [TestMethod]
         public void EntityTestModifierStatusEffect()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine)};
@@ -42,7 +48,7 @@
         [TestMethod]
         public void EntityTestModifierStatusEffectsRemoved()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
@@ -63,7 +69,7 @@
         [TestMethod]
         public void EntityTestModifierStatusEffectsMultiple()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             int duration = 5;
@@ -86,7 +92,7 @@
         [TestMethod]
         public void EntityTestModifierMultipleStatusEffects()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             string expression = $"{Constants.MOD_VALUE_F}(STR,$0);{Constants.MOD_VALUE_F}(AGI,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
 
@@ -104,7 +110,7 @@
         [TestMethod]
         public void EntityTestHarmStatusEffect()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             double damage = 10;
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
@@ -118,7 +124,7 @@
         [TestMethod]
         public void EntityTestModifierAndHarm()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0);{Constants.MOD_VALUE_F}(STR,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
@@ -136,7 +142,7 @@
         [TestMethod]
         public void EntityTestModifierHarmTickrate()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             int[] timeValues = { 10, 5 };
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
@@ -158,7 +164,7 @@
         [TestMethod]
         public void EntityTestHarmStatusIntervalIsFormula()
         {
-            MockEntity ent = new MockEntity(Engine);
+            MockEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             double damage = 10;
             string expression = $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
@@ -197,6 +203,21 @@
             double expected = MockEntity.GetProperty("CHP").Value - amt*2;
             TreeResolver.Resolve(expression, Engine);
 
+            Assert.AreEqual(expected, MockEntity.GetProperty("CHP").Value);
+        }
+
+        [TestMethod]
+        public void EntityTestDamageReduction()
+        {
+
+            double amt = 20;
+            string expression = $"{Constants.HARM_F}({MockEntity.Key},{MockEntity.Key},T,{amt});{Constants.HARM_F}({MockEntity.Key},{MockEntity.Key},P,{amt});";
+            double physAmt = amt - MockEntity.GetProperty("DEF").Value;
+            physAmt = physAmt < 0 ? 0 : physAmt;
+            double expected = MockEntity.GetProperty("CHP").Value - amt - physAmt;
+            MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
+            foreach (MeNode node in trees)
+                node.Resolve();
             Assert.AreEqual(expected, MockEntity.GetProperty("CHP").Value);
         }
     }

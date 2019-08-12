@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RPGEngine.GameConfigReader;
 
 namespace RPGEngine.Core
 {
@@ -9,9 +10,8 @@ namespace RPGEngine.Core
 
     using RPGEngine.Parser;
 
-    public class DamageType
+    public class DamageType : BaseObject
     {
-        public string Key { get; set; }
         public MeNode Mitigation { get; set; }
 
         public MeNode Dodge { get; set; }
@@ -32,7 +32,7 @@ namespace RPGEngine.Core
 
         public bool GetDodge(Entity source, Entity target)
         {
-            return Dodge != null && Utils.Utility.Chance(_engine.GetSanitizer().SanitizeSkillEntities(Dodge, source, target).Resolve().Value.ToDouble());
+            return Dodge != null && Utils.Utility.Chance(_engine.GetSanitizer().ReplaceTargetAndSource(Dodge, source, target).Resolve().Value.ToDouble());
         }
 
         public double GetMitigatedAmount(double amount, Entity source, Entity target)
@@ -40,7 +40,7 @@ namespace RPGEngine.Core
             bool crited;
             if (CriticalChance != null)
             {
-                MeNode resolvedCritChance = _engine.GetSanitizer().SanitizeSkillEntities(CriticalChance, source, target)
+                MeNode resolvedCritChance = _engine.GetSanitizer().ReplaceTargetAndSource(CriticalChance, source, target)
                     .Resolve();
 
                 crited = Utils.Utility.Chance(resolvedCritChance.Value.ToDouble());
@@ -54,7 +54,7 @@ namespace RPGEngine.Core
             if (crited)
             {
                 if(CriticalModifier!=null)
-                    mutliplier = _engine.GetSanitizer().SanitizeSkillEntities(CriticalModifier, source, target)
+                    mutliplier = _engine.GetSanitizer().ReplaceTargetAndSource(CriticalModifier, source, target)
                     .Resolve().Value.ToDouble();
             }
 

@@ -18,4 +18,12 @@ namespace RPGEngine.Logging
             //make bot talk...
         }
     }
+
+    public class ConsoleLogger : ILogger
+    {
+        public void Log(string msg)
+        {
+            Console.WriteLine(msg);
+        }
+    }
 }

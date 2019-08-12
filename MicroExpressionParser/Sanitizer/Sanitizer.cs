@@ -70,11 +70,11 @@ namespace MicroExpressionParser
         }
 
 
-        public MeNode SanitizeSkillEntities(MeNode tree, Entity caster, Entity target)
+        public MeNode ReplaceTargetAndSource(MeNode tree, Entity caster, Entity target)
         {
             List<MeNode> leaves = new List<MeNode>();
             foreach(MeNode leaf in tree.Leaves)
-                leaves.Add(SanitizeSkillEntities(leaf,caster,target));
+                leaves.Add(ReplaceTargetAndSource(leaf,caster,target));
             MeNode node = null;
             if(tree.Value.Type == VariableType.PlaceHolder)
             {
@@ -181,19 +181,19 @@ namespace MicroExpressionParser
         {
             List<MeNode> leaves = new List<MeNode>();
             foreach (MeNode leaf in tree.Leaves)
-                leaves.Add(SanitizeSkillEntities(leaf, caster, target));
+                leaves.Add(SanitizeMitigation(leaf, caster, target,amount));
             MeNode node = null;
             if (tree.Value.Type == VariableType.PlaceHolder)
             {
-                if (tree.Value.ToPlaceholder() == Constants.TargetKeyword)
+                if (tree.Value.ToPlaceholder().Equals(Constants.TargetKeyword))
                 {
                     node = new MeNode(target);
                 }
-                else if (tree.Value.ToPlaceholder() == Constants.SourceKeyword)
+                else if (tree.Value.ToPlaceholder().Equals(Constants.SourceKeyword))
                 {
                     node = new MeNode(caster);
                 }
-                else if(tree.Value.ToPlaceholder()==Constants.ValueKeyword)
+                else if(tree.Value.ToPlaceholder().Equals( Constants.ValueKeyword))
                 {
                     node = new MeNode(amount);
                 }
