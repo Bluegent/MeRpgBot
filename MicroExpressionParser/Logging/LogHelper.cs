@@ -37,8 +37,8 @@ namespace RPGEngine.Logging
         public void LogDamage(Entity target, Entity source, DamageType type, double amount, double resisted)
         {
             string hpBar = Utils.Utility.getBar(target.GetProperty("CHP").Value,target.GetProperty("MHP").Value);
-            string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"({resisted} resisted)";
-            string msg = $"{target.Name} ({hpBar}) took {amount} {type.Name}{resist} damage from {source.Name}.";
+            string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"and resisted {resisted}";
+            string msg = $"{target.Name} {hpBar} took {amount} {resist} {type.Name} damage.";
             LogBlock(msg);
         }
 

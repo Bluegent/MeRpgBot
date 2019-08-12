@@ -70,7 +70,7 @@
             FinalStats["CHP"] -= actualAmount;
             StatMap["CHP"] -= actualAmount;
             if(log)
-                Engine.Log().LogDamage(this,source,type,amount, resisted);
+                Engine.Log().LogDamage(this,source,type, actualAmount, resisted);
         }
 
         public override void GetHealed(double amount, Entity source, bool log = true)

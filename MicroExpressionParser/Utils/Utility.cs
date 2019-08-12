@@ -23,7 +23,7 @@ namespace RPGEngine.Utils
         }
 
 
-        public const int BarLength = 20;
+        public const int BarLength = 10;
         public const char BarFullChar = '▮';
         public const char BarEmptyChar = '▯';
 
