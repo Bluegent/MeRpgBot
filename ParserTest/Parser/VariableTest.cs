@@ -124,6 +124,22 @@ namespace EngineTest.Parser
             Assert.IsNotNull(other);
             Assert.AreEqual(other.ToDouble(), result.ToDouble());
         }
+
+
+        [TestMethod]
+        public void VariableTestAssignFromProperty()
+        {
+            string varName = "testVar";
+            string propKey = "STR";
+            double expected = MockPlayer.GetProperty(propKey).Value;
+            string expression = $"{varName} {Constants.ASSIGN_OP} {MockPlayer.Key}{Constants.PROP_OP}{propKey}";
+            MeNode[] trees = Engine.GetSanitizer().SplitAndResolve(expression);
+            foreach (MeNode node in trees)
+                node.Resolve();
+            MeVariable result = Engine.GetVariable(varName);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expected, result.ToDouble());
+        }
     }
 }
 
