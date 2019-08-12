@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Core
+﻿using RPGEngine.Logging;
+
+namespace RPGEngine.Core
 {
     using System;
     using System.Collections.Generic;
@@ -27,6 +29,7 @@
         MeVariable GetVariable(string key);
         void AddVariable(string key, MeVariable var);
         void SetVariable(string key, MeVariable var);
+        ILogHelper Log();
 
     }
     public class GameEngine : IGameEngine
@@ -36,12 +39,13 @@
         private Dictionary<string, DamageType> DamageTypes { get; }
         private Dictionary<string, MeVariable> DeclaredVariables;
         private Sanitizer Sanit { get; set; }
-
+        private ILogHelper _log;
         public ITimer Timer { get; set; }
         private Dictionary<string,StatusTemplate> statuses;
         public GameEngine()
         {
             Definer.Get().Init(this);
+            _log = new DiscordLogHelper(new DiscordLogger());
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();
@@ -124,6 +128,11 @@
         {
             if (DeclaredVariables.ContainsKey(key))
                 DeclaredVariables[key] = var;
+        }
+
+        public ILogHelper Log()
+        {
+            return _log;
         }
     }
 }

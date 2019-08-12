@@ -18,9 +18,9 @@
         public string Key { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
 
-        public abstract void TakeDamage(double amount, DamageType type, Entity source);
+        public abstract void TakeDamage(double amount, DamageType type, Entity source,bool log = true);
 
-        public abstract void GetHealed(double amount, Entity source);
+        public abstract void GetHealed(double amount, Entity source,bool log = true);
 
         public abstract void Cast(Entity target, string skillKey);
 
@@ -57,7 +57,7 @@
 
         }
 
-        public override void TakeDamage(double amount, DamageType type, Entity source)
+        public override void TakeDamage(double amount, DamageType type, Entity source, bool log = true)
         {
             if (type.GetDodge(source, this))
                 return;
@@ -66,7 +66,7 @@
             StatMap["CHP"] -= actualAmount;
         }
 
-        public override void GetHealed(double amount, Entity source)
+        public override void GetHealed(double amount, Entity source, bool log = true)
         {
             FinalStats["CHP"] += amount;
         }
@@ -76,7 +76,7 @@
             //do stuff...
         }
 
-        public override EntityProperty GetProperty(string key)
+        public override  EntityProperty GetProperty(string key)
         {
             if (FinalStats.ContainsKey(key))
                 return new EntityProperty() { Key = key, Value = FinalStats[key] };
