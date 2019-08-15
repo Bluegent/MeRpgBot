@@ -19,5 +19,10 @@ namespace RPGEngine.Game
             Attributes = new Dictionary<string, double>();
             BasicValues = new Dictionary<string, double>();
         }
+
+        public SkillTemplate GetSkill(string key)
+        {
+            return Skills.ContainsKey(key) ? Skills[key] : null;
+        }
     }
 }

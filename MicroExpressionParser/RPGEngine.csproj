@@ -193,7 +193,9 @@
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\DamageType.cs" />
+    <Compile Include="Core\SkillCastData.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
+    <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SkillTemplate.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
@@ -206,7 +208,7 @@
     <Compile Include="Language\Operator.cs" />
     <Compile Include="Core\ITimer.cs" />
     <Compile Include="Language\Constants.cs" />
-    <Compile Include="Data\Class.cs" />
+    <Compile Include="Data\ClassJson.cs" />
     <Compile Include="Core\MeVariable.cs" />
     <Compile Include="Data\BaseValue.cs" />
     <Compile Include="Data\CompoundStat.cs" />

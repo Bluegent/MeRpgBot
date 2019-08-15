@@ -1,4 +1,5 @@
-﻿using RPGEngine.Game;
+﻿using System.Globalization;
+using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
@@ -19,6 +20,7 @@ namespace RPGEngine.Core
         public string Name { get; set; }
         public string Key { get; set; }
         public Dictionary<string, double> StatMap { get; set; }
+        public bool Free { get; protected set; }
 
         public abstract void TakeDamage(double amount, DamageType type, Entity source,bool log = true);
 
@@ -33,6 +35,8 @@ namespace RPGEngine.Core
         public abstract void Update();
 
         public abstract void Cleanse();
+
+
     }
 
     public class Property
@@ -40,10 +44,7 @@ namespace RPGEngine.Core
         private readonly Entity _reference;
         private readonly string _key;
 
-        public double Value
-        {
-            get { return _reference.GetProperty(_key).Value; }
-        }
+        public double Value => _reference.GetProperty(_key).Value;
 
         public Property(Entity entity, string key)
         {
@@ -51,14 +52,20 @@ namespace RPGEngine.Core
             _key = key;
         }
     }
+
     public class BaseEntity : Entity
     {
         public List<AppliedStatus> Statuses;
         public Dictionary<string, double> FinalStats { get; set; }
         public IGameEngine Engine { get; set; }
+        public SkillCastData CurrentlyCasting;
+
+        public Dictionary<string, SkillInstance> Skills;
 
         public BaseEntity(IGameEngine engine)
         {
+            Free = true;
+            CurrentlyCasting = null;
             StatMap = new Dictionary<string, double>
                           {
                               { "CHP", 100 },
@@ -72,6 +79,7 @@ namespace RPGEngine.Core
             FinalStats = new Dictionary<string, double>(StatMap);
             Engine = engine;
             Statuses = new List<AppliedStatus>();
+            Skills = new Dictionary<string, SkillInstance>();
 
 
         }
@@ -99,7 +107,44 @@ namespace RPGEngine.Core
 
         public override void Cast(Entity target, string skillKey)
         {
-            //do stuff...
+            SkillInstance skill = Skills.ContainsKey(skillKey)? Skills[skillKey] : null;
+            if (skill == null)
+            {
+                //log that you don't have that skill
+                return;
+            }
+            if (skill.CooldownFinishTime != 0)
+            {
+                //log that it's on cooldown
+                return;
+            }
+            Free = false;
+
+            CurrentlyCasting = new SkillCastData() {Instance = skill};
+            CurrentlyCasting.Target = target;
+            CurrentlyCasting.NextInterval = 0;
+
+            long now = Engine.GetTimer().GetNow();
+
+            //set when we're done casting
+            MeNode castDuration = skill.Skill.ByLevel[skill.SkillLevel].Duration;
+            castDuration = Engine.GetSanitizer().ReplaceTargetAndSource(castDuration, this, target);
+            CurrentlyCasting.CastFinishTime =  now + (long)castDuration.Resolve().Value.ToDouble();
+
+            //get interval if it's a channel skill
+            if (skill.Skill.Type == SkillType.Channel)
+            {
+                MeNode interval = skill.Values().Interval;
+                interval = Engine.GetSanitizer().ReplaceTargetAndSource(interval, this, target);
+                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble();
+            }
+
+            //set skill's cooldown
+            MeNode cd = skill.Skill.ByLevel[skill.SkillLevel].Cooldown;
+            cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, target);
+            skill.CooldownFinishTime = now + (long) cd.Resolve().Value.ToDouble();
+
+
         }
 
         public override  EntityProperty GetProperty(string key)
@@ -282,6 +327,63 @@ namespace RPGEngine.Core
             }
         }
 
+
+        private void TickCooldownds()
+        {
+            long now = Engine.GetTimer().GetNow();
+            foreach (SkillInstance skill in Skills.Values)
+            {
+                if (skill.CooldownFinishTime < now)
+                {
+                    skill.CooldownFinishTime = 0;
+                }
+            }
+        }
+
+        private void TickCurrentCast()
+        {
+            if (CurrentlyCasting == null)
+                return;
+            long now = Engine.GetTimer().GetNow();
+            if (CurrentlyCasting.Instance.Skill.Type == SkillType.Cast)
+            {
+                if (CurrentlyCasting.CastFinishTime < now)
+                {
+                    //casting has finished so resolve the formula
+                    MeNode[] toResolve = CurrentlyCasting.Instance.Values().Formulas;
+                    foreach (MeNode node in toResolve)
+                    {
+                        Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
+                    }
+                    CurrentlyCasting = null;
+                    Free = true;
+                }
+            }
+            else if (CurrentlyCasting.Instance.Skill.Type == SkillType.Channel)
+            {
+
+                if (CurrentlyCasting.CastFinishTime < now)
+                {
+                    //channeling has ended, remove it
+                    CurrentlyCasting = null;
+                    Free = true;
+                }
+                else
+                {
+                    //apply the formulas if it's the case
+                    if (CurrentlyCasting.NextInterval == 0 || CurrentlyCasting.NextInterval < now)
+                    {
+                        MeNode[] toResolve = CurrentlyCasting.Instance.Values().Formulas;
+                        foreach (MeNode node in toResolve)
+                        {
+                            Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
+                        }
+                        CurrentlyCasting.NextInterval = now + CurrentlyCasting.Interval;
+                    }
+                }
+            }
+        }
+
         public override void Update()
         {
             //Template handling
@@ -290,7 +392,9 @@ namespace RPGEngine.Core
             ApplyModifiers();
             ApplyHealAndHarm();
             SetLastTicks();
-            //tick cooldowns
+            TickCooldownds();
+            TickCurrentCast();
+
             //tick casting/channeling timers
             //set isFree flag
 

@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using RPGEngine.Game;
+
 namespace MicroExpressionParser
 {
-    public partial class Class
+    public partial class ClassJson
     {
         [JsonProperty("StatKey")]
         [DefaultValue(null)]
@@ -24,16 +26,16 @@ namespace MicroExpressionParser
         [DefaultValue(null)]
         public List<string> Skills { get; set; }
 
-        public static Class FromJson(string json)
+        public static ClassJson FromJson(string json)
         {
             if (json == null || json == "")
             {
                 return null;
             }
-            Class result;
+            ClassJson result;
             try
             {
-                result = JsonConvert.DeserializeObject<Class>(json);
+                result = JsonConvert.DeserializeObject<ClassJson>(json);
             }
             catch (Exception ex)
             {

@@ -24,6 +24,7 @@ namespace RPGEngine.Game
     {
         public MeNode Cooldown { get; set; }
         public MeNode[] Formulas { get; set; }
+        public MeNode Interval { get; set; }
         public MeNode Duration { get; set; }
         public MeNode PushBack { get; set; }
         public SkillCost Cost { get; set; }

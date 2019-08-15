@@ -12,8 +12,8 @@ namespace ParserTest
         public void FromJsonTest_Succes()
         {
             string json = "{\"StatKey\":\"test\", \"base_values\": [{\"StatKey\":\"B_DMG\", \"value\":10}], \"basic_attributes\":[{\"StatKey\":\"STR\",\"value\":5}], \"skills\":[\"test\"]}";
-            Class expected = new Class() { Key = "test", BaseValues = new List<BaseValue>() { new BaseValue() { Key = "B_DMG", Value = 10 } }, BasicAttributes = new List<BaseValue>() { new BaseValue() { Key = "STR", Value = 5 } }, Skills =new List<string>() { "test"} };
-            Class result = Class.FromJson(json);
+            ClassJson expected = new ClassJson() { Key = "test", BaseValues = new List<BaseValue>() { new BaseValue() { Key = "B_DMG", Value = 10 } }, BasicAttributes = new List<BaseValue>() { new BaseValue() { Key = "STR", Value = 5 } }, Skills =new List<string>() { "test"} };
+            ClassJson result = ClassJson.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
         }
 
@@ -21,8 +21,8 @@ namespace ParserTest
         public void FromJsonTest_EmptyJson()
         {
             string json = "";
-            Class expected = null;
-            Class result = Class.FromJson(json);
+            ClassJson expected = null;
+            ClassJson result = ClassJson.FromJson(json);
             Assert.AreEqual(expected, result);
         }
 
@@ -30,8 +30,8 @@ namespace ParserTest
         public void FromJsonTest_NullJson()
         {
             string json = null;
-            Class expected = null;
-            Class result = Class.FromJson(json);
+            ClassJson expected = null;
+            ClassJson result = ClassJson.FromJson(json);
             Assert.AreEqual(expected, result);
         }
 
@@ -39,8 +39,8 @@ namespace ParserTest
         public void FromJsonTest_InvalidJson()
         {
             string json = "Invalid";
-            Class expected = null;
-            Class result = Class.FromJson(json);
+            ClassJson expected = null;
+            ClassJson result = ClassJson.FromJson(json);
             Assert.AreEqual(expected, result);
 
         }
