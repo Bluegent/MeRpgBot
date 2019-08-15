@@ -118,10 +118,12 @@ Other configuration items.
     "misc_config":
     {
         "revive_time":"1800",
-        "revive_modifier":"0.5"
-    }
+        "revive_modifier":"0.5",
+		"skill_threat":"5"
+   
 ```
 Details:
 * `"revive_time":"1800",`- How long it takes for a character to be revived naturally, in seconds. 
 * `"revive_modifier":"0.5"` - All a character's resources will be multiplied by this when revived. 
     * In our case, a character is always revived with half of their total HP and MP.
+* `"skill_threat":"5"` - The default amount of threat a skill generates unless specificed otherwise.

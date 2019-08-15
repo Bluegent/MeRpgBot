@@ -58,6 +58,12 @@
 			"formula": "BASE_MDEF+INT/4",
 			"name": "Attack Speed",
 			"description": "How fast your normal attack is casted when auto attacking."
+		},
+		{
+			"key":"THREAT",
+			"formula":"1",
+			"name":"Thread Multiplier",
+			"description":"Modifies the amount of threat generated when using skills."
 		}
 	],
 
@@ -104,6 +110,7 @@
     "misc_config":
     {
         "revive_time":"1800",
-        "revive_modifier":"0.5"
+        "revive_modifier":"0.5",
+		"skill_threat":"5"
     }
 }
