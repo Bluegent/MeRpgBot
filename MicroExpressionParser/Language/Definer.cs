@@ -1,4 +1,5 @@
 ﻿using System.Windows.Markup;
+using RPGEngine.Game;
 using RPGEngine.Utils;
 
 namespace RPGEngine.Language

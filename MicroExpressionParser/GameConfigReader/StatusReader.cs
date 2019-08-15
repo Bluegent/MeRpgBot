@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
+using RPGEngine.Game;
 using RPGEngine.Parser;
 
 namespace RPGEngine.GameConfigReader

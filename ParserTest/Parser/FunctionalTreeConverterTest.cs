@@ -22,7 +22,7 @@ namespace EngineTest.Parser
             
             Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
             Definer.Get().Engine = Engine;
-            MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+            MockPlayer = new BaseEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             Engine.AddPlayer(MockPlayer);
             DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
             Engine.AddDamageType(trueDamage);

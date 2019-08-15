@@ -1,7 +1,8 @@
 ﻿using System;
+using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
 
-namespace RPGEngine.Core
+namespace RPGEngine.Game
 {
     public class StatModifier
     {

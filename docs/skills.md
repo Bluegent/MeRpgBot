@@ -52,7 +52,8 @@ Cast skill with longer duration.\
                 "interrupt":"true",
                 "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*5)",
                 "needed_level":5,
-                "cost":{"key":"MP","value":"10"}
+                "cost":{"key":"MP","value":"10"},
+				"treat":"5"
             },
 ```
 Details:
@@ -66,6 +67,8 @@ Details:
 * `"interrupt":"true",` - Whether the skill can be interrupted by interrupt-type attacks. 
     * If this line is missing, the skill can be interrupted.
     * Accepts formulas that return true/false like operators `> < or =`.
+* `"treat":"5"` - How much threat this level of this skill generates before threat multiplier is taken into account.
+
 
 
 

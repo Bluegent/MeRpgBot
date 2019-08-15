@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
+using RPGEngine.Game;
 using RPGEngine.GameConfigReader;
 using RPGEngine.Language;
 using RPGEngine.Logging;

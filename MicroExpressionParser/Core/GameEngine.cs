@@ -1,4 +1,5 @@
-﻿using RPGEngine.Logging;
+﻿using RPGEngine.Game;
+using RPGEngine.Logging;
 
 namespace RPGEngine.Core
 {

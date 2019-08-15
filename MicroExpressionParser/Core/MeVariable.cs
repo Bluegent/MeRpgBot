@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Core
+﻿using RPGEngine.Game;
+
+namespace RPGEngine.Core
 {
     using System;
 

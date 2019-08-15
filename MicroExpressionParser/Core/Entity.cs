@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Core
+﻿using RPGEngine.Game;
+
+namespace RPGEngine.Core
 {
     using System;
     using System.Collections.Generic;
@@ -49,13 +51,13 @@
             _key = key;
         }
     }
-    public class MockEntity : Entity
+    public class BaseEntity : Entity
     {
         public List<AppliedStatus> Statuses;
         public Dictionary<string, double> FinalStats { get; set; }
         public IGameEngine Engine { get; set; }
 
-        public MockEntity(IGameEngine engine)
+        public BaseEntity(IGameEngine engine)
         {
             StatMap = new Dictionary<string, double>
                           {

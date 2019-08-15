@@ -18,7 +18,7 @@ namespace EngineTest.Parser
     public class VariableTest
     {
         public static IGameEngine Engine;
-        public static MockEntity MockPlayer;
+        public static BaseEntity BasePlayer;
         [ClassInitialize]
         public static void StartUp(TestContext ctx)
         {
@@ -26,8 +26,8 @@ namespace EngineTest.Parser
             Console.WriteLine("START UP");
             Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
             Definer.Get().Engine = Engine;
-            MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            Engine.AddPlayer(MockPlayer);
+            BasePlayer = new BaseEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+            Engine.AddPlayer(BasePlayer);
             DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
             Engine.AddDamageType(trueDamage);
         }
@@ -132,8 +132,8 @@ namespace EngineTest.Parser
         {
             string varName = "testVar";
             string propKey = "STR";
-            double expected = MockPlayer.GetProperty(propKey).Value;
-            string expression = $"{varName} {Constants.ASSIGN_OP} {MockPlayer.Key}{Constants.PROP_OP}{propKey}";
+            double expected = BasePlayer.GetProperty(propKey).Value;
+            string expression = $"{varName} {Constants.ASSIGN_OP} {BasePlayer.Key}{Constants.PROP_OP}{propKey}";
             MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();
