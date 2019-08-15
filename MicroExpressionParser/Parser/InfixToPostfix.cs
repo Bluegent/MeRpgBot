@@ -64,7 +64,7 @@
                             {
                                 if (lastFunction == null)
                                 {
-                                    throw new MeException("Unexpected separator Character.");
+                                    throw new MeException("Unexpected separator Key.");
                                 }
                                 else
                                 {

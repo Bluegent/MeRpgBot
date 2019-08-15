@@ -220,6 +220,60 @@
                 node.Resolve();
             Assert.AreEqual(expected, MockEntity.GetProperty("CHP").Value);
         }
+
+        [TestMethod]
+        public void EntityTestPropertyTypeUpdatesWithOperator()
+        {
+            //initial test
+            string strKey = "STR";
+            string expression = $"{MockEntity.Key}{Constants.PROP_OP}{strKey}";
+            double expected = MockEntity.GetProperty(strKey).Value;
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            MeNode partiallyResolved = TreeResolver.ResolveGivenOperations(tree, new string[1] { Constants.PROP_OP });
+            Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
+
+            //apply a status that modifies the value
+            string expression2 = $"{Constants.MOD_VALUE_F}(STR,$0)";
+            MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine) };
+            double[] values = { 10 };
+
+            MockEntity.ApplyStatus(test, MockEntity, 10, values);
+            MockEntity.Update();
+
+            //test again
+            expected = MockEntity.GetProperty(strKey).Value;
+            Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
+            MockEntity.Cleanse();
+
+        }
+
+        [TestMethod]
+        public void EntityTestPropertyTypeUpdatesWithFunction()
+        {
+            //initial test
+            string strKey = "STR";
+            string expression = $"{Constants.GET_PROP_F}({MockEntity.Key},{strKey})";
+            double expected = MockEntity.GetProperty(strKey).Value;
+            MeNode tree = TreeConverter.Build(expression, Engine);
+            MeNode partiallyResolved = TreeResolver.ResolveGivenOperations(tree, new string[1] { Constants.GET_PROP_F });
+            Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
+
+            //apply a status that modifies the value
+            string expression2 = $"{Constants.MOD_VALUE_F}(STR,$0)";
+            MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
+            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine) };
+            double[] values = { 10 };
+
+            MockEntity.ApplyStatus(test, MockEntity, 10, values);
+            MockEntity.Update();
+
+            //test again
+            expected = MockEntity.GetProperty(strKey).Value;
+            Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
+
+            MockEntity.Cleanse();
+        }
     }
 }
 

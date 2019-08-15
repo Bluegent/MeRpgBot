@@ -8,7 +8,7 @@
 
     public class Function
     {
-        public string Name { get; set; }
+        public string Key { get; set; }
         public Func<MeVariable[], Function, MeVariable> Operation { get; set; }
 
         private bool[] ExecuteInPlace;
@@ -25,9 +25,9 @@
                 return ExecuteInPlace[index];
             }
         }
-        public Function(string name, int parameterCount = -1, bool[] executeInPlace = null)
+        public Function(string key, int parameterCount = -1, bool[] executeInPlace = null)
         {
-            Name = name;
+            Key = key;
             ParameterCount = parameterCount;
             ExecuteInPlace = executeInPlace;
         }
@@ -36,7 +36,7 @@
             if (ParameterCount == -1)
                 return;
             if (variableCount != ParameterCount)
-                throw new MeException($"Invalid argument count for function {Name}, got: {variableCount} expected:  {ParameterCount} .");
+                throw new MeException($"Invalid argument count for function {Key}, got: {variableCount} expected:  {ParameterCount} .");
         }
 
         public MeVariable Execute(MeVariable[] variables)

@@ -8,7 +8,7 @@
 
     public class Operator
     {
-        public string Character { get; }
+        public string Key { get; }
         public int Precedence { get; }
         public Func<MeVariable[], Operator, MeVariable> Operation { get; set; }
         public bool LeftAsoc { get; }
@@ -17,7 +17,7 @@
         public void ValidateParameters(int parameterCount)
         {
             if (parameterCount != OperatorCount)
-                throw new MeException($"Invalid argument count for operator {Character}, got: {parameterCount} expected:  {OperatorCount} .");
+                throw new MeException($"Invalid argument count for operator {Key}, got: {parameterCount} expected:  {OperatorCount} .");
         }
 
         public bool Precedes(Operator other)
@@ -29,9 +29,9 @@
         {
             return OperatorCount == 1;
         }
-        public Operator(string character, int precedence, bool leftAsoc, int operatorCount = 2)
+        public Operator(string key, int precedence, bool leftAsoc, int operatorCount = 2)
         {
-            Character = character;
+            Key = key;
             Precedence = precedence;
             LeftAsoc = leftAsoc;
             OperatorCount = operatorCount;

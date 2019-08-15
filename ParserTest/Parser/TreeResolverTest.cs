@@ -30,7 +30,7 @@ namespace EngineTest.Parser
         {
             string expression = $"{Constants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},P,{Constants.GET_PROP_F}({MockPlayer.Key},{Constants.IF_F}({Constants.GET_PROP_F}({MockPlayer.Key},STR) > {Constants.GET_PROP_F}({MockPlayer.Key},AGI),STR,AGI)))";
             MeNode tree = TreeConverter.Build(expression, Engine);
-            MeNode partiallyResolved = TreeResolver.ResolveGivenFunction(tree, Constants.GET_PROP_F);
+            MeNode partiallyResolved = TreeResolver.ResolveGivenOperations(tree, new string[1] { Constants.GET_PROP_F});
             Assert.AreEqual(tree.Value.Type, partiallyResolved.Value.Type);
 
         }
@@ -57,7 +57,6 @@ namespace EngineTest.Parser
             MeNode tree = TreeConverter.Build(expression, Engine);
             MeNode result = tree.Resolve();
             Assert.AreEqual(expected, result.Value.ToDouble());
-
         }
     }
 }

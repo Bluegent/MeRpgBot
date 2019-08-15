@@ -22,21 +22,23 @@ namespace RPGEngine.Parser
         }
 
 
-        public static MeNode ResolveGivenFunction(MeNode node, string functionName, int index = 0)
+        public static MeNode ResolveGivenOperations(MeNode node, string[] operationNames, int index = 0)
         {
             for (int i = 0; i < node.Leaves.Count; ++i)
             {
-                node.Leaves[i] = ResolveGivenFunction(node.Leaves[i], functionName, i);
+                node.Leaves[i] = ResolveGivenOperations(node.Leaves[i], operationNames, i);
             }
 
-            if (node.Value.Type == VariableType.Function && node.Value.ToFunction().Name.Equals(functionName))
+            if (node.Value.Type == VariableType.Function || node.Value.Type == VariableType.Operator)
             {
-                return node.Resolve();
+                foreach (string key in operationNames)
+                {
+                    if (node.Value.GetString().Equals(key))
+                        return node.Resolve();
+                }
             }
-            else
-            {
-                return node;
-            }
+            return node;
+
         }
 
         public static MeNode Resolve(MeNode node, int index = 0)

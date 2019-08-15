@@ -30,8 +30,25 @@
 
         public abstract void Update();
 
+        public abstract void Cleanse();
     }
 
+    public class Property
+    {
+        private readonly Entity _reference;
+        private readonly string _key;
+
+        public double Value
+        {
+            get { return _reference.GetProperty(_key).Value; }
+        }
+
+        public Property(Entity entity, string key)
+        {
+            _reference = entity;
+            _key = key;
+        }
+    }
     public class MockEntity : Entity
     {
         public List<AppliedStatus> Statuses;
@@ -136,6 +153,13 @@
                 return 0;
             }
         }
+
+        public override void Cleanse()
+        {
+            Statuses.Clear();
+            ResetFinalStatMap();
+        }
+
         public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
         {
             switch (status.Type)

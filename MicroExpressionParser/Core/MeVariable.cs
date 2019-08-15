@@ -22,7 +22,8 @@
         Boolean,
         Status,
         StatModifier,
-        PlaceHolder
+        PlaceHolder,
+        Property
     }
 
     public class MeVariable
@@ -41,9 +42,29 @@
             Value = other.Value;
         }
 
+        public string GetString()
+        {
+            switch (Type)
+            {
+                case VariableType.Function:
+
+                    return ToFunction().Key;
+
+                case VariableType.Operator:
+                    return ToOperator().Key;
+
+                case VariableType.String:
+                    return ToString();
+
+                case VariableType.Entity:
+                    return ToEntity().Key;
+            }
+            return "";
+        }
+
         public static implicit operator MeVariable(double value)
         {
-            return new MeVariable(){Type = VariableType.NumericValue, Value =  value};
+            return new MeVariable() { Type = VariableType.NumericValue, Value = value };
         }
 
         public static implicit operator MeVariable(Entity value)
@@ -74,8 +95,17 @@
         }
         public double ToDouble()
         {
+            if (Type == VariableType.Property)
+                return ((Property)Value).Value;
+
             ValidateType(VariableType.NumericValue);
             return (double)Value;
+        }
+
+        public Property ToProperty()
+        {
+            ValidateType(VariableType.Property);
+            return (Property)Value;
         }
 
         public DamageType ToDamageType()
@@ -170,16 +200,16 @@
         public MeFunction(MeFunction other)
         {
             SubVariables = new MeVariable[other.SubVariables.Length];
-            Array.Copy(other.SubVariables, SubVariables.Length,SubVariables,0, SubVariables.Length);
+            Array.Copy(other.SubVariables, SubVariables.Length, SubVariables, 0, SubVariables.Length);
         }
 
         public override MeVariable Execute()
         {
-           if(Type == VariableType.Function)
-               return ToFunction().Execute(SubVariables);
-           else if (Type == VariableType.Operator)
-               return ToOperator().Execute(SubVariables);
-           return base.Execute();
+            if (Type == VariableType.Function)
+                return ToFunction().Execute(SubVariables);
+            else if (Type == VariableType.Operator)
+                return ToOperator().Execute(SubVariables);
+            return base.Execute();
         }
     }
 }

@@ -91,7 +91,7 @@ namespace RPGEngine.Language
         {
             Operator op = new Operator(character, precedence, leftAssoc, opCount);
             op.Operation = operation;
-            Operators.Add(op.Character, op);
+            Operators.Add(op.Key, op);
             foreach (char c in character)
             {
                 if(!operatorChars.Contains(c))
@@ -103,7 +103,7 @@ namespace RPGEngine.Language
         {
             Function func = new Function(name, parameterCount, executeInPlace);
             func.Operation = operation;
-            Functions.Add(func.Name, func);
+            Functions.Add(func.Key, func);
         }
 
         public void Deinit()
@@ -222,8 +222,9 @@ namespace RPGEngine.Language
                       case VariableType.Entity:
                       {
 
-                          return var.ToEntity().GetProperty(key).Value;
-                      }    
+                          return  new MeVariable() { Value = new Property(var.ToEntity(),key), Type = VariableType.Property };
+                        }
+                          
                              
                     }
                       throw new MeException($"Attempting to retrieve undefined property \"{key}\" from variable \"{var}\"");
@@ -333,7 +334,8 @@ namespace RPGEngine.Language
                     func.ValidateParameters(values.Length);
                     Entity entity = values[0].ToEntity();
                     string prop = values[1].ToString();
-                    return entity.GetProperty(prop).Value;
+                    return new MeVariable() {Value = new Property(entity, prop), Type = VariableType.Property};
+                    ;
                 }, 2);
 
             AddFunction(Constants.IF_F,

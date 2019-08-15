@@ -205,7 +205,7 @@
             double[] expected = { 11, 10 };
             MeNode tree = TreeConverter.Build(expression, Engine);
             MeNode copy = tree.Resolve();
-            Assert.AreEqual(tree.Value.ToOperator().Character, "+");
+            Assert.AreEqual(tree.Value.ToOperator().Key, "+");
             Assert.AreEqual(2, tree.Leaves.Count);
             for (int i = 0; i < expected.Length; ++i)
                 Assert.AreEqual(expected[i], tree.Leaves[i].Value.ToDouble());
