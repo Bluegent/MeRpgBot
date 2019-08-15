@@ -23,7 +23,7 @@ namespace RPGEngine.Game
     public class SkillLevelTemplate
     {
         public MeNode Cooldown { get; set; }
-        public MeNode[] Formulas { get; set; }
+        public List<MeNode> Formulas { get; set; }
         public MeNode Interval { get; set; }
         public MeNode Duration { get; set; }
         public MeNode PushBack { get; set; }
@@ -31,6 +31,10 @@ namespace RPGEngine.Game
         public bool Interruptible { get; set; }
         public long NeededLevel { get; set; }
 
+        public SkillLevelTemplate()
+        {
+            Formulas = new List<MeNode>();
+        }
     }
 
     public class SkillTemplate : BaseObject
@@ -38,6 +42,11 @@ namespace RPGEngine.Game
         public List<string> aliases { get; set; }
         public SkillType Type { get; set; }
         public List<SkillLevelTemplate> ByLevel { get; set; }
+
+        public SkillTemplate()
+        {
+            ByLevel = new List<SkillLevelTemplate>();
+        }
 
         public static SkillType FromString(string str)
         {

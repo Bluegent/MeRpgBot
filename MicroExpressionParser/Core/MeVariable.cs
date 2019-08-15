@@ -92,8 +92,7 @@ namespace RPGEngine.Core
 
         public long ToLong()
         {
-            ValidateType(VariableType.NumericValue);
-            return (long)(double)Value;
+            return (long)ToDouble();
         }
         public double ToDouble()
         {

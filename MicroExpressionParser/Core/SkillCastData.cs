@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using RPGEngine.Game;
 
 namespace RPGEngine.Core
@@ -18,6 +14,8 @@ namespace RPGEngine.Core
         {
             return Skill.ByLevel[SkillLevel];
         }
+
+        public MeNode[] Formulas => Values().Formulas.ToArray();
     }
 
     public class SkillCastData

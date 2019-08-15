@@ -59,7 +59,14 @@ namespace RPGEngine.Core
 
         public void AddPlayer(Entity entity)
         {
-            Players.Add(entity.Key, entity);
+            if (Players.ContainsKey(entity.Key))
+            {
+                Players[entity.Key] = entity;
+            }
+            else
+            {
+                Players.Add(entity.Key, entity);
+            }
         }
 
         public void AddEnemy(Entity entity)

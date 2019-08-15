@@ -26,7 +26,7 @@ namespace RPGEngine.Core
 
         public abstract void GetHealed(double amount, Entity source,bool log = true);
 
-        public abstract void Cast(Entity target, string skillKey);
+        public abstract bool Cast(Entity target, string skillKey);
 
         public abstract EntityProperty GetProperty(string key);
 
@@ -105,19 +105,26 @@ namespace RPGEngine.Core
             FinalStats["CHP"] += amount;
         }
 
-        public override void Cast(Entity target, string skillKey)
+        public override bool Cast(Entity target, string skillKey)
         {
             SkillInstance skill = Skills.ContainsKey(skillKey)? Skills[skillKey] : null;
             if (skill == null)
             {
                 //log that you don't have that skill
-                return;
+                return false;
             }
             if (skill.CooldownFinishTime != 0)
             {
                 //log that it's on cooldown
-                return;
+                return false;
             }
+            if (!Free)
+            {
+                //log that player is busy
+                return false;
+            }
+
+            //TODO: Test if we have enough resource to cast this
             Free = false;
 
             CurrentlyCasting = new SkillCastData() {Instance = skill};
@@ -129,22 +136,17 @@ namespace RPGEngine.Core
             //set when we're done casting
             MeNode castDuration = skill.Skill.ByLevel[skill.SkillLevel].Duration;
             castDuration = Engine.GetSanitizer().ReplaceTargetAndSource(castDuration, this, target);
-            CurrentlyCasting.CastFinishTime =  now + (long)castDuration.Resolve().Value.ToDouble();
+            CurrentlyCasting.CastFinishTime =  now + (long)castDuration.Resolve().Value.ToDouble() * 1000;
 
             //get interval if it's a channel skill
             if (skill.Skill.Type == SkillType.Channel)
             {
                 MeNode interval = skill.Values().Interval;
                 interval = Engine.GetSanitizer().ReplaceTargetAndSource(interval, this, target);
-                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble();
+                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble()*1000;
             }
 
-            //set skill's cooldown
-            MeNode cd = skill.Skill.ByLevel[skill.SkillLevel].Cooldown;
-            cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, target);
-            skill.CooldownFinishTime = now + (long) cd.Resolve().Value.ToDouble();
-
-
+            return true;
         }
 
         public override  EntityProperty GetProperty(string key)
@@ -350,11 +352,17 @@ namespace RPGEngine.Core
                 if (CurrentlyCasting.CastFinishTime < now)
                 {
                     //casting has finished so resolve the formula
-                    MeNode[] toResolve = CurrentlyCasting.Instance.Values().Formulas;
+                    MeNode[] toResolve = CurrentlyCasting.Instance.Formulas;
                     foreach (MeNode node in toResolve)
                     {
                         Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
                     }
+                    
+                    //set skill's cooldown]
+                    MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;
+                    cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
+                    CurrentlyCasting.Instance.CooldownFinishTime = now + (long)cd.Resolve().Value.ToDouble();
+
                     CurrentlyCasting = null;
                     Free = true;
                 }
@@ -364,6 +372,11 @@ namespace RPGEngine.Core
 
                 if (CurrentlyCasting.CastFinishTime < now)
                 {
+                    //set skill's cooldown]
+                    MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;
+                    cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
+                    CurrentlyCasting.Instance.CooldownFinishTime = now + (long)cd.Resolve().Value.ToDouble() * 1000;
+
                     //channeling has ended, remove it
                     CurrentlyCasting = null;
                     Free = true;
@@ -373,12 +386,12 @@ namespace RPGEngine.Core
                     //apply the formulas if it's the case
                     if (CurrentlyCasting.NextInterval == 0 || CurrentlyCasting.NextInterval < now)
                     {
-                        MeNode[] toResolve = CurrentlyCasting.Instance.Values().Formulas;
+                        MeNode[] toResolve = CurrentlyCasting.Instance.Formulas;
                         foreach (MeNode node in toResolve)
                         {
                             Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
                         }
-                        CurrentlyCasting.NextInterval = now + CurrentlyCasting.Interval;
+                        CurrentlyCasting.NextInterval = now + CurrentlyCasting.Interval * 1000;
                     }
                 }
             }
