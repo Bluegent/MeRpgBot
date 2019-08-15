@@ -9,16 +9,19 @@ namespace RPGEngine.Logging
 {
     public interface ILogHelper
     {
+        string Enclose(string msg, string enclosure);
+
         void Log(string msg);
-        void LogBlock(string msg);
         void LogDamage(Entity target, Entity source, DamageType type, double amount, double resisted);
         void LogDodge(Entity target, Entity source);
+        void LogSay(Entity source, string msg);
     }
 
     public class DiscordLogHelper : ILogHelper
     {
         private ILogger _log;
         public const string CodeBlock = "```";
+        public const string Italics = "_";
 
         public DiscordLogHelper(ILogger log)
         {
@@ -31,7 +34,15 @@ namespace RPGEngine.Logging
 
         public void LogBlock(string msg)
         {
-            _log.Log(CodeBlock+msg+CodeBlock);
+            _log.Log(Enclose(msg,CodeBlock));
+        }
+
+        public string Enclose(string msg, string enclosure)
+        {
+            StringBuilder sb = new StringBuilder(msg);
+            sb.Insert(0, enclosure);
+            sb.Append(enclosure);
+            return  sb.ToString();
         }
 
         public void LogDamage(Entity target, Entity source, DamageType type, double amount, double resisted)
@@ -45,6 +56,11 @@ namespace RPGEngine.Logging
         public void LogDodge(Entity target, Entity source)
         {
             LogBlock($"{target.Name} dodged {source.Name}'s attack.");
+        }
+
+        public virtual void LogSay(Entity source, string message)
+        {
+            LogBlock($"{source.Name}:{Enclose(message,Italics)}");
         }
     }
 

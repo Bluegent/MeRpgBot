@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.Core;
 using RPGEngine.Language;
+using RPGEngine.Logging;
 using RPGEngine.Parser;
 
 namespace EngineTest.Parser
@@ -23,7 +24,7 @@ namespace EngineTest.Parser
         {
 
             Console.WriteLine("START UP");
-            Engine = new GameEngine();
+            Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
             Definer.Get().Engine = Engine;
             MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             Engine.AddPlayer(MockPlayer);

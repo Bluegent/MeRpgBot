@@ -4,12 +4,14 @@ using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
 using RPGEngine.Language;
 using RPGEngine.GameConfigReader;
+using RPGEngine.Logging;
+
 namespace EngineTest.GameConfigReader
 {
     [TestClass]
     public class BaseObjectTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
 
         [ClassInitialize]
         public static void StartUp(TestContext ctx)

@@ -1,4 +1,6 @@
-﻿namespace EngineTest.Parser
+﻿using RPGEngine.Logging;
+
+namespace EngineTest.Parser
 {
     using System;
 
@@ -18,7 +20,7 @@
         public static void StartUp(TestContext ctx)
         {
             
-            Engine = new GameEngine();
+            Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
             Definer.Get().Engine = Engine;
             MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             Engine.AddPlayer(MockPlayer);

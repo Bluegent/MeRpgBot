@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RPGEngine.Logging;
 
 namespace ParserTest
 {
@@ -18,7 +19,7 @@ namespace ParserTest
     [TestClass]
     public class TreeBuilderTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
 
         [ClassInitialize]
         public static void StartUp(TestContext context)

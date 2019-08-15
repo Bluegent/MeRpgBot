@@ -1,4 +1,6 @@
-﻿namespace EngineTest.Parser
+﻿using RPGEngine.Logging;
+
+namespace EngineTest.Parser
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,7 +12,7 @@
     public class ConverterTest
     {
 
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {

@@ -4,13 +4,14 @@ using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
 using RPGEngine.Language;
+using RPGEngine.Logging;
 
 namespace EngineTest.GameConfigReader
 {
     [TestClass]
     public class StatusReaderTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
         public static readonly StatusReader Reader = new StatusReader(Engine);
 
         [ClassInitialize]

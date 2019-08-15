@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RPGEngine.Logging;
 
 namespace EngineTest.Parser
 {
-    using MicroExpressionParser;
-
     using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
@@ -13,7 +12,7 @@ namespace EngineTest.Parser
     [TestClass]
     public class TreeResolverTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
 
         public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
 

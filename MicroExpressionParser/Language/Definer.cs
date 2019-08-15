@@ -421,6 +421,16 @@ namespace RPGEngine.Language
                 return Definer.Get().Engine.GetVariable(key); ;
             },1);
 
+            AddFunction(Constants.SAY_F,
+                (values, func) =>
+                {
+                    func.ValidateParameters(values.Length);
+                    Entity entity = values[0].ToEntity();
+                    string msg = values[1].ToString();
+                    Engine.Log().LogSay(entity,msg);
+                    return null;
+                }, 2);
+
         }
     }
 }

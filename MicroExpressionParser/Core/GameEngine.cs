@@ -42,10 +42,10 @@ namespace RPGEngine.Core
         private ILogHelper _log;
         public ITimer Timer { get; set; }
         private Dictionary<string,StatusTemplate> statuses;
-        public GameEngine()
+        public GameEngine(ILogHelper log)
         {
             Definer.Get().Init(this);
-            _log = new DiscordLogHelper(new ConsoleLogger());
+            _log = log;
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
             DamageTypes = new Dictionary<string, DamageType>();

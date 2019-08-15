@@ -1,4 +1,6 @@
-﻿namespace EngineTest
+﻿using RPGEngine.Logging;
+
+namespace EngineTest
 {
     using MicroExpressionParser;
 
@@ -7,11 +9,10 @@
     using RPGEngine.Core;
     using RPGEngine.Language;
     using RPGEngine.Parser;
-
     [TestClass]
     public class SanitizerTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
         public static readonly Sanitizer SanitizerInstance = new Sanitizer(Engine);
         public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
         public static readonly Entity MockEnemy = new MockEntity(Engine) { Name = "ENEMY", Key = "MOCK_ENEMY" };

@@ -1,4 +1,6 @@
-﻿namespace EngineTest.Parser
+﻿using RPGEngine.Logging;
+
+namespace EngineTest.Parser
 {
     using System;
 
@@ -12,7 +14,7 @@
     [TestClass]
     public class TokenizerTest
     {
-        private static readonly GameEngine Engine = new GameEngine();
+        private static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
 
         [ClassInitialize]
         public static void StartUp(TestContext context)

@@ -1,4 +1,6 @@
-﻿namespace EngineTest.Core
+﻿using RPGEngine.Logging;
+
+namespace EngineTest.Core
 {
     using MicroExpressionParser.Core;
 
@@ -11,7 +13,7 @@
     [TestClass]
     public class EntityTest
     {
-        public static readonly GameEngine Engine = new GameEngine();
+        public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
         public static readonly MockEntity MockEntity = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
         
         [ClassInitialize]

@@ -34,6 +34,7 @@
         public const string MOD_VALUE_F = "MOD_VALUE";
         public const string APPLY_F = "APPLY";
         public const string GET_F = "GET";
+        public const string SAY_F = "SAY";
        
 
         public const char PARAM_SEPARATOR = ',';
