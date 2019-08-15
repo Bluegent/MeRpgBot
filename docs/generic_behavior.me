@@ -1,4 +1,8 @@
-IF(GET_PROP($ME,CHP) < 100 * GET_PROP($ME,LEVEL),
-    CAST($ME,$ME,basic_heal),
-    CAST($ME,ARR_RANDOM(GET_PLAYERS()),punch)
-    )
+ON_SPAWN(SAY("I AWAKEN!"));
+ON_FREE(
+	IF(GET_PROP($ME,CHP) < 100 * GET_PROP($ME,LEVEL),
+		CAST($ME,$ME,basic_heal),
+		CAST($ME,ARR_RANDOM(GET_PLAYERS()),punch)
+		)
+	);
+ON_DEATH(SAY("I WILL RETURN..."));

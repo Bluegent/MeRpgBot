@@ -106,6 +106,10 @@ namespace RPGEngine.Language
             Functions.Add(func.Key, func);
         }
 
+        public bool Ignore(char c)
+        {
+            return Constants.IgnoreChars.Contains(c);
+        }
         public void Deinit()
         {
             Operators.Clear();

@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Parser
+﻿using System.Configuration;
+
+namespace RPGEngine.Parser
 {
     using System;
     using System.Collections.Generic;
@@ -17,13 +19,33 @@
         public static Token[] Tokenize(string expression)
         {
             List<Token> result = new List<Token>();
-            string sanitized = Sanitize(expression);            
+            string sanitized = expression; 
             string current = "";
+            bool inString = false;
             int i = 0;
             while (i< sanitized.Length)
             {
                 char c = sanitized[i];
-                if (!Definer.Get().IsSpecialChar(c))
+                if (c == '"')
+                {
+                    if (inString)
+                    {
+                        Token stringToken = new Token(current);
+                        result.Add(stringToken);
+                        current = "";
+                    }
+                    inString = !inString;
+
+                }
+                else if (inString)
+                {
+                    current += c;
+                }
+                else if (Definer.Get().Ignore(c))
+                {
+                    
+                }
+                else if (!Definer.Get().IsSpecialChar(c))
                 {
                     current += c;
                 }
@@ -53,7 +75,7 @@
                     }
                     //eventually consider -=
                 }
-                else
+                else 
                 {
                     if (current.Length != 0)
                     {
@@ -67,9 +89,7 @@
                         {
                             result.Add(new Token(possibleOp));
                             ++i;
-                        }
-
-                       
+                        }       
                     }
                     else
                     {

@@ -125,6 +125,30 @@
                 Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
         }
 
+        [TestMethod]
+        public void TokenizerTestParseString()
+        {
+            string inner = "It's barbie bitcheeeees!";
+            string expression = $"SAY(\"{inner}\")";
+            Token[] resultTokens = Tokenizer.Tokenize(expression);
+            String[] expectedTokens = { "SAY","(",inner,")"};
+            Assert.AreEqual(expectedTokens.Length, resultTokens.Length);
+            for (int i = 0; i < resultTokens.Length; ++i)
+                Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
+        }
+
+        [TestMethod]
+        public void TokenizerTestParseNewLineString()
+        {
+            string inner = "It's\n barbie \nbitcheeeees!";
+            string expression = $"SAY(\"{inner}\")";
+            Token[] resultTokens = Tokenizer.Tokenize(expression);
+            String[] expectedTokens = { "SAY", "(", inner, ")" };
+            Assert.AreEqual(expectedTokens.Length, resultTokens.Length);
+            for (int i = 0; i < resultTokens.Length; ++i)
+                Assert.AreEqual(expectedTokens[i], resultTokens[i].Value);
+        }
+
 
     }
 }
