@@ -8,6 +8,7 @@ namespace MicroExpressionParser.Core
     public interface ITimer
     {
         long GetNow();
+        long GetFuture(long seconds);
     }
     public class MockTimer : ITimer
     {
@@ -24,6 +25,11 @@ namespace MicroExpressionParser.Core
         public long GetNow()
         {
             return _fakeTime;
+        }
+
+        public long GetFuture(long seconds)
+        {
+            return _fakeTime + seconds * 1000;
         }
     }
 }

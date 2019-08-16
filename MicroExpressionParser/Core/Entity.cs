@@ -143,7 +143,7 @@ namespace RPGEngine.Core
             {
                 MeNode interval = skill.Values().Interval;
                 interval = Engine.GetSanitizer().ReplaceTargetAndSource(interval, this, target);
-                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble()*1000;
+                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble();
             }
 
             return true;
