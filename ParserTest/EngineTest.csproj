@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Core\EntityTest.cs" />
     <Compile Include="Core\CastTest.cs" />
+    <Compile Include="Discord\CommandTest.cs" />
     <Compile Include="GameConfigReader\StatusReaderTest.cs" />
     <Compile Include="GameConfigReader\BaseObjectTest.cs" />
     <Compile Include="Parser\ConverterTest.cs" />

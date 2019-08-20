@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RPGEngine.Core;
 
-namespace RPGEngine.Logging
+namespace RPGEngine.GameInterface
 {
     public interface ILogHelper
     {

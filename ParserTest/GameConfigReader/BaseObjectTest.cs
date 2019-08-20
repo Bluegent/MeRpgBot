@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
 using RPGEngine.Language;
 using RPGEngine.GameConfigReader;
-using RPGEngine.Logging;
+using RPGEngine.GameInterface;
 
 namespace EngineTest.GameConfigReader
 {

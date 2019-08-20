@@ -1,4 +1,4 @@
-﻿using RPGEngine.Logging;
+﻿using RPGEngine.GameInterface;
 
 namespace EngineTest.Parser
 {

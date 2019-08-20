@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RPGEngine.Logging;
+using RPGEngine.GameInterface;
 
 namespace EngineTest.Parser
 {

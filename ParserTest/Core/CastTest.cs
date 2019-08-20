@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.Language;
-using RPGEngine.Logging;
+using RPGEngine.GameInterface;
 using RPGEngine.Parser;
 
 namespace EngineTest.Core

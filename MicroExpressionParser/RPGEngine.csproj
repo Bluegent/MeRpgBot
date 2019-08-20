@@ -194,10 +194,14 @@
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\DamageType.cs" />
     <Compile Include="Core\SkillCastData.cs" />
+    <Compile Include="Discord\Command.cs" />
+    <Compile Include="Discord\DiscordClient.cs" />
+    <Compile Include="Discord\DiscordConfig.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SkillTemplate.cs" />
-    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Input\InputHandler.cs" />
+    <Compile Include="GameInterface\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
     <Compile Include="Game\StatusTemplate.cs" />
     <Compile Include="GameConfigReader\BaseObject.cs" />
@@ -225,8 +229,9 @@
     <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Parser\TreeBuilder.cs" />
     <Compile Include="Data\ValueByLevel.cs" />
-    <Compile Include="Logging\LogHelper.cs" />
+    <Compile Include="GameInterface\LogHelper.cs" />
     <Compile Include="Sanitizer\Sanitizer.cs" />
+    <Compile Include="Utils\FileReader.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
   <ItemGroup>

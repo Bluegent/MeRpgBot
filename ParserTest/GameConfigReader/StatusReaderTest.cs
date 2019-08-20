@@ -5,7 +5,7 @@ using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.GameConfigReader;
 using RPGEngine.Language;
-using RPGEngine.Logging;
+using RPGEngine.GameInterface;
 
 namespace EngineTest.GameConfigReader
 {

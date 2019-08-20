@@ -1,5 +1,5 @@
 ﻿using RPGEngine.Game;
-using RPGEngine.Logging;
+using RPGEngine.GameInterface;
 
 namespace EngineTest.Core
 {
