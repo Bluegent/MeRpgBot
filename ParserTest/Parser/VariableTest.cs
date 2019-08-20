@@ -11,6 +11,9 @@ using RPGEngine.Parser;
 
 namespace EngineTest.Parser
 {
+    using System.Globalization;
+    using System.Threading;
+
     /// <summary>
     /// Summary description for VariableTest
     /// </summary>
@@ -22,6 +25,8 @@ namespace EngineTest.Parser
         [ClassInitialize]
         public static void StartUp(TestContext ctx)
         {
+            CultureInfo ci = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = ci;
 
             Console.WriteLine("START UP");
             Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
