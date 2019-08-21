@@ -28,8 +28,8 @@ namespace EngineTest.GameConfigReader
             double maxStack = 10;
             double interval = 10;
             StackingType type = StackingType.Refresh;  
-            string intervalFormula = $"{Constants.MAX_F}(10,5)";
-            string formula = $"{ Constants.HARM_F }({ Constants.TargetKeyword},{ Constants.TargetKeyword},T,$0)";
+            string intervalFormula = $"{LConstants.MAX_F}(10,5)";
+            string formula = $"{ LConstants.HARM_F }({ LConstants.TargetKeyword},{ LConstants.TargetKeyword},T,$0)";
 
             string jsonStr = $"{{\"{GcConstants.KEY}\":\"{key}\",";
             jsonStr += $"\"{GcConstants.MAX_STACK}\":\"{maxStack}\",";

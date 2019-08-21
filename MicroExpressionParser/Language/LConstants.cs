@@ -1,6 +1,6 @@
 ﻿namespace RPGEngine.Language
 {
-    public static class Constants
+    public static class LConstants
     {
         //Operators
         public const string PLUS_OP = "+";
@@ -36,6 +36,7 @@
         public const string GET_F = "GET";
         public const string SAY_F = "SAY";
         public const string PUSH_BACK_F = "PUSH_BACK";
+        public const string INTERRUPT_F = "INTERRUPT";
        
 
         public const char PARAM_SEPARATOR = ',';

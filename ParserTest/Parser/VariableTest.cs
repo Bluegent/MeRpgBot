@@ -42,7 +42,7 @@ namespace EngineTest.Parser
         {
             string varName = "testVar";
             double number = 3.14;
-            string expression = $"{varName} {Constants.ASSIGN_OP} {number}";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {number}";
             MeNode tree = TreeConverter.Build(expression, Engine);
             tree.Resolve();
             MeVariable result = Engine.GetVariable(varName);
@@ -57,7 +57,7 @@ namespace EngineTest.Parser
             string varName2 = "otherVar";
             double number = 3.14;
 
-            string expression = $"{varName} {Constants.ASSIGN_OP} {number}; {varName2} {Constants.ASSIGN_OP} {Constants.GET_F}({varName});";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {number}; {varName2} {LConstants.ASSIGN_OP} {LConstants.GET_F}({varName});";
             MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
              foreach (MeNode node in trees)
                  node.Resolve();
@@ -81,7 +81,7 @@ namespace EngineTest.Parser
             }
             sb.Remove(sb.Length - 1, 1);
 
-            string expression = $"{varName} {Constants.ASSIGN_OP} {Constants.MAX_F}({sb.ToString()})";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {LConstants.MAX_F}({sb.ToString()})";
             MeNode tree = TreeConverter.Build(expression, Engine);
             tree.Resolve();
             MeVariable result = Engine.GetVariable(varName);
@@ -103,7 +103,7 @@ namespace EngineTest.Parser
             }
             sb.Remove(sb.Length - 1, 1);
 
-            string expression = $"{varName} {Constants.ASSIGN_OP} {Constants.MAX_F}({sb.ToString()})+{addedNumber}";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {LConstants.MAX_F}({sb.ToString()})+{addedNumber}";
             MeNode tree = TreeConverter.Build(expression, Engine);
             tree.Resolve();
             MeVariable result = Engine.GetVariable(varName);
@@ -120,7 +120,7 @@ namespace EngineTest.Parser
             string varName2 = "otherVar";
             double number = 3.14;
 
-            string expression = $"{varName} {Constants.ASSIGN_OP} {number}; {varName2} {Constants.ASSIGN_OP} {varName};";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {number}; {varName2} {LConstants.ASSIGN_OP} {varName};";
             MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();
@@ -138,7 +138,7 @@ namespace EngineTest.Parser
             string varName = "testVar";
             string propKey = "STR";
             double expected = BasePlayer.GetProperty(propKey).Value;
-            string expression = $"{varName} {Constants.ASSIGN_OP} {BasePlayer.Key}{Constants.PROP_OP}{propKey}";
+            string expression = $"{varName} {LConstants.ASSIGN_OP} {BasePlayer.Key}{LConstants.PROP_OP}{propKey}";
             MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();

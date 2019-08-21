@@ -43,14 +43,14 @@ namespace RPGEngine.Language
 
         public bool IsSpecialChar(char c)
         {
-            return c == Constants.PARAM_SEPARATOR || c == Constants.LEFT_PAREN || c == Constants.RIGHT_PAREN || IsOperatorChar(c);
+            return c == LConstants.PARAM_SEPARATOR || c == LConstants.LEFT_PAREN || c == LConstants.RIGHT_PAREN || IsOperatorChar(c);
         }
 
         public bool IsSeparator(string str)
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == Constants.PARAM_SEPARATOR)
+            if (str[0] == LConstants.PARAM_SEPARATOR)
                 return true;
             return false;
         }
@@ -69,7 +69,7 @@ namespace RPGEngine.Language
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == Constants.LEFT_PAREN)
+            if (str[0] == LConstants.LEFT_PAREN)
                 return true;
             return false;
         }
@@ -78,7 +78,7 @@ namespace RPGEngine.Language
         {
             if (str.Length != 1)
                 return false;
-            if (str[0] == Constants.RIGHT_PAREN)
+            if (str[0] == LConstants.RIGHT_PAREN)
                 return true;
             return false;
         }
@@ -109,7 +109,7 @@ namespace RPGEngine.Language
 
         public bool Ignore(char c)
         {
-            return Constants.IgnoreChars.Contains(c);
+            return LConstants.IgnoreChars.Contains(c);
         }
         public void Deinit()
         {
@@ -125,14 +125,14 @@ namespace RPGEngine.Language
             _initialized = true;
 
             Engine = engine;
-            AddOperator(Constants.PLUS_OP, 1, true,
+            AddOperator(LConstants.PLUS_OP, 1, true,
             (values, op) =>
             {
                 op.ValidateParameters(values.Length);
                 return values[0].ToDouble() + values[1].ToDouble();
             });
 
-            AddOperator(Constants.MINUS_OP, 1, true,
+            AddOperator(LConstants.MINUS_OP, 1, true,
             (values, op) =>
             {
                 op.ValidateParameters(values.Length);
@@ -140,55 +140,55 @@ namespace RPGEngine.Language
             });
 
 
-            AddOperator(Constants.MULITPLY_OP, 2, true,
+            AddOperator(LConstants.MULITPLY_OP, 2, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return values[0].ToDouble() * values[1].ToDouble();
                 });
 
-            AddOperator(Constants.POWER_OP, 3, true,
+            AddOperator(LConstants.POWER_OP, 3, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return Math.Pow(values[0].ToDouble(), values[1].ToDouble());
                 });
 
-            AddOperator(Constants.DIVIDE_OP, 2, true,
+            AddOperator(LConstants.DIVIDE_OP, 2, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return values[0].ToDouble() / values[1].ToDouble();
                 });
 
-            AddOperator(Constants.NOT_OP, 2, true,
+            AddOperator(LConstants.NOT_OP, 2, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return !values[0].ToBoolean();
                 }, 1);
 
-            AddOperator(Constants.GREATER_OP, 0, true,
+            AddOperator(LConstants.GREATER_OP, 0, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return values[0].ToDouble() > values[1].ToDouble();
                 });
-            AddOperator(Constants.LESSER_OP, 0, true,
+            AddOperator(LConstants.LESSER_OP, 0, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return values[0].ToDouble() < values[1].ToDouble();
                 });
 
-            AddOperator(Constants.EQUAL_OP, 0, true,
+            AddOperator(LConstants.EQUAL_OP, 0, true,
                 (values, op) =>
                 {
                     op.ValidateParameters(values.Length);
                     return Utility.DoubleEq(values[0].ToDouble(), values[1].ToDouble());
                 });
 
-            AddOperator(Constants.ASSIGN_OP, -1, true, (values, op) =>
+            AddOperator(LConstants.ASSIGN_OP, -1, true, (values, op) =>
                {
                    op.ValidateParameters(values.Length);
                    string key = values[0].ToString();
@@ -209,7 +209,7 @@ namespace RPGEngine.Language
                    return null;
                },2);
 
-            AddOperator(Constants.PROP_OP, 20, true, (values, op) =>
+            AddOperator(LConstants.PROP_OP, 20, true, (values, op) =>
                   {
                   op.ValidateParameters(values.Length);
                   string key = values[1].ToString();
@@ -218,7 +218,7 @@ namespace RPGEngine.Language
                   {
                       case VariableType.Array:
                       {
-                          if (key.Equals(Constants.ARR_LENGTH))
+                          if (key.Equals(LConstants.ARR_LENGTH))
                               {
                                   return var.ToArray().Length;
                               }
@@ -236,7 +236,7 @@ namespace RPGEngine.Language
                   }
             ,2);
 
-            AddFunction(Constants.MAX_F,
+            AddFunction(LConstants.MAX_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -244,7 +244,7 @@ namespace RPGEngine.Language
                     return parameters.Max();
                 });
 
-            AddFunction(Constants.MIN_F,
+            AddFunction(LConstants.MIN_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -253,14 +253,14 @@ namespace RPGEngine.Language
                 });
 
 
-            AddFunction(Constants.ABS_F,
+            AddFunction(LConstants.ABS_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
                     return Math.Abs(values[0].ToDouble());
                 }, 1);
 
-            AddFunction(Constants.NON_NEG_F,
+            AddFunction(LConstants.NON_NEG_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -268,7 +268,7 @@ namespace RPGEngine.Language
                     return value > 0 ? value : 0;
                 }, 1);
 
-            AddFunction(Constants.RANDOM_F,
+            AddFunction(LConstants.RANDOM_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -276,7 +276,7 @@ namespace RPGEngine.Language
                 }, 2);
 
 
-            AddFunction(Constants.HARM_F,
+            AddFunction(LConstants.HARM_F,
                 (values, func) =>
                 {
                     //func.ValidateParameters(values.Length);
@@ -292,7 +292,7 @@ namespace RPGEngine.Language
                     return null;
                 }, 4);
 
-            AddFunction(Constants.HEAL_F,
+            AddFunction(LConstants.HEAL_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -303,14 +303,14 @@ namespace RPGEngine.Language
                     return null;
                 }, 3);
 
-            AddFunction(Constants.ARRAY_F,
+            AddFunction(LConstants.ARRAY_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
                     return new MeVariable() { Type = VariableType.Array, Value = values };
                 });
 
-            AddFunction(Constants.GET_PLAYERS_F,
+            AddFunction(LConstants.GET_PLAYERS_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -323,7 +323,7 @@ namespace RPGEngine.Language
                     return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
                 }, 0);
 
-            AddFunction(Constants.GET_ACTIVE_PLAYERS_F,
+            AddFunction(LConstants.GET_ACTIVE_PLAYERS_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -337,7 +337,7 @@ namespace RPGEngine.Language
                     return new MeVariable() { Value = playerList.ToArray(), Type = VariableType.Array };
                 }, 0);
 
-            AddFunction(Constants.GET_PROP_F,
+            AddFunction(LConstants.GET_PROP_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -347,7 +347,7 @@ namespace RPGEngine.Language
                     ;
                 }, 2);
 
-            AddFunction(Constants.IF_F,
+            AddFunction(LConstants.IF_F,
                 (values, func) =>
                 {
                     //IF(CONDITION,THEN,ELSE)
@@ -362,7 +362,7 @@ namespace RPGEngine.Language
                         return values[2].Execute();
                     }
                 }, 3, new bool[] { true, false, false });
-            AddFunction(Constants.ARR_RANDOM_F,
+            AddFunction(LConstants.ARR_RANDOM_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -372,7 +372,7 @@ namespace RPGEngine.Language
 
                 }, 1);
 
-            AddFunction(Constants.CHANCE_F,
+            AddFunction(LConstants.CHANCE_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -381,7 +381,7 @@ namespace RPGEngine.Language
 
                 }, 1);
 
-            AddFunction(Constants.CAST_F,
+            AddFunction(LConstants.CAST_F,
                 (values, func) =>
                 {
                     //CAST(CASTER,TARGET,SKILL)
@@ -393,7 +393,7 @@ namespace RPGEngine.Language
                     return null;
 
                 }, 3);
-            AddFunction(Constants.MOD_VALUE_F,
+            AddFunction(LConstants.MOD_VALUE_F,
                (values, func) =>
                {
                    //MOD_VALUE(stat,Amount)
@@ -403,7 +403,7 @@ namespace RPGEngine.Language
                    StatModifier mod = new StatModifier() { Amount = amount, StatKey = stat };
                    return new MeVariable { Type = VariableType.StatModifier, Value = mod };
                }, 2);
-            AddFunction(Constants.APPLY_F,
+            AddFunction(LConstants.APPLY_F,
                (values, func) =>
                {
                    //APPLYSTATUS(target,Source,status_key,duration,amounts)
@@ -418,7 +418,7 @@ namespace RPGEngine.Language
                    //TODO:construct a statusEffect
                    return null;
                }, 5);
-            AddFunction(Constants.GET_F, 
+            AddFunction(LConstants.GET_F, 
                 (values, func) =>
             {
                 func.ValidateParameters(values.Length);
@@ -426,7 +426,7 @@ namespace RPGEngine.Language
                 return Definer.Get().Engine.GetVariable(key); ;
             },1);
 
-            AddFunction(Constants.SAY_F,
+            AddFunction(LConstants.SAY_F,
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
@@ -436,7 +436,7 @@ namespace RPGEngine.Language
                     return null;
                 }, 2);
 
-            AddFunction(Constants.PUSH_BACK_F,
+            AddFunction(LConstants.PUSH_BACK_F,
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);

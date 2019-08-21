@@ -18,11 +18,10 @@ namespace RPGEngine.Core
         public MeNode CriticalChance { get; set; }
         public MeNode CriticalModifier { get; set; }
 
-        private IGameEngine _engine;
+
 
         public DamageType(IGameEngine engine, string key, string mitigation, string dodge, string crit, string critmod)
         {
-            _engine = engine;
             Key = key;
             Mitigation = mitigation != null ? TreeConverter.Build(mitigation, engine) : null;
             Dodge = dodge != null ? TreeConverter.Build(dodge, engine) : null;
@@ -32,7 +31,7 @@ namespace RPGEngine.Core
 
         public bool GetDodge(Entity source, Entity target)
         {
-            return Dodge != null && Utils.Utility.Chance(_engine.GetSanitizer().ReplaceTargetAndSource(Dodge, source, target).Resolve().Value.ToDouble());
+            return Dodge != null && Utils.Utility.Chance(Sanitizer.ReplaceTargetAndSource(Dodge, source, target).Resolve().Value.ToDouble());
         }
 
         public double GetMitigatedAmount(double amount, Entity source, Entity target)
@@ -40,7 +39,7 @@ namespace RPGEngine.Core
             bool crited;
             if (CriticalChance != null)
             {
-                MeNode resolvedCritChance = _engine.GetSanitizer().ReplaceTargetAndSource(CriticalChance, source, target)
+                MeNode resolvedCritChance = Sanitizer.ReplaceTargetAndSource(CriticalChance, source, target)
                     .Resolve();
 
                 crited = Utils.Utility.Chance(resolvedCritChance.Value.ToDouble());
@@ -54,14 +53,14 @@ namespace RPGEngine.Core
             if (crited)
             {
                 if(CriticalModifier!=null)
-                    mutliplier = _engine.GetSanitizer().ReplaceTargetAndSource(CriticalModifier, source, target)
+                    mutliplier = Sanitizer.ReplaceTargetAndSource(CriticalModifier, source, target)
                     .Resolve().Value.ToDouble();
             }
 
             double finalAmount = mutliplier * amount;
             if (Mitigation != null)
             {
-                MeNode mitigation = _engine.GetSanitizer().SanitizeMitigation(Mitigation, target, source, finalAmount)
+                MeNode mitigation = Sanitizer.SanitizeMitigation(Mitigation, target, source, finalAmount)
                     .Resolve();
                 return mitigation.Value.ToDouble();
             }

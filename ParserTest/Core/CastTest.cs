@@ -1,4 +1,5 @@
 ﻿
+using MicroExpressionParser;
 using MicroExpressionParser.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.Core;
@@ -36,8 +37,9 @@ namespace EngineTest.Core
             _testSkill.Key = "TEST_CAST";
             SkillLevelTemplate testLevelTemplate = new SkillLevelTemplate();
             testLevelTemplate.Cooldown = TreeConverter.Build("3", Engine);
-            testLevelTemplate.Duration = TreeConverter.Build($"{Constants.SourceKeyword}{Constants.PROP_OP}INT", Engine);
-            testLevelTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            testLevelTemplate.Duration = TreeConverter.Build($"{LConstants.SourceKeyword}{LConstants.PROP_OP}INT", Engine);
+            testLevelTemplate.Interruptible = TreeConverter.Build("true", Engine);
+            testLevelTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
             testLevelTemplate.PushBack = TreeConverter.Build("true", Engine);
             _testSkill.ByLevel.Add(testLevelTemplate);
 
@@ -49,8 +51,9 @@ namespace EngineTest.Core
             testLevelTemplate2.Duration = TreeConverter.Build("60", Engine);
             testLevelTemplate2.Interval = TreeConverter.Build("10", Engine);
             testLevelTemplate2.PushBack = TreeConverter.Build("true", Engine);
+            testLevelTemplate2.Interruptible = TreeConverter.Build("true", Engine);
             MeNode channelFormula = TreeConverter.Build(
-                $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)",
+                $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)",
                 Engine);
             Engine.GetSanitizer().SetHarmsToPeriodic(channelFormula);
                 
@@ -64,7 +67,8 @@ namespace EngineTest.Core
             hurtLevelTemplate.Cooldown = TreeConverter.Build("0", Engine);
             hurtLevelTemplate.Duration = TreeConverter.Build("0", Engine);
             hurtLevelTemplate.PushBack = TreeConverter.Build("false", Engine);
-            hurtLevelTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            hurtLevelTemplate.Interruptible = TreeConverter.Build("true", Engine);
+            hurtLevelTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
             _instantHarm.ByLevel.Add(hurtLevelTemplate);
 
 
@@ -74,8 +78,9 @@ namespace EngineTest.Core
             SkillLevelTemplate unpushTemplate = new SkillLevelTemplate();
             unpushTemplate.Cooldown = TreeConverter.Build("0", Engine);
             unpushTemplate.Duration = TreeConverter.Build("5", Engine);
+            unpushTemplate.Interruptible = TreeConverter.Build("true", Engine);
             unpushTemplate.PushBack = TreeConverter.Build("false", Engine);
-            unpushTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            unpushTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
             _unpushable.ByLevel.Add(unpushTemplate);
 
 
@@ -130,7 +135,7 @@ namespace EngineTest.Core
             _testPlayer.Cast(_testPlayer, _testSkill.Key);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             MeNode duration = _testSkill.ByLevel[0].Duration;
-            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             double actual;
             long skillDuration = duration.Resolve().Value.ToLong(); ;
             for (int i = 0; i < skillDuration; ++i)
@@ -154,7 +159,7 @@ namespace EngineTest.Core
             _testPlayer.Cast(_testPlayer, _testChannelSkill.Key);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             MeNode duration = _testChannelSkill.ByLevel[0].Duration;
-            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             double actual;
             long skillDuration = duration.Resolve().Value.ToLong(); ;
             for (int i = 0; i <= skillDuration; ++i)
@@ -185,7 +190,7 @@ namespace EngineTest.Core
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             MeNode duration = _testSkill.ByLevel[0].Duration;
-            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
             for (int i = 0; i < skillDuration + delay - 1; ++i)
             {
@@ -216,7 +221,7 @@ namespace EngineTest.Core
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             MeNode duration = _testChannelSkill.ByLevel[0].Duration;
-            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
 
             for (int i = 0; i < skillDuration; ++i)
@@ -246,7 +251,7 @@ namespace EngineTest.Core
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             MeNode duration = _unpushable.ByLevel[0].Duration;
-            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
 
             for (int i = 0; i < skillDuration; ++i)

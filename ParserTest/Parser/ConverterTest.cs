@@ -20,10 +20,10 @@ namespace EngineTest.Parser
         [TestMethod]
         public void ConverterTestSimpleFunction()
         {
-            string expression = $"{Constants.ABS_F}(STR)";
+            string expression = $"{LConstants.ABS_F}(STR)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = InfixToPostfix.ToPostfix(infix);
-            string[] expected = { "(", "STR", Constants.ABS_F };
+            string[] expected = { "(", "STR", LConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -32,10 +32,10 @@ namespace EngineTest.Parser
         [TestMethod]
         public void ConverterTestFunctionAndOperator()
         {
-            string expression = $"{Constants.ABS_F}(10-100)";
+            string expression = $"{LConstants.ABS_F}(10-100)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = InfixToPostfix.ToPostfix(infix);
-            string[] expected = { "(", "10", "100", "-", Constants.ABS_F };
+            string[] expected = { "(", "10", "100", "-", LConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -44,10 +44,10 @@ namespace EngineTest.Parser
         [TestMethod]
         public void ConverterTestMultipleParams()
         {
-            string expression = $"{Constants.MAX_F}(STR,INT)";
+            string expression = $"{LConstants.MAX_F}(STR,INT)";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = InfixToPostfix.ToPostfix(infix);
-            string[] expected = { "(", "STR", "INT", Constants.MAX_F };
+            string[] expected = { "(", "STR", "INT", LConstants.MAX_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -57,10 +57,10 @@ namespace EngineTest.Parser
         [TestMethod]
         public void ConverterTestNestedFunctions()
         {
-            string expression = $"{Constants.ABS_F}({Constants.MAX_F}(STR,INT))";
+            string expression = $"{LConstants.ABS_F}({LConstants.MAX_F}(STR,INT))";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = InfixToPostfix.ToPostfix(infix);
-            string[] expected = { "(", "(", "STR", "INT", Constants.MAX_F, Constants.ABS_F };
+            string[] expected = { "(", "(", "STR", "INT", LConstants.MAX_F, LConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);
@@ -69,10 +69,10 @@ namespace EngineTest.Parser
         [TestMethod]
         public void ConverterTestFunctionAndOperatorMix()
         {
-            string expression = $"{Constants.ABS_F}({Constants.MAX_F}(STR,INT)+{Constants.MIN_F}(10,-20))";
+            string expression = $"{LConstants.ABS_F}({LConstants.MAX_F}(STR,INT)+{LConstants.MIN_F}(10,-20))";
             Token[] infix = Tokenizer.Tokenize(expression);
             Token[] postfix = InfixToPostfix.ToPostfix(infix);
-            string[] expected = { "(", "(", "STR", "INT", Constants.MAX_F, "(", "10", "-20", Constants.MIN_F, "+", Constants.ABS_F };
+            string[] expected = { "(", "(", "STR", "INT", LConstants.MAX_F, "(", "10", "-20", LConstants.MIN_F, "+", LConstants.ABS_F };
             Assert.AreEqual(expected.Length, postfix.Length);
             for (int i = 0; i < postfix.Length; ++i)
                 Assert.AreEqual(expected[i], postfix[i].Value);

@@ -38,6 +38,8 @@ namespace RPGEngine.Core
 
         public abstract void AddPushback(long delay);
 
+        public abstract void InterruptCasting();
+
 
     }
 
@@ -85,9 +87,9 @@ namespace RPGEngine.Core
         {
             if (CurrentlyCasting == null)
                 return;
-            if (!CurrentlyCasting.Instance.Values().PushBack.Value.ToBoolean())
+            if (!CurrentlyCasting.Skill.Values().PushBack.Resolve().Value.ToBoolean())
                 return;
-            switch (CurrentlyCasting.Instance.Skill.Type)
+            switch (CurrentlyCasting.Skill.Skill.Type)
             {
                 case SkillType.Cast:
                     {
@@ -101,6 +103,32 @@ namespace RPGEngine.Core
                         break;
                     }
             }
+        }
+
+        private void SetCurrentCD()
+        {
+            //set skill's cooldown]
+            MeNode cd = CurrentlyCasting.Skill.Values().Cooldown;
+            cd = Sanitizer.ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
+            CurrentlyCasting.Skill.CooldownFinishTime = Engine.GetTimer().GetNow() + (long)cd.Resolve().Value.ToDouble() * 1000;
+        }
+
+        private void FinishCasting()
+        {
+            SetCurrentCD();
+
+            //casting has ended, remove it
+            CurrentlyCasting = null;
+            Free = true;
+        }
+
+        public override void InterruptCasting()
+        {
+            if (CurrentlyCasting == null)
+                return;
+            if (!CurrentlyCasting.Interruptible)
+                return;
+            FinishCasting();
         }
 
         public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
@@ -149,24 +177,7 @@ namespace RPGEngine.Core
             //TODO: Test if we have enough resource to cast this
             Free = false;
 
-            CurrentlyCasting = new SkillCastData() { Instance = skill };
-            CurrentlyCasting.Target = target;
-            CurrentlyCasting.NextInterval = 0;
-
-            long now = Engine.GetTimer().GetNow();
-
-            //set when we're done casting
-            MeNode castDuration = skill.Skill.ByLevel[skill.SkillLevel].Duration;
-            castDuration = Engine.GetSanitizer().ReplaceTargetAndSource(castDuration, this, target);
-            CurrentlyCasting.CastFinishTime = now + (long)castDuration.Resolve().Value.ToDouble() * 1000;
-
-            //get interval if it's a channel skill
-            if (skill.Skill.Type == SkillType.Channel)
-            {
-                MeNode interval = skill.Values().Interval;
-                interval = Engine.GetSanitizer().ReplaceTargetAndSource(interval, this, target);
-                CurrentlyCasting.Interval = (long)interval.Resolve().Value.ToDouble();
-            }
+            CurrentlyCasting = new SkillCastData(skill, target,this,Engine.GetTimer().GetNow());
 
             return true;
         }
@@ -210,7 +221,7 @@ namespace RPGEngine.Core
         {
             long removeTime = GetRemoveTime(duration);
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
-            MeNode intervalTree = Engine.GetSanitizer().ReplaceTargetAndSource(status.Interval, source, this);
+            MeNode intervalTree = Sanitizer.ReplaceTargetAndSource(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
         }
@@ -308,7 +319,7 @@ namespace RPGEngine.Core
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && tree.Value.Value == Definer.Get().Functions[Constants.MOD_VALUE_F])
+                            && tree.Value.Value == Definer.Get().Functions[LConstants.MOD_VALUE_F])
                         {
                             StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
                             FinalStats[mod.StatKey] += mod.Amount;
@@ -326,10 +337,10 @@ namespace RPGEngine.Core
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && (tree.Value.Value == Definer.Get().Functions[Constants.HARM_F]
-                                || tree.Value.Value == Definer.Get().Functions[Constants.HEAL_F]))
+                            && (tree.Value.Value == Definer.Get().Functions[LConstants.HARM_F]
+                                || tree.Value.Value == Definer.Get().Functions[LConstants.HEAL_F]))
                         {
-                            MeNode newTree = Engine.GetSanitizer().ReplaceTargetAndSource(tree, status.Source, this);
+                            MeNode newTree = Sanitizer.ReplaceTargetAndSource(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
                             newTree.Resolve();
                         }
@@ -369,49 +380,36 @@ namespace RPGEngine.Core
             if (CurrentlyCasting == null)
                 return;
             long now = Engine.GetTimer().GetNow();
-            if (CurrentlyCasting.Instance.Skill.Type == SkillType.Cast)
+            if (CurrentlyCasting.Skill.Skill.Type == SkillType.Cast)
             {
                 if (CurrentlyCasting.CastFinishTime <= now)
                 {
                     //casting has finished so resolve the formula
-                    MeNode[] toResolve = CurrentlyCasting.Instance.Formulas;
+                    MeNode[] toResolve = CurrentlyCasting.Skill.Formulas;
                     foreach (MeNode node in toResolve)
                     {
-                        Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
+                        Sanitizer.ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
                     }
 
-                    //set skill's cooldown]
-                    MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;
-                    cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
-                    CurrentlyCasting.Instance.CooldownFinishTime = now + (long)cd.Resolve().Value.ToDouble();
-
-                    CurrentlyCasting = null;
-                    Free = true;
+                    FinishCasting();
                 }
             }
-            else if (CurrentlyCasting.Instance.Skill.Type == SkillType.Channel)
+            else if (CurrentlyCasting.Skill.Skill.Type == SkillType.Channel)
             {
 
                 if (CurrentlyCasting.CastFinishTime <= now)
                 {
-                    //set skill's cooldown]
-                    MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;
-                    cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
-                    CurrentlyCasting.Instance.CooldownFinishTime = now + (long)cd.Resolve().Value.ToDouble() * 1000;
-
-                    //channeling has ended, remove it
-                    CurrentlyCasting = null;
-                    Free = true;
+                   FinishCasting();
                 }
                 else
                 {
                     //apply the formulas if it's the case
                     if (CurrentlyCasting.NextInterval == 0 || CurrentlyCasting.NextInterval < now)
                     {
-                        MeNode[] toResolve = CurrentlyCasting.Instance.Formulas;
+                        MeNode[] toResolve = CurrentlyCasting.Skill.Formulas;
                         foreach (MeNode node in toResolve)
                         {
-                            Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
+                            Sanitizer.ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
                         }
                         CurrentlyCasting.NextInterval = now + CurrentlyCasting.Interval * 1000;
                     }
@@ -429,10 +427,6 @@ namespace RPGEngine.Core
             SetLastTicks();
             TickCooldownds();
             TickCurrentCast();
-
-            //tick casting/channeling timers
-            //set isFree flag
-
         }
     }
 

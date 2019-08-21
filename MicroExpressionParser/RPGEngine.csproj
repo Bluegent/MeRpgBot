@@ -210,7 +210,7 @@
     <Compile Include="Language\Definer.cs" />
     <Compile Include="Language\Operator.cs" />
     <Compile Include="Core\ITimer.cs" />
-    <Compile Include="Language\Constants.cs" />
+    <Compile Include="Language\LConstants.cs" />
     <Compile Include="Data\ClassJson.cs" />
     <Compile Include="Core\MeVariable.cs" />
     <Compile Include="Data\BaseValue.cs" />

@@ -1,4 +1,5 @@
 ﻿
+using MicroExpressionParser;
 using RPGEngine.Game;
 
 namespace RPGEngine.Core
@@ -20,10 +21,45 @@ namespace RPGEngine.Core
 
     public class SkillCastData
     {
-        public SkillInstance Instance { get; set; }
+        public SkillInstance Skill { get; }
         public long CastFinishTime { get; set; }
-        public Entity Target { get; set; }
-        public long NextInterval { get; set; }
-        public long Interval { get; set; }
+        public Entity Target { get; }
+        public Entity Source { get; }
+        public long NextInterval { get; set;  }
+        public long Interval { get;  }
+        public bool Interruptible { get; }
+        public bool PushBackable { get; }
+
+        public SkillCastData(SkillInstance instance, Entity target, Entity source, long now)
+        {
+            Skill = instance;
+            Target = target;
+            Source = source;
+
+            MeNode interruptible = Skill.Values().Interruptible;
+            interruptible = Sanitizer.ReplaceTargetAndSource(interruptible, Source, Target);
+            Interruptible = interruptible.Resolve().Value.ToBoolean();
+
+            MeNode pushbackAble = Skill.Values().PushBack;
+            pushbackAble = Sanitizer.ReplaceTargetAndSource(pushbackAble, Source, Target);
+            PushBackable = pushbackAble.Resolve().Value.ToBoolean();
+
+            NextInterval = 0;
+
+            MeNode castDuration = Skill.Values().Duration;
+            castDuration = Sanitizer.ReplaceTargetAndSource(castDuration, Source, Target);
+            CastFinishTime = now + (long)castDuration.Resolve().Value.ToDouble() * 1000;
+
+            if (Skill.Skill.Type == SkillType.Channel)
+            {
+                MeNode interval = Skill.Values().Interval;
+                interval = Sanitizer.ReplaceTargetAndSource(interval, Source, Target);
+                Interval = interval.Resolve().Value.ToLong();
+            }
+            else
+            {
+                Interval = 0;
+            }
+        }
     }
 }

@@ -27,11 +27,11 @@ namespace MicroExpressionParser
         public Token[] ConvertToGetProp(Token token, Entity entity)
         {
             Token[] result = new Token[5];
-            result[0] = new Token(Constants.GET_PROP_F);
-            result[1] = new Token(char.ToString(Constants.LEFT_PAREN));
+            result[0] = new Token(LConstants.GET_PROP_F);
+            result[1] = new Token(char.ToString(LConstants.LEFT_PAREN));
             result[2] = new Token(entity.Key);
             result[3] = token;
-            result[4] = new Token(char.ToString(Constants.RIGHT_PAREN));
+            result[4] = new Token(char.ToString(LConstants.RIGHT_PAREN));
             return result;
         }
 
@@ -40,11 +40,11 @@ namespace MicroExpressionParser
             List<Token> result = new List<Token>();
             foreach (Token token in tokens)
             {
-                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(Constants.SPECIAL_CHAR)))
+                if (token.Type == TokenType.Variable && token.Value.StartsWith(char.ToString(LConstants.SPECIAL_CHAR)))
                 {
-                    if(token.Value.Equals(Constants.TargetKeyword))
+                    if(token.Value.Equals(LConstants.TargetKeyword))
                         result.Add(new Token(target.Key));
-                    else if (token.Value.Equals(Constants.SourceKeyword))
+                    else if (token.Value.Equals(LConstants.SourceKeyword))
                         result.Add(new Token(caster.Key));
                 }
                 else
@@ -57,7 +57,7 @@ namespace MicroExpressionParser
 
         public MeVariable SanitizeSkill(string skill, Entity caster, Entity target)
         {
-            string[] lines = skill.Split(Constants.FUNCTION_SEPARATOR);
+            string[] lines = skill.Split(LConstants.FUNCTION_SEPARATOR);
             MeVariable var = null;
             foreach (string expr in lines)
             {
@@ -70,7 +70,7 @@ namespace MicroExpressionParser
         }
 
 
-        public MeNode ReplaceTargetAndSource(MeNode tree, Entity caster, Entity target)
+        public static MeNode ReplaceTargetAndSource(MeNode tree, Entity caster, Entity target)
         {
             List<MeNode> leaves = new List<MeNode>();
             foreach(MeNode leaf in tree.Leaves)
@@ -78,11 +78,11 @@ namespace MicroExpressionParser
             MeNode node = null;
             if(tree.Value.Type == VariableType.PlaceHolder)
             {
-                if (tree.Value.ToPlaceholder() == Constants.TargetKeyword)
+                if (tree.Value.ToPlaceholder() == LConstants.TargetKeyword)
                 {
                     node = new MeNode(target);
                 }
-                else if (tree.Value.ToPlaceholder() == Constants.SourceKeyword)
+                else if (tree.Value.ToPlaceholder() == LConstants.SourceKeyword)
                 {
                     node = new MeNode(caster);
                 }
@@ -133,7 +133,7 @@ namespace MicroExpressionParser
 
         public MeNode[] SplitAndConvert(string expression)
         {
-            string[] lines = expression.Split(Constants.FUNCTION_SEPARATOR);
+            string[] lines = expression.Split(LConstants.FUNCTION_SEPARATOR);
             List<MeNode> result = new List<MeNode>();
             foreach (string expr in lines)
             {
@@ -177,7 +177,7 @@ namespace MicroExpressionParser
             return TreeResolver.Resolve(tree,0).Value;
         }
 
-        public MeNode SanitizeMitigation(MeNode tree,Entity target, Entity caster, double amount)
+        public static MeNode SanitizeMitigation(MeNode tree,Entity target, Entity caster, double amount)
         {
             List<MeNode> leaves = new List<MeNode>();
             foreach (MeNode leaf in tree.Leaves)
@@ -185,15 +185,15 @@ namespace MicroExpressionParser
             MeNode node = null;
             if (tree.Value.Type == VariableType.PlaceHolder)
             {
-                if (tree.Value.ToPlaceholder().Equals(Constants.TargetKeyword))
+                if (tree.Value.ToPlaceholder().Equals(LConstants.TargetKeyword))
                 {
                     node = new MeNode(target);
                 }
-                else if (tree.Value.ToPlaceholder().Equals(Constants.SourceKeyword))
+                else if (tree.Value.ToPlaceholder().Equals(LConstants.SourceKeyword))
                 {
                     node = new MeNode(caster);
                 }
-                else if(tree.Value.ToPlaceholder().Equals( Constants.ValueKeyword))
+                else if(tree.Value.ToPlaceholder().Equals( LConstants.ValueKeyword))
                 {
                     node = new MeNode(amount);
                 }
@@ -212,12 +212,14 @@ namespace MicroExpressionParser
                SetHarmsToPeriodic(leaf);
             MeNode node = new MeNode(tree.Value); 
 
-            if (tree.Value.Type == VariableType.Function && tree.Value.ToFunction().Key.Equals(Constants.HARM_F))
+            if (tree.Value.Type == VariableType.Function && tree.Value.ToFunction().Key.Equals(LConstants.HARM_F))
             {
                 MeNode periodic = new MeNode(true);
                 periodic.Parent = tree;
                 tree.Leaves.Add(periodic);
             }
         }
+
+       
     }
 }
