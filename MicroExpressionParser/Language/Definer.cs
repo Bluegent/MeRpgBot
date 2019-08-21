@@ -279,12 +279,16 @@ namespace RPGEngine.Language
             AddFunction(Constants.HARM_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    //func.ValidateParameters(values.Length);
                     Entity target = values[0].ToEntity();
                     Entity source = values[1].ToEntity();
                     DamageType damageType = values[2].ToDamageType();
                     double amount = values[3].ToDouble();
-                    target.TakeDamage(amount, damageType, source);
+                    bool periodic = false;
+
+                    if (values.Length > func.ParameterCount)
+                        periodic = values[4].ToBoolean();
+                    target.TakeDamage(amount, damageType, source,periodic);
                     return null;
                 }, 4);
 

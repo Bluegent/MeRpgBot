@@ -22,9 +22,9 @@ namespace RPGEngine.Core
         public Dictionary<string, double> StatMap { get; set; }
         public bool Free { get; protected set; }
 
-        public abstract void TakeDamage(double amount, DamageType type, Entity source,bool log = true);
+        public abstract void TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
 
-        public abstract void GetHealed(double amount, Entity source,bool log = true);
+        public abstract void GetHealed(double amount, Entity source, bool log = true);
 
         public abstract bool Cast(Entity target, string skillKey);
 
@@ -55,6 +55,10 @@ namespace RPGEngine.Core
 
     public class BaseEntity : Entity
     {
+
+        public const string C_HP_KEY = "CHP";
+        public const string M_HP_KEY = "MHP";
+
         public List<AppliedStatus> Statuses;
         public Dictionary<string, double> FinalStats { get; set; }
         public IGameEngine Engine { get; set; }
@@ -62,7 +66,7 @@ namespace RPGEngine.Core
 
         public Dictionary<string, SkillInstance> Skills;
 
-        public BaseEntity(IGameEngine engine, Dictionary<string ,double> stats)
+        public BaseEntity(IGameEngine engine, Dictionary<string, double> stats)
         {
             Free = true;
             CurrentlyCasting = null;
@@ -75,30 +79,55 @@ namespace RPGEngine.Core
 
         }
 
-        public override void TakeDamage(double amount, DamageType type, Entity source, bool log = true)
+        private void HandlePushBack()
+        {
+            if (CurrentlyCasting == null)
+                return;
+            double currentPushback = CurrentlyCasting.Instance.Values().PushBack.Resolve().Value.ToDouble();
+            switch (CurrentlyCasting.Instance.Skill.Type)
+            {
+                case SkillType.Cast:
+                    {
+                        CurrentlyCasting.CastFinishTime += (long)currentPushback * 1000;
+                        break;
+                    }
+
+                case SkillType.Channel:
+                    {
+                        CurrentlyCasting.CastFinishTime -= (long)currentPushback * 1000;
+                        break;
+                    }
+            }
+        }
+
+        public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
         {
             if (type.GetDodge(source, this))
             {
-                if(log)
-                    Engine.Log().LogDodge(this,source);
+                if (!periodic)
+                    Engine.Log().LogDodge(this, source);
                 return;
             }
             double actualAmount = type.GetMitigatedAmount(amount, source, this);
             double resisted = amount - actualAmount;
-            FinalStats["CHP"] -= actualAmount;
-            StatMap["CHP"] -= actualAmount;
-            if(log)
-                Engine.Log().LogDamage(this,source,type, actualAmount, resisted);
+            FinalStats[C_HP_KEY] -= actualAmount;
+            StatMap[C_HP_KEY] -= actualAmount;
+
+            if (!periodic)
+            {
+                HandlePushBack();
+                Engine.Log().LogDamage(this, source, type, actualAmount, resisted);
+            }
         }
 
         public override void GetHealed(double amount, Entity source, bool log = true)
         {
-            FinalStats["CHP"] += amount;
+            FinalStats[C_HP_KEY] += amount;
         }
 
         public override bool Cast(Entity target, string skillKey)
         {
-            SkillInstance skill = Skills.ContainsKey(skillKey)? Skills[skillKey] : null;
+            SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
             if (skill == null)
             {
                 //log that you don't have that skill
@@ -118,7 +147,7 @@ namespace RPGEngine.Core
             //TODO: Test if we have enough resource to cast this
             Free = false;
 
-            CurrentlyCasting = new SkillCastData() {Instance = skill};
+            CurrentlyCasting = new SkillCastData() { Instance = skill };
             CurrentlyCasting.Target = target;
             CurrentlyCasting.NextInterval = 0;
 
@@ -127,7 +156,7 @@ namespace RPGEngine.Core
             //set when we're done casting
             MeNode castDuration = skill.Skill.ByLevel[skill.SkillLevel].Duration;
             castDuration = Engine.GetSanitizer().ReplaceTargetAndSource(castDuration, this, target);
-            CurrentlyCasting.CastFinishTime =  now + (long)castDuration.Resolve().Value.ToDouble() * 1000;
+            CurrentlyCasting.CastFinishTime = now + (long)castDuration.Resolve().Value.ToDouble() * 1000;
 
             //get interval if it's a channel skill
             if (skill.Skill.Type == SkillType.Channel)
@@ -140,7 +169,7 @@ namespace RPGEngine.Core
             return true;
         }
 
-        public override  EntityProperty GetProperty(string key)
+        public override EntityProperty GetProperty(string key)
         {
             if (FinalStats.ContainsKey(key))
                 return new EntityProperty() { Key = key, Value = FinalStats[key] };
@@ -340,7 +369,7 @@ namespace RPGEngine.Core
             long now = Engine.GetTimer().GetNow();
             if (CurrentlyCasting.Instance.Skill.Type == SkillType.Cast)
             {
-                if (CurrentlyCasting.CastFinishTime < now)
+                if (CurrentlyCasting.CastFinishTime <= now)
                 {
                     //casting has finished so resolve the formula
                     MeNode[] toResolve = CurrentlyCasting.Instance.Formulas;
@@ -348,7 +377,7 @@ namespace RPGEngine.Core
                     {
                         Engine.GetSanitizer().ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
                     }
-                    
+
                     //set skill's cooldown]
                     MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;
                     cd = Engine.GetSanitizer().ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
@@ -361,7 +390,7 @@ namespace RPGEngine.Core
             else if (CurrentlyCasting.Instance.Skill.Type == SkillType.Channel)
             {
 
-                if (CurrentlyCasting.CastFinishTime < now)
+                if (CurrentlyCasting.CastFinishTime <= now)
                 {
                     //set skill's cooldown]
                     MeNode cd = CurrentlyCasting.Instance.Values().Cooldown;

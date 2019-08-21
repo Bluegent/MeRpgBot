@@ -18,14 +18,15 @@ namespace RPGEngine.Game
         {
             Stats = new Dictionary<string, double>();
             Class = myClass;
-            Dictionary<string, SkillInstance> Skills = new Dictionary<string, SkillInstance>();
+            Dictionary<string, SkillInstance> skills = new Dictionary<string, SkillInstance>();
             //TODO: deserialize properly
             foreach (SkillTemplate skill in Class.Skills.Values)
             {
-                Skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
+                skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
             }
 
             Entity = new BaseEntity(engine,Stats);
+            Entity.Skills = skills;
         }
     }
 }
