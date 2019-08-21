@@ -200,7 +200,6 @@
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SkillTemplate.cs" />
-    <Compile Include="Input\InputHandler.cs" />
     <Compile Include="GameInterface\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
     <Compile Include="Game\StatusTemplate.cs" />

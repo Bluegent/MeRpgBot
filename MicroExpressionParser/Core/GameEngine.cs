@@ -4,12 +4,15 @@ using RPGEngine.GameInterface;
 namespace RPGEngine.Core
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
 
     using MicroExpressionParser;
     using MicroExpressionParser.Core;
 
+    using RPGEngine.Discord;
     using RPGEngine.Language;
 
     public interface IGameEngine
@@ -32,9 +35,19 @@ namespace RPGEngine.Core
         void SetVariable(string key, MeVariable var);
         ILogHelper Log();
 
+        void EnqueueCommand(Command command);
+
     }
     public class GameEngine : IGameEngine
     {
+
+        const int SLEEP_TIME = 1000;
+        private Thread workerThread;
+
+        private ConcurrentQueue<Command> commandsQueue;
+
+        private bool running;
+
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
@@ -54,7 +67,12 @@ namespace RPGEngine.Core
             Sanit = new Sanitizer(this);
             statuses = new Dictionary<string, StatusTemplate>();
             DeclaredVariables = new Dictionary<string, MeVariable>();
-     
+
+            commandsQueue = new ConcurrentQueue<Command>();
+            workerThread = new Thread(Run);
+            running = false;
+            Start();
+
         }
 
         public void AddPlayer(Entity entity)
@@ -141,6 +159,39 @@ namespace RPGEngine.Core
         public ILogHelper Log()
         {
             return _log;
+        }
+
+        private void Start()
+        {
+            running = true;
+            workerThread.Start();
+        }
+
+        private void Stop()
+        {
+            running = false;
+
+        }
+
+        private void Run()
+        {
+            while (running)
+            {
+                if (!commandsQueue.IsEmpty)
+                {
+                    Command command;
+                    bool result = commandsQueue.TryDequeue(out command);
+                    if (result)
+                    {
+                        Console.WriteLine(command);
+                    }
+                }
+                Thread.Sleep(SLEEP_TIME);
+            }
+        }
+        public void EnqueueCommand(Command command)
+        {
+            commandsQueue.Enqueue(command);
         }
     }
 }

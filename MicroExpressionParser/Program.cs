@@ -8,8 +8,8 @@ namespace MicroExpressionParser
 {
     using System.Threading.Tasks;
 
+    using RPGEngine.Core;
     using RPGEngine.Discord;
-    using RPGEngine.Input;
 
     class Program
     {
@@ -19,9 +19,8 @@ namespace MicroExpressionParser
 
         async Task MainAsync()
         {
-            InputHandler handler=new InputHandler();
-            handler.Start();
-            DiscordClient discord = new DiscordClient(handler);
+            GameEngine engine = new GameEngine(null);
+            DiscordClient discord = new DiscordClient(engine);
             discord.Init();
             await Task.Delay(-1);
         }

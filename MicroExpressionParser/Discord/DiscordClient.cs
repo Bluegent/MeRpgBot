@@ -12,7 +12,6 @@ namespace RPGEngine.Discord
     using Newtonsoft.Json;
 
     using RPGEngine.Core;
-    using RPGEngine.Input;
 
     public  class DiscordClient : GameInterface.ILogger
     {
@@ -21,7 +20,7 @@ namespace RPGEngine.Discord
         private DiscordSocketClient client;
         private Action ready;
 
-        private InputHandler inputHandler;
+        private IGameEngine engine;
 
         private DiscordConfig config;
 
@@ -44,9 +43,9 @@ namespace RPGEngine.Discord
             get { return channel; }
         }
 
-        public DiscordClient(InputHandler handler)
+        public DiscordClient(IGameEngine eng)
         {
-            inputHandler = handler;
+            engine = eng;
         }
 
         public async void Init()
@@ -94,16 +93,17 @@ namespace RPGEngine.Discord
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceived(SocketMessage message)
+        private Task MessageReceived(SocketMessage message)
         {
             if (message.Channel == channel)
             {
                 if (message.Content[0].ToString() == config.Prefix)
                 {
                     Command command=Command.FromMessage((long)message.Author.Id,message.Content.Substring(1, message.Content.Length - 1));
-                    inputHandler.AddCommand(command);
+                    engine.EnqueueCommand(command);
                 }
             }
+            return Task.CompletedTask;
         }
 
         private Task DiscordLog(LogMessage msg)
