@@ -56,7 +56,7 @@ namespace EngineTest.Core
                 $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)",
                 Engine);
             Engine.GetSanitizer().SetHarmsToPeriodic(channelFormula);
-                
+
             testLevelTemplate2.Formulas.Add(channelFormula);
             _testChannelSkill.ByLevel.Add(testLevelTemplate2);
 
@@ -78,7 +78,7 @@ namespace EngineTest.Core
             SkillLevelTemplate unpushTemplate = new SkillLevelTemplate();
             unpushTemplate.Cooldown = TreeConverter.Build("0", Engine);
             unpushTemplate.Duration = TreeConverter.Build("5", Engine);
-            unpushTemplate.Interruptible = TreeConverter.Build("true", Engine);
+            unpushTemplate.Interruptible = TreeConverter.Build("false", Engine);
             unpushTemplate.PushBack = TreeConverter.Build("false", Engine);
             unpushTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
             _unpushable.ByLevel.Add(unpushTemplate);
@@ -92,6 +92,7 @@ namespace EngineTest.Core
             _testPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             _testPlayer.Skills.Add(_testSkill.Key, new SkillInstance() { Skill = _testSkill, SkillLevel = 0 });
             _testPlayer.Skills.Add(_testChannelSkill.Key, new SkillInstance() { Skill = _testChannelSkill, SkillLevel = 0 });
+            _testPlayer.Skills.Add(_unpushable.Key, new SkillInstance() { SkillLevel = 0, Skill = _unpushable });
             Engine.AddPlayer(_testPlayer);
         }
 
@@ -242,11 +243,71 @@ namespace EngineTest.Core
         {
             long delay = 10;
             BaseEntity mob = new MockEntity(Engine);
-            _testPlayer.Skills.Add(_unpushable.Key, new SkillInstance(){SkillLevel = 0, Skill = _unpushable});
 
-        double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _unpushable.Key);
             _testPlayer.AddPushback(delay);
+
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+
+            MeNode duration = _unpushable.ByLevel[0].Duration;
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            long skillDuration = duration.Resolve().Value.ToLong();
+
+            for (int i = 0; i < skillDuration; ++i)
+            {
+                timer.ForceTick();
+                _testPlayer.Update();
+                mob.Update();
+            }
+
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+        }
+
+        [TestMethod]
+        public void CastTestInterrupt()
+        {
+
+            BaseEntity mob = new MockEntity(Engine);
+
+
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value;
+            _testPlayer.Cast(mob, _testSkill.Key);
+            _testPlayer.InterruptCasting();
+
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+
+            MeNode duration = _unpushable.ByLevel[0].Duration;
+            duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            long skillDuration = duration.Resolve().Value.ToLong();
+
+            for (int i = 0; i < skillDuration; ++i)
+            {
+                timer.ForceTick();
+                _testPlayer.Update();
+                mob.Update();
+            }
+
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+        }
+
+
+        [TestMethod]
+        public void CastTestNonInterrupt()
+        {
+
+            BaseEntity mob = new MockEntity(Engine);
+
+
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value-10;
+            _testPlayer.Cast(mob, _unpushable.Key);
+            _testPlayer.InterruptCasting();
 
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
