@@ -205,5 +205,19 @@ namespace MicroExpressionParser
             node.Leaves.AddRange(leaves);
             return node;
         }
+
+        public void SetHarmsToPeriodic(MeNode tree)
+        {
+            foreach (MeNode leaf in tree.Leaves)
+               SetHarmsToPeriodic(leaf);
+            MeNode node = new MeNode(tree.Value); 
+
+            if (tree.Value.Type == VariableType.Function && tree.Value.ToFunction().Key.Equals(Constants.HARM_F))
+            {
+                MeNode periodic = new MeNode(true);
+                periodic.Parent = tree;
+                tree.Leaves.Add(periodic);
+            }
+        }
     }
 }

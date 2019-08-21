@@ -46,8 +46,13 @@ namespace EngineTest.Core
             testLevelTemplate2.Cooldown = TreeConverter.Build("120", Engine);
             testLevelTemplate2.Duration = TreeConverter.Build("60", Engine);
             testLevelTemplate2.Interval = TreeConverter.Build("10", Engine);
-            testLevelTemplate2.PushBack = TreeConverter.Build("0", Engine);
-            testLevelTemplate2.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            testLevelTemplate2.PushBack = TreeConverter.Build("10", Engine);
+            MeNode channelFormula = TreeConverter.Build(
+                $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)",
+                Engine);
+            Engine.GetSanitizer().SetHarmsToPeriodic(channelFormula);
+                
+            testLevelTemplate2.Formulas.Add(channelFormula);
             _testChannelSkill.ByLevel.Add(testLevelTemplate2);
 
             _instantHarm = new SkillTemplate();
@@ -170,7 +175,6 @@ namespace EngineTest.Core
             MeNode duration = _testSkill.ByLevel[0].Duration;
             duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
-
             for (int i = 0; i < skillDuration + 2; ++i)
             {
                 timer.ForceTick();
@@ -184,8 +188,37 @@ namespace EngineTest.Core
             mob.Update();
             Assert.AreEqual(expectedMobHealthAfter, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
 
+        }
 
 
+        [TestMethod]
+        public void CastTestPushbackChannelSkill()
+        {
+            BaseEntity mob = new MockEntity(Engine);
+            mob.Skills.Add(_instantHarm.Key, new SkillInstance() { Skill = _instantHarm, SkillLevel = 0 });
+
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 50;
+            _testPlayer.Cast(mob, _testChannelSkill.Key);
+            mob.Cast(_testPlayer, _instantHarm.Key);
+            mob.Update();
+
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+
+            MeNode duration = _testChannelSkill.ByLevel[0].Duration;
+            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            long skillDuration = duration.Resolve().Value.ToLong();
+
+            for (int i = 0; i < skillDuration; ++i)
+            {
+                timer.ForceTick();
+                _testPlayer.Update();
+                mob.Update();
+            }
+
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
         }
     }
 }
