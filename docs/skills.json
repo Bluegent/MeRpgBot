@@ -97,7 +97,7 @@
             {
                 "cooldown":"300",
                 "duration":"10",
-                "push_back":"3",
+                "push_back":"true",
                 "interrupt":"true",
                 "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*5)",
                 "needed_level":5,

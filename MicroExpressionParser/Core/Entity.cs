@@ -36,6 +36,8 @@ namespace RPGEngine.Core
 
         public abstract void Cleanse();
 
+        public abstract void AddPushback(long delay);
+
 
     }
 
@@ -79,22 +81,23 @@ namespace RPGEngine.Core
 
         }
 
-        private void HandlePushBack()
+        public override void AddPushback(long delay)
         {
             if (CurrentlyCasting == null)
                 return;
-            double currentPushback = CurrentlyCasting.Instance.Values().PushBack.Resolve().Value.ToDouble();
+            if (!CurrentlyCasting.Instance.Values().PushBack.Value.ToBoolean())
+                return;
             switch (CurrentlyCasting.Instance.Skill.Type)
             {
                 case SkillType.Cast:
                     {
-                        CurrentlyCasting.CastFinishTime += (long)currentPushback * 1000;
+                        CurrentlyCasting.CastFinishTime += delay * 1000;
                         break;
                     }
 
                 case SkillType.Channel:
                     {
-                        CurrentlyCasting.CastFinishTime -= (long)currentPushback * 1000;
+                        CurrentlyCasting.CastFinishTime -= delay * 1000;
                         break;
                     }
             }
@@ -115,7 +118,6 @@ namespace RPGEngine.Core
 
             if (!periodic)
             {
-                HandlePushBack();
                 Engine.Log().LogDamage(this, source, type, actualAmount, resisted);
             }
         }

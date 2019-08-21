@@ -48,7 +48,7 @@ Cast skill with longer duration.\
             {
                 "cooldown":"300",
                 "duration":"10",
-                "push_back":"3",
+                "push_back":"true",
                 "interrupt":"true",
                 "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*5)",
                 "needed_level":5,
@@ -58,12 +58,11 @@ Cast skill with longer duration.\
 ```
 Details:
 * ` "duration":"10"` - How long it takes to cast this skill, in seconds.
-* ` "push_back":"3",` - How many seconds are pushed back in the casting if you are hit. 
-    * In this example case, if you are hit twice during casting "Inspiration", your total cast time will be 16 seconds.
-    * If this line is missing, default push-back value is 1 second.
-    * For channelling type spells, push-back works in reverse, expending your duration. If channelling a spell that lasts 10 second, and push back is 1, if you get hit twice, instead of 10 seconds, the spell will channel for 8 seconds.
-    * A value of 0 means the spell is never pushed back.
-    * Negative values speed up casting and extend channelling.
+* ` "push_back":"true",` - If it's possible to be pushed-back while casting this skill
+    * In this example case, if you are pushed back for 6 seconds while casting "Inspiration", your total cast time will be 16 seconds.
+    * If this line is missing, default push-back is true.
+    * For channelling type spells, push-back works in reverse, expending your duration. If channelling a spell that lasts 10 second, and and you are pushed-back 2 seconds, instead of 10 seconds, the spell will channel for 8 seconds.
+    * A value of "false" means the cast/channel of this skill will never be pushed back.
 * `"interrupt":"true",` - Whether the skill can be interrupted by interrupt-type attacks. 
     * If this line is missing, the skill can be interrupted.
     * Accepts formulas that return true/false like operators `> < or =`.

@@ -21,6 +21,8 @@ namespace EngineTest.Core
         private static SkillTemplate _instantHarm;
         private static SkillTemplate _testChannelSkill;
 
+        private static SkillTemplate _unpushable;
+
 
         [ClassInitialize]
         public static void StartUp(TestContext context)
@@ -36,7 +38,7 @@ namespace EngineTest.Core
             testLevelTemplate.Cooldown = TreeConverter.Build("3", Engine);
             testLevelTemplate.Duration = TreeConverter.Build($"{Constants.SourceKeyword}{Constants.PROP_OP}INT", Engine);
             testLevelTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
-            testLevelTemplate.PushBack = TreeConverter.Build("3", Engine);
+            testLevelTemplate.PushBack = TreeConverter.Build("true", Engine);
             _testSkill.ByLevel.Add(testLevelTemplate);
 
             _testChannelSkill = new SkillTemplate();
@@ -46,7 +48,7 @@ namespace EngineTest.Core
             testLevelTemplate2.Cooldown = TreeConverter.Build("120", Engine);
             testLevelTemplate2.Duration = TreeConverter.Build("60", Engine);
             testLevelTemplate2.Interval = TreeConverter.Build("10", Engine);
-            testLevelTemplate2.PushBack = TreeConverter.Build("10", Engine);
+            testLevelTemplate2.PushBack = TreeConverter.Build("true", Engine);
             MeNode channelFormula = TreeConverter.Build(
                 $"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)",
                 Engine);
@@ -61,9 +63,20 @@ namespace EngineTest.Core
             SkillLevelTemplate hurtLevelTemplate = new SkillLevelTemplate();
             hurtLevelTemplate.Cooldown = TreeConverter.Build("0", Engine);
             hurtLevelTemplate.Duration = TreeConverter.Build("0", Engine);
-            hurtLevelTemplate.PushBack = TreeConverter.Build("0", Engine);
+            hurtLevelTemplate.PushBack = TreeConverter.Build("false", Engine);
             hurtLevelTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
             _instantHarm.ByLevel.Add(hurtLevelTemplate);
+
+
+            _unpushable = new SkillTemplate();
+            _unpushable.Type = SkillType.Cast;
+            _unpushable.Key = "NOPUSH";
+            SkillLevelTemplate unpushTemplate = new SkillLevelTemplate();
+            unpushTemplate.Cooldown = TreeConverter.Build("0", Engine);
+            unpushTemplate.Duration = TreeConverter.Build("5", Engine);
+            unpushTemplate.PushBack = TreeConverter.Build("false", Engine);
+            unpushTemplate.Formulas.Add(TreeConverter.Build($"{Constants.HARM_F}({Constants.TargetKeyword},{Constants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            _unpushable.ByLevel.Add(unpushTemplate);
 
 
         }
@@ -162,20 +175,19 @@ namespace EngineTest.Core
 
 
             BaseEntity mob = new MockEntity(Engine);
-            mob.Skills.Add(_instantHarm.Key, new SkillInstance() { Skill = _instantHarm, SkillLevel = 0 });
+            long delay = 5;
 
             double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value;
             double expectedMobHealthAfter = expectedMobHealth - 10;
             _testPlayer.Cast(mob, _testSkill.Key);
-            mob.Cast(_testPlayer, _instantHarm.Key);
-            mob.Update();
+            _testPlayer.AddPushback(delay);
 
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             MeNode duration = _testSkill.ByLevel[0].Duration;
             duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
-            for (int i = 0; i < skillDuration + 2; ++i)
+            for (int i = 0; i < skillDuration + delay - 1; ++i)
             {
                 timer.ForceTick();
                 _testPlayer.Update();
@@ -194,17 +206,46 @@ namespace EngineTest.Core
         [TestMethod]
         public void CastTestPushbackChannelSkill()
         {
+            long delay = 10;
             BaseEntity mob = new MockEntity(Engine);
-            mob.Skills.Add(_instantHarm.Key, new SkillInstance() { Skill = _instantHarm, SkillLevel = 0 });
 
             double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 50;
             _testPlayer.Cast(mob, _testChannelSkill.Key);
-            mob.Cast(_testPlayer, _instantHarm.Key);
-            mob.Update();
+            _testPlayer.AddPushback(delay);
 
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             MeNode duration = _testChannelSkill.ByLevel[0].Duration;
+            duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
+            long skillDuration = duration.Resolve().Value.ToLong();
+
+            for (int i = 0; i < skillDuration; ++i)
+            {
+                timer.ForceTick();
+                _testPlayer.Update();
+                mob.Update();
+            }
+
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+        }
+
+        [TestMethod]
+        public void CastTestNoPushBack()
+        {
+            long delay = 10;
+            BaseEntity mob = new MockEntity(Engine);
+            _testPlayer.Skills.Add(_unpushable.Key, new SkillInstance(){SkillLevel = 0, Skill = _unpushable});
+
+        double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            _testPlayer.Cast(mob, _unpushable.Key);
+            _testPlayer.AddPushback(delay);
+
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+
+            MeNode duration = _unpushable.ByLevel[0].Duration;
             duration = Engine.GetSanitizer().ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
             long skillDuration = duration.Resolve().Value.ToLong();
 

@@ -436,6 +436,16 @@ namespace RPGEngine.Language
                     return null;
                 }, 2);
 
+            AddFunction(Constants.PUSH_BACK_F,
+                (values, func) =>
+                    {
+                        func.ValidateParameters(values.Length);
+                        Entity entity = values[0].ToEntity();
+                        long amount = values[1].ToLong();
+                        entity.AddPushback(amount);
+                        return null;
+                    }, 2);
+
         }
     }
 }

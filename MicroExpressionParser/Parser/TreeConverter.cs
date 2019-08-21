@@ -36,6 +36,7 @@
                     }
                 case TokenType.Variable:
                     {
+                        //first, try a number
                         double result = 0;
                         bool success = double.TryParse(node.Token.Value, out result);
                         if (success)
@@ -44,13 +45,23 @@
                                 new MeVariable() { Value = result, Type = VariableType.NumericValue });
                             break;
                         }
+                        //try a boolean
+                        bool boolResult = false;
+                        success = bool.TryParse(node.Token.Value, out boolResult);
+                        if (success)
+                        {
+                            newNode = new MeNode(boolResult);
+                            break;
+                        }
 
+                        //try a placeholder
                         if (node.Token.Value.StartsWith("$"))
                         {
                             newNode = new MeNode(
                               new MeVariable() { Value = node.Token.Value, Type = VariableType.PlaceHolder });
                             break;
                         }
+                        //try an entitiy
                         Entity tryEntity = engine.GetEntityByKey(node.Token.Value);
                         if (tryEntity != null)
                         {
@@ -59,6 +70,7 @@
                             break;
                         }
 
+                        //try a damage type
                         DamageType tryDamageType = engine.GeDamageType(node.Token.Value);
                         if (tryDamageType != null)
                         {
@@ -74,6 +86,7 @@
                             break;
                         } */          
 
+                        //if nothing else is found, it must be a string
                         newNode = new MeNode(
                                 new MeVariable() { Value = node.Token.Value, Type = VariableType.String });
                         break;
