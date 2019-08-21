@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Discord;
+using System.Threading;
 
 namespace MicroExpressionParser
 {
@@ -10,6 +11,7 @@ namespace MicroExpressionParser
 
     using RPGEngine.Core;
     using RPGEngine.Discord;
+    using RPGEngine.GameInterface;
 
     class Program
     {
@@ -19,10 +21,17 @@ namespace MicroExpressionParser
 
         async Task MainAsync()
         {
-            GameEngine engine = new GameEngine(null);
-            DiscordClient discord = new DiscordClient(engine);
+            const int SLEEP_TIME = 1000;
+            DiscordClient discord = new DiscordClient();
+            ILogHelper logger = new DiscordLogHelper(discord);
+            GameEngine engine = new GameEngine(logger);
+            discord.SetEngine(engine);
             discord.Init();
-            await Task.Delay(-1);
+            while (true)
+            {
+             engine.Update();
+             Thread.Sleep(SLEEP_TIME);
+            }
         }
     }
 }

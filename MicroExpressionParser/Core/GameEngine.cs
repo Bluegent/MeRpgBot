@@ -36,17 +36,14 @@ namespace RPGEngine.Core
         ILogHelper Log();
 
         void EnqueueCommand(Command command);
+        void Update();
 
     }
     public class GameEngine : IGameEngine
     {
 
-        const int SLEEP_TIME = 1000;
-        private Thread workerThread;
-
         private ConcurrentQueue<Command> commandsQueue;
 
-        private bool running;
 
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
@@ -69,9 +66,6 @@ namespace RPGEngine.Core
             DeclaredVariables = new Dictionary<string, MeVariable>();
 
             commandsQueue = new ConcurrentQueue<Command>();
-            workerThread = new Thread(Run);
-            running = false;
-            Start();
 
         }
 
@@ -161,32 +155,23 @@ namespace RPGEngine.Core
             return _log;
         }
 
-        private void Start()
+        public void Update()
         {
-            running = true;
-            workerThread.Start();
+            PollCommands();
+            //Update entities
+            
         }
-
-        private void Stop()
+        public void PollCommands()
         {
-            running = false;
-
-        }
-
-        private void Run()
-        {
-            while (running)
+            while (!commandsQueue.IsEmpty)
             {
-                if (!commandsQueue.IsEmpty)
+                Command command;
+                bool result = commandsQueue.TryDequeue(out command);
+                if (result)
                 {
-                    Command command;
-                    bool result = commandsQueue.TryDequeue(out command);
-                    if (result)
-                    {
-                        Console.WriteLine(command);
-                    }
+                    //handle command
+                    Console.WriteLine(command);
                 }
-                Thread.Sleep(SLEEP_TIME);
             }
         }
         public void EnqueueCommand(Command command)

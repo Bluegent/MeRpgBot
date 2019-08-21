@@ -43,9 +43,8 @@ namespace RPGEngine.Discord
             get { return channel; }
         }
 
-        public DiscordClient(IGameEngine eng)
-        {
-            engine = eng;
+        public DiscordClient()
+        { 
         }
 
         public async void Init()
@@ -59,6 +58,10 @@ namespace RPGEngine.Discord
 
             await client.LoginAsync(TokenType.Bot, config.Token);
             await client.StartAsync();
+        }
+        public void SetEngine(IGameEngine eng)
+        {
+            engine = eng;
         }
 
         SocketGuild GetServer()
@@ -105,6 +108,7 @@ namespace RPGEngine.Discord
             }
             return Task.CompletedTask;
         }
+
 
         private Task DiscordLog(LogMessage msg)
         {
