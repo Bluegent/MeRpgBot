@@ -50,7 +50,7 @@ namespace EngineTest.Core
         [TestInitialize]
         public void Before()
         {
-            BaseEntity = new BaseEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+            BaseEntity = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             BaseEntity.Skills.Add(testSkill.Key, new SkillInstance() { Skill = testSkill, SkillLevel = 0 });
             BaseEntity.Skills.Add(testChannelSkill.Key, new SkillInstance() { Skill = testChannelSkill, SkillLevel = 0 });
             Engine.AddPlayer(BaseEntity);

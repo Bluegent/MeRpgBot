@@ -14,8 +14,8 @@ namespace EngineTest
     {
         public static readonly GameEngine Engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
         public static readonly Sanitizer SanitizerInstance = new Sanitizer(Engine);
-        public static readonly Entity MockPlayer = new BaseEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-        public static readonly Entity MockEnemy = new BaseEntity(Engine) { Name = "ENEMY", Key = "MOCK_ENEMY" };
+        public static readonly Entity MockPlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
+        public static readonly Entity MockEnemy = new MockEntity(Engine) { Name = "ENEMY", Key = "MOCK_ENEMY" };
 
         [ClassInitialize]
         public static void StartUp(TestContext context)

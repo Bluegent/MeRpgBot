@@ -7,18 +7,25 @@ using RPGEngine.Core;
 
 namespace RPGEngine.Game
 {
-    public class Player : BaseEntity
+    public class Player 
     {
         public ClassTemplate Class { get; }
-        public Player(IGameEngine engine, ClassTemplate myClass) : base(engine)
+        public Dictionary<string, double> Stats;
+
+        public BaseEntity Entity { get; }
+
+        public Player(IGameEngine engine, ClassTemplate myClass)
         {
+            Stats = new Dictionary<string, double>();
             Class = myClass;
-            Skills = new Dictionary<string, SkillInstance>();
+            Dictionary<string, SkillInstance> Skills = new Dictionary<string, SkillInstance>();
             //TODO: deserialize properly
             foreach (SkillTemplate skill in Class.Skills.Values)
             {
                 Skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
             }
+
+            Entity = new BaseEntity(engine,Stats);
         }
     }
 }

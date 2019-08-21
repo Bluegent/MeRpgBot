@@ -62,20 +62,11 @@ namespace RPGEngine.Core
 
         public Dictionary<string, SkillInstance> Skills;
 
-        public BaseEntity(IGameEngine engine)
+        public BaseEntity(IGameEngine engine, Dictionary<string ,double> stats)
         {
             Free = true;
             CurrentlyCasting = null;
-            StatMap = new Dictionary<string, double>
-                          {
-                              { "CHP", 100 },
-                              { "MHP", 100 },
-                              { "STR", 5 },
-                              { "INT", 5 },
-                              { "AGI", 10 },
-                              { "DEF",10},
-                              { "MDEF",0 }
-                          };
+            StatMap = stats;
             FinalStats = new Dictionary<string, double>(StatMap);
             Engine = engine;
             Statuses = new List<AppliedStatus>();
@@ -411,6 +402,23 @@ namespace RPGEngine.Core
             //tick casting/channeling timers
             //set isFree flag
 
+        }
+    }
+
+    public class MockEntity : BaseEntity
+    {
+        public MockEntity(IGameEngine engine)
+            : base(engine, new Dictionary<string, double>
+                               {
+                                   { "CHP", 100 },
+                                   { "MHP", 100 },
+                                   { "STR", 5 },
+                                   { "INT", 5 },
+                                   { "AGI", 10 },
+                                   { "DEF",10},
+                                   { "MDEF",0 }
+                               })
+        {
         }
     }
 }
