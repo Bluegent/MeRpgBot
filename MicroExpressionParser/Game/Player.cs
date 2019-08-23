@@ -25,7 +25,7 @@ namespace RPGEngine.Game
                 skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
             }
 
-            Entity = new BaseEntity(engine,Stats);
+            Entity = new BaseEntity(engine);
             Entity.Skills = skills;
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
+using System.Runtime.Remoting.Messaging;
 using RPGEngine.Game;
+using RPGEngine.Parser;
 
 namespace RPGEngine.Core
 {
@@ -19,7 +21,17 @@ namespace RPGEngine.Core
     {
         public string Name { get; set; }
         public string Key { get; set; }
-        public Dictionary<string, double> StatMap { get; set; }
+        public Dictionary<string, double> InteralAttributes { get; protected set; }
+        public Dictionary<string, double> Attributes { get; protected set; }
+        public Dictionary<string, ResourceInstance> ResourceMap { get; protected set; }
+
+
+        public Entity()
+        {
+            InteralAttributes = new Dictionary<string, double>();
+            ResourceMap = new Dictionary<string, ResourceInstance>();
+        }
+
         public bool Free { get; protected set; }
 
         public abstract void TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
@@ -41,6 +53,32 @@ namespace RPGEngine.Core
         public abstract void InterruptCasting();
 
         public abstract bool HasProperty(string propertyKey);
+
+        public void AddAttribute(string key, double value)
+        {
+            if (InteralAttributes.ContainsKey(key))
+                return;
+            InteralAttributes.Add(key,value);
+            ResetAttributes();
+        }
+
+        public void AddResource(ResourceTemplate resource)
+        {
+            if (ResourceMap.ContainsKey(resource.Key))
+                return;
+            ResourceInstance resIn = new ResourceInstance(resource,this);
+            ResourceMap.Add(resource.Key,resIn); 
+
+            
+        }
+
+        protected void ResetAttributes()
+        {
+            foreach (KeyValuePair<string, double> pair in InteralAttributes)
+            {
+                Attributes[pair.Key] = InteralAttributes[pair.Key];
+            }
+        }
 
 
     }
@@ -66,18 +104,17 @@ namespace RPGEngine.Core
         public const string M_HP_KEY = "MHP";
 
         public List<AppliedStatus> Statuses;
-        public Dictionary<string, double> FinalStats { get; set; }
+
         public IGameEngine Engine { get; set; }
         public SkillCastData CurrentlyCasting;
 
         public Dictionary<string, SkillInstance> Skills;
 
-        public BaseEntity(IGameEngine engine, Dictionary<string, double> stats)
+        public BaseEntity(IGameEngine engine)
         {
             Free = true;
             CurrentlyCasting = null;
-            StatMap = stats;
-            FinalStats = new Dictionary<string, double>(StatMap);
+            Attributes = new Dictionary<string, double>();
             Engine = engine;
             Statuses = new List<AppliedStatus>();
             Skills = new Dictionary<string, SkillInstance>();
@@ -135,7 +172,7 @@ namespace RPGEngine.Core
 
         public override bool HasProperty(string propertyKey)
         {
-            if (StatMap.ContainsKey(propertyKey))
+            if (InteralAttributes.ContainsKey(propertyKey))
                 return true;
             return false;
         }
@@ -150,8 +187,8 @@ namespace RPGEngine.Core
             }
             double actualAmount = type.GetMitigatedAmount(amount, source, this);
             double resisted = amount - actualAmount;
-            FinalStats[C_HP_KEY] -= actualAmount;
-            StatMap[C_HP_KEY] -= actualAmount;
+            Attributes[C_HP_KEY] -= actualAmount;
+            InteralAttributes[C_HP_KEY] -= actualAmount;
 
             if (!periodic)
             {
@@ -161,7 +198,7 @@ namespace RPGEngine.Core
 
         public override void GetHealed(double amount, Entity source, bool log = true)
         {
-            FinalStats[C_HP_KEY] += amount;
+            Attributes[C_HP_KEY] += amount;
         }
 
         public override bool Cast(Entity target, string skillKey)
@@ -193,8 +230,8 @@ namespace RPGEngine.Core
 
         public override EntityProperty GetProperty(string key)
         {
-            if (FinalStats.ContainsKey(key))
-                return new EntityProperty() { Key = key, Value = FinalStats[key] };
+            if (Attributes.ContainsKey(key))
+                return new EntityProperty() { Key = key, Value = Attributes[key] };
             return null;
         }
 
@@ -248,7 +285,7 @@ namespace RPGEngine.Core
         public override void Cleanse()
         {
             Statuses.Clear();
-            ResetFinalStatMap();
+            ResetAttributes();
         }
 
         public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
@@ -301,14 +338,6 @@ namespace RPGEngine.Core
                 Statuses.Remove(status);
         }
 
-        private void ResetFinalStatMap()
-        {
-            foreach (KeyValuePair<string, double> pair in StatMap)
-            {
-
-                FinalStats[pair.Key] = StatMap[pair.Key];
-            }
-        }
 
         private bool IsTime(AppliedStatus status)
         {
@@ -331,7 +360,7 @@ namespace RPGEngine.Core
                             && tree.Value.Value == Definer.Get().Functions[LConstants.MOD_VALUE_F])
                         {
                             StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
-                            FinalStats[mod.StatKey] += mod.Amount;
+                            Attributes[mod.StatKey] += mod.Amount;
                         }
                     }
                 }
@@ -430,7 +459,7 @@ namespace RPGEngine.Core
         {
             //Template handling
             RemoveExpiredStatuses();
-            ResetFinalStatMap();
+            ResetAttributes();
             ApplyModifiers();
             ApplyHealAndHarm();
             SetLastTicks();
@@ -442,17 +471,21 @@ namespace RPGEngine.Core
     public class MockEntity : BaseEntity
     {
         public MockEntity(IGameEngine engine)
-            : base(engine, new Dictionary<string, double>
-                               {
-                                   { "CHP", 100 },
-                                   { "MHP", 100 },
-                                   { "STR", 5 },
-                                   { "INT", 5 },
-                                   { "AGI", 10 },
-                                   { "DEF",10},
-                                   { "MDEF",0 }
-                               })
+            : base(engine)
         {
+            AddAttribute("CHP", 100);
+            AddAttribute("MHP", 100);
+            AddAttribute("STR", 5);
+            AddAttribute("INT", 5);
+            AddAttribute("AGI",10);
+            AddAttribute("DEF",10);
+            AddAttribute("MDEF", 10);
+
+            MeNode mpNode = TreeConverter.Build("INT*10", engine);
+            MeNode mpRegen = TreeConverter.Build("INT/100", engine);
+            ResourceTemplate resTemp = new ResourceTemplate("MP",mpNode,mpRegen);
+            AddResource(resTemp);
+
         }
     }
 }
