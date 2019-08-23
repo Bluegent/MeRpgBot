@@ -19,7 +19,7 @@ namespace EngineTest.Core
 
         private static SkillTemplate _instantHarm;
         private static SkillTemplate _testChannelSkill;
-
+        private static SkillTemplate _costly;
         private static SkillTemplate _unpushable;
 
 
@@ -30,6 +30,9 @@ namespace EngineTest.Core
             trueDamage.Name = "true";
             Engine.AddDamageType(trueDamage);
 
+            SkillCost nullCost = new SkillCost("MP", TreeConverter.Build("0", Engine));
+            SkillCost notFree = new SkillCost("MP", TreeConverter.Build("50", Engine));
+
             _testSkill = new SkillTemplate();
             _testSkill.Type = SkillType.Cast;
             _testSkill.Key = "TEST_CAST";
@@ -39,6 +42,7 @@ namespace EngineTest.Core
             testLevelTemplate.Interruptible = TreeConverter.Build("true", Engine);
             testLevelTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
             testLevelTemplate.PushBack = TreeConverter.Build("true", Engine);
+            testLevelTemplate.Cost = nullCost;
             _testSkill.ByLevel.Add(testLevelTemplate);
 
             _testChannelSkill = new SkillTemplate();
@@ -50,6 +54,7 @@ namespace EngineTest.Core
             testLevelTemplate2.Interval = TreeConverter.Build("10", Engine);
             testLevelTemplate2.PushBack = TreeConverter.Build("true", Engine);
             testLevelTemplate2.Interruptible = TreeConverter.Build("true", Engine);
+            testLevelTemplate2.Cost = nullCost;
             MeNode channelFormula = TreeConverter.Build(
                 $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)",
                 Engine);
@@ -67,7 +72,9 @@ namespace EngineTest.Core
             hurtLevelTemplate.PushBack = TreeConverter.Build("false", Engine);
             hurtLevelTemplate.Interruptible = TreeConverter.Build("true", Engine);
             hurtLevelTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            hurtLevelTemplate.Cost = nullCost;
             _instantHarm.ByLevel.Add(hurtLevelTemplate);
+
 
 
             _unpushable = new SkillTemplate();
@@ -79,9 +86,21 @@ namespace EngineTest.Core
             unpushTemplate.Interruptible = TreeConverter.Build("false", Engine);
             unpushTemplate.PushBack = TreeConverter.Build("false", Engine);
             unpushTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            unpushTemplate.Cost = nullCost;
             _unpushable.ByLevel.Add(unpushTemplate);
 
 
+            _costly = new SkillTemplate();
+            _costly.Type = SkillType.Cast;
+            _costly.Key = "COSTLY";
+            SkillLevelTemplate costlyTemplate = new SkillLevelTemplate();
+            costlyTemplate.Cooldown = TreeConverter.Build("0", Engine);
+            costlyTemplate.Duration = TreeConverter.Build("0", Engine);
+            costlyTemplate.Interruptible = TreeConverter.Build("true", Engine);
+            costlyTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10)", Engine));
+            costlyTemplate.PushBack = TreeConverter.Build("true", Engine);
+            costlyTemplate.Cost = notFree;
+            _costly.ByLevel.Add(costlyTemplate);
         }
 
         [TestInitialize]
@@ -91,6 +110,7 @@ namespace EngineTest.Core
             _testPlayer.Skills.Add(_testSkill.Key, new SkillInstance() { Skill = _testSkill, SkillLevel = 0 });
             _testPlayer.Skills.Add(_testChannelSkill.Key, new SkillInstance() { Skill = _testChannelSkill, SkillLevel = 0 });
             _testPlayer.Skills.Add(_unpushable.Key, new SkillInstance() { SkillLevel = 0, Skill = _unpushable });
+            _testPlayer.Skills.Add(_costly.Key,new SkillInstance() {SkillLevel =  0, Skill = _costly});
             Engine.AddPlayer(_testPlayer);
         }
 
@@ -324,6 +344,44 @@ namespace EngineTest.Core
             _testPlayer.Update();
             mob.Update();
             Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+        }
+
+        [TestMethod]
+        public void CastTestResourceEnoughMana()
+        {
+
+            BaseEntity mob = new MockEntity(Engine);
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            _testPlayer.Cast(mob, _costly.Key);
+            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            
+
+        }
+
+        [TestMethod]
+        public void CastTestResourceNotEnoughMana()
+        {
+
+            BaseEntity mob = new MockEntity(Engine);
+            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            _testPlayer.Cast(mob, _costly.Key);
+            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
+
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+            timer.ForceTick();
+            _testPlayer.Update();
+            mob.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+          
+
+            bool secondRes = _testPlayer.Cast(mob, _costly.Key);
+
+            Assert.AreEqual(false, secondRes);
         }
     }
 }

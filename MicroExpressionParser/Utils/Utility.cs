@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace RPGEngine.Utils
 {
-    using System.Runtime.InteropServices;
+
 
     public class Utility
     {
@@ -39,6 +37,15 @@ namespace RPGEngine.Utils
                 bar.Append(BarEmptyChar);
             bar.Append(']');
             return bar.ToString();
+        }
+
+        public static double Clamp(double amount, double min, double max)
+        {
+            if (amount < min)
+                return min;
+            if (amount > max)
+                return max;
+            return amount;
         }
     }
 }

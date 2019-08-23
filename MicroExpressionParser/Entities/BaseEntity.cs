@@ -90,7 +90,11 @@ namespace RPGEngine.Entities
 
         public override void RegenResources(long deltaTMs)
         {
-            //TODO:Implement
+            foreach(ResourceInstance resIn in ResourceMap.Values)
+            {
+                resIn.Refresh();
+                resIn.Regen(deltaTMs);
+            }
         }
 
         public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
@@ -136,7 +140,21 @@ namespace RPGEngine.Entities
                 return false;
             }
 
-            //TODO: Test if we have enough resource to cast this
+            if (!ResourceMap.ContainsKey(skill.Values().Cost.ResourceKey))
+            {
+                //log that the player doesn't have the right resource
+                return false;
+            }
+            ResourceInstance res = ResourceMap[skill.Values().Cost.ResourceKey];
+            double amount = Sanitizer.ReplacePropeties(skill.Values().Cost.Amount, this).Resolve().Value.ToDouble();
+            if (!res.CanCast(amount))
+            {
+                //log that the player doesn't have enough of resource
+                return false;
+            }
+            
+            res.Cast(amount);
+
             Free = false;
 
             CurrentlyCasting = new SkillCastData(skill, target, this, Engine.GetTimer().GetNow());
@@ -192,10 +210,7 @@ namespace RPGEngine.Entities
         {
             if (duration > 0.0)
                 return Engine.GetTimer().GetNow() + (long)duration * 1000;
-            else
-            {
-                return 0;
-            }
+            return 0;        
         }
 
         public override void Cleanse()
@@ -282,6 +297,7 @@ namespace RPGEngine.Entities
                 }
             }
         }
+
         private void ApplyHealAndHarm()
         {
             foreach (AppliedStatus status in Statuses)
@@ -374,10 +390,10 @@ namespace RPGEngine.Entities
         public override void Update()
         {
             //Template handling
-            RegenResources(1000);
             RemoveExpiredStatuses();
             ResetAttributes();
             ApplyModifiers();
+            RegenResources(1000);
             ApplyHealAndHarm();
             SetLastTicks();
             TickCooldownds();

@@ -18,6 +18,12 @@ namespace RPGEngine.Game
     {
         public string ResourceKey { get; }
         public MeNode Amount { get; }
+
+        public SkillCost(string key, MeNode amount)
+        {
+            Amount = amount;
+            ResourceKey = key;
+        }
     }
 
     public class SkillLevelTemplate
@@ -39,7 +45,7 @@ namespace RPGEngine.Game
 
     public class SkillTemplate : BaseObject
     {
-        public List<string> aliases { get; set; }
+        public List<string> Aliases { get; set; }
         public SkillType Type { get; set; }
         public List<SkillLevelTemplate> ByLevel { get; set; }
 

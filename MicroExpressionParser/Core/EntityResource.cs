@@ -1,5 +1,6 @@
 ﻿using RPGEngine.Cleanup;
 using RPGEngine.Entities;
+using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
@@ -54,5 +55,25 @@ namespace RPGEngine.Core
             RegenAmount = Resource.ResolveRegen(Parent);
         }
 
+        private void Clamp()
+        {
+            CurrentAmount = Utils.Utility.Clamp(CurrentAmount, 0, MaxAmount);
+        }
+
+        public void Regen(long deltaTMs)
+        {
+            CurrentAmount += RegenAmount * deltaTMs / GameConstants.TickTime;
+            Clamp();
+        }
+
+        public bool CanCast(double amount)
+        {
+            return CurrentAmount >= amount;
+        }
+
+        public void Cast(double amount)
+        {
+            CurrentAmount -= amount;
+        } 
     }
 }
