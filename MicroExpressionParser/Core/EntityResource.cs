@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace RPGEngine.Core
 {
+    using System.ComponentModel;
+
+    using MicroExpressionParser;
+
     public class ResourceTemplate
     {
         public string Key { get; }
         public MeNode Formula { get; }
+        public MeNode RegenFormula { get; }
 
         public ResourceTemplate(string key, MeNode formula)
         {
@@ -17,10 +22,31 @@ namespace RPGEngine.Core
             Formula = formula;
         }
 
-        public long ResolveMaxAmount(Entity target)
+        public double ResolveRegen(Entity target)
         {
-            long amount = 0;
-            return amount;
+            MeNode entityNode = Sanitizer.ReplacePropeties(RegenFormula, target);
+            return entityNode.Resolve().Value.ToDouble();
+        }
+
+        public double ResolveMaxAmount(Entity target)
+        {
+            MeNode entityNode = Sanitizer.ReplacePropeties(Formula, target);
+            return entityNode.Resolve().Value.ToDouble();
+        }
+
+    }
+
+    public class ResourceInstance
+    {
+        public ResourceTemplate Resource { get; }
+        public double CurrentAmount { get; set; }
+        public double MaxAmount { get; private set; }
+        public double RegenAmount { get; private set; }
+
+        public void Refresh(Entity target)
+        {
+            MaxAmount = Resource.ResolveMaxAmount(target);
+            RegenAmount = Resource.ResolveRegen(target);
         }
 
     }
