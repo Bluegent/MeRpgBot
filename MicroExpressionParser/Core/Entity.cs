@@ -40,6 +40,8 @@ namespace RPGEngine.Core
 
         public abstract void InterruptCasting();
 
+        public abstract bool HasProperty(string propertyKey);
+
 
     }
 
@@ -129,6 +131,13 @@ namespace RPGEngine.Core
             if (!CurrentlyCasting.Interruptible)
                 return;
             FinishCasting();
+        }
+
+        public override bool HasProperty(string propertyKey)
+        {
+            if (StatMap.ContainsKey(propertyKey))
+                return true;
+            return false;
         }
 
         public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)

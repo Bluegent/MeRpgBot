@@ -2,6 +2,8 @@
 
 namespace EngineTest
 {
+    using System.CodeDom.Compiler;
+
     using MicroExpressionParser;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -74,6 +76,25 @@ namespace EngineTest
             double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value * 2;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
             Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
+        }
+
+        [TestMethod]
+
+        public void SanitizerTestReplacePropetyOperators()
+        {
+            
+            string expected = "AGI";
+            string expression = $"1 + {expected}";
+            double expectedValue = MockPlayer.GetProperty(expected).Value + 1;
+
+            MeNode result = Sanitizer.ReplacePropeties(TreeConverter.Build(expression, Engine),MockPlayer);
+
+            Assert.AreEqual(LConstants.PROP_OP, result.Leaves[1].Value.GetString());
+            Assert.AreEqual(expected,result.Leaves[1].Leaves[1].Value.ToString());
+
+            MeNode resolved = result.Resolve();
+            
+            Assert.AreEqual(expectedValue,resolved.Value.ToDouble());
         }
 
     }

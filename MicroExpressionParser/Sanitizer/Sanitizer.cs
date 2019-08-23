@@ -220,6 +220,27 @@ namespace MicroExpressionParser
             }
         }
 
-       
+        public static MeNode ReplacePropeties(MeNode tree,Entity origin)
+        {
+            List<MeNode> leaves = new List<MeNode>();
+            foreach (MeNode leaf in tree.Leaves)
+                leaves.Add(ReplacePropeties(leaf,origin));
+            MeNode node = null;
+            if (tree.Value.Type == VariableType.String && origin.HasProperty(tree.Value.ToString()))
+            {
+                MeNode[] nodeLeaves = new MeNode[2]{new MeNode(origin), tree};
+                Operator prop = Definer.Get().Operators[LConstants.PROP_OP];
+                node = new MeNode(new MeVariable(){Type = VariableType.Operator,Value = prop});
+                node.Leaves.AddRange(nodeLeaves);
+            }
+            else
+            {
+                node = new MeNode(tree.Value);
+            }
+            node.Leaves.AddRange(leaves);
+            return node;
+
+        }
+
     }
 }

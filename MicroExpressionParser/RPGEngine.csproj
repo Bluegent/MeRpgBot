@@ -193,6 +193,7 @@
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\DamageType.cs" />
+    <Compile Include="Core\EntityResource.cs" />
     <Compile Include="Core\SkillCastData.cs" />
     <Compile Include="Discord\Command.cs" />
     <Compile Include="Discord\DiscordClient.cs" />
