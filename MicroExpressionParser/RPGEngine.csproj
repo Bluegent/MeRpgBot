@@ -198,6 +198,8 @@
     <Compile Include="Discord\Command.cs" />
     <Compile Include="Discord\DiscordClient.cs" />
     <Compile Include="Discord\DiscordConfig.cs" />
+    <Compile Include="Entities\BaseEntity.cs" />
+    <Compile Include="Entities\MockEntity.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SkillTemplate.cs" />
