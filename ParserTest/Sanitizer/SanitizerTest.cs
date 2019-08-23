@@ -1,16 +1,15 @@
-﻿using RPGEngine.GameInterface;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RPGEngine.Entities;
+using RPGEngine.Core;
+using RPGEngine.Language;
+using RPGEngine.Parser;
+using RPGEngine.GameInterface;
+using RPGEngine.Cleanup;
 
 namespace EngineTest
 {
-    using System.CodeDom.Compiler;
-
-    using MicroExpressionParser;
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using RPGEngine.Core;
-    using RPGEngine.Language;
-    using RPGEngine.Parser;
+    
     [TestClass]
     public class SanitizerTest
     {

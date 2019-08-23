@@ -5,6 +5,7 @@ namespace RPGEngine.Core
     using System;
 
     using RPGEngine.Language;
+    using Entities;
 
     public class MeException : Exception
     {

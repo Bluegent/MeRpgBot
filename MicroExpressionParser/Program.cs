@@ -5,7 +5,7 @@ using System.Text;
 using Discord;
 using System.Threading;
 
-namespace MicroExpressionParser
+namespace RPGEngine
 {
     using System.Threading.Tasks;
 

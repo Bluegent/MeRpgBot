@@ -1,16 +1,15 @@
-﻿using System.Windows.Markup;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using RPGEngine.Entities;
+using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.Utils;
 
 namespace RPGEngine.Language
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using MicroExpressionParser;
-
-    using RPGEngine.Core;
+    
 
     public class Definer
     {

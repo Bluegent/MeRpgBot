@@ -216,7 +216,7 @@
     <Compile Include="Core\MeVariable.cs" />
     <Compile Include="Data\BaseValue.cs" />
     <Compile Include="Data\CompoundStat.cs" />
-    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Entities\Entity.cs" />
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Data\Skill.cs" />
     <Compile Include="Data\StatusEffect.cs" />
@@ -230,7 +230,7 @@
     <Compile Include="Parser\TreeBuilder.cs" />
     <Compile Include="Data\ValueByLevel.cs" />
     <Compile Include="GameInterface\LogHelper.cs" />
-    <Compile Include="Sanitizer\Sanitizer.cs" />
+    <Compile Include="Cleanup\Sanitizer.cs" />
     <Compile Include="Utils\FileReader.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>

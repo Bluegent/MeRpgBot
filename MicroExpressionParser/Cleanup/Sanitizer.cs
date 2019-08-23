@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using RPGEngine.Core;
+using RPGEngine.Language;
+using RPGEngine.Parser;
+using RPGEngine.Entities;
 
-namespace MicroExpressionParser
+namespace RPGEngine.Cleanup
 {
-    using System.Diagnostics.Eventing.Reader;
-
-    using MicroExpressionParser.Core;
-    using System.Runtime.CompilerServices;
-
-    using RPGEngine.Core;
-    using RPGEngine.Language;
-    using RPGEngine.Parser;
-
     public class Sanitizer
     {
         private IGameEngine _engine;

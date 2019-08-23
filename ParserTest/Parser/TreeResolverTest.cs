@@ -1,13 +1,14 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.GameInterface;
+
+using RPGEngine.Core;
+using RPGEngine.Language;
+using RPGEngine.Parser;
+using RPGEngine.Entities;
 
 namespace EngineTest.Parser
 {
-    using RPGEngine.Core;
-    using RPGEngine.Language;
-    using RPGEngine.Parser;
+ 
 
     [TestClass]
     public class TreeResolverTest

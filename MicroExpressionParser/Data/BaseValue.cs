@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace MicroExpressionParser
+namespace RPGEngine
 {
     public partial class BaseValue
     {

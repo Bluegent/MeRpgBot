@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 using RPGEngine.GameConfigReader;
+using RPGEngine.Parser;
+using RPGEngine.Entities;
+using RPGEngine.Cleanup;
 
 namespace RPGEngine.Core
 {
-    using MicroExpressionParser;
-
-    using RPGEngine.Parser;
-
     public class DamageType : BaseObject
     {
         public MeNode Mitigation { get; set; }
@@ -17,8 +13,6 @@ namespace RPGEngine.Core
         public MeNode Dodge { get; set; }
         public MeNode CriticalChance { get; set; }
         public MeNode CriticalModifier { get; set; }
-
-
 
         public DamageType(IGameEngine engine, string key, string mitigation, string dodge, string crit, string critmod)
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RPGEngine.Parser
 {
-    using MicroExpressionParser;
+    using RPGEngine;
 
     using RPGEngine.Core;
 

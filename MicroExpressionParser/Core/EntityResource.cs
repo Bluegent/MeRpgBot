@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RPGEngine.Cleanup;
+using RPGEngine.Entities;
 
 namespace RPGEngine.Core
 {
-    using System.ComponentModel;
-
-    using MicroExpressionParser;
+    
 
     public class ResourceTemplate
     {

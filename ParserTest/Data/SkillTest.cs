@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MicroExpressionParser;
+using RPGEngine;
 using System.Collections.Generic;
 
 namespace ParserTest

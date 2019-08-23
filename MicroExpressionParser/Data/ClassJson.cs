@@ -6,7 +6,7 @@ using System.Text;
 using Newtonsoft.Json;
 using RPGEngine.Game;
 
-namespace MicroExpressionParser
+namespace RPGEngine
 {
     public partial class ClassJson
     {

@@ -1,15 +1,16 @@
-﻿using RPGEngine.Game;
-using RPGEngine.GameInterface;
+﻿
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
+using RPGEngine.Game;
+using RPGEngine.GameInterface;
+using RPGEngine.Core;
+using RPGEngine.Language;
+using RPGEngine.Parser;
+using RPGEngine.Entities;
 namespace EngineTest.Core
 {
-    using MicroExpressionParser.Core;
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-    using RPGEngine.Core;
-    using RPGEngine.Language;
-    using RPGEngine.Parser;
+  
 
     [TestClass]
     public class EntityTest

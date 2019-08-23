@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Text;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Globalization;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using RPGEngine.Core;
 using RPGEngine.Language;
 using RPGEngine.GameInterface;
 using RPGEngine.Parser;
+using RPGEngine.Entities;
 
 namespace EngineTest.Parser
 {
-    using System.Globalization;
-    using System.Threading;
+
 
     /// <summary>
     /// Summary description for VariableTest

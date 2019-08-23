@@ -1,16 +1,14 @@
-﻿
-using MicroExpressionParser;
-using MicroExpressionParser.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.Language;
 using RPGEngine.GameInterface;
 using RPGEngine.Parser;
+using RPGEngine.Entities;
+using RPGEngine.Cleanup;
 
 namespace EngineTest.Core
 {
-    using System.Diagnostics.Eventing.Reader;
 
     [TestClass]
     public class CastTest
