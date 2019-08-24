@@ -8,7 +8,6 @@ namespace RPGEngine.Game
     {
         public ClassTemplate Class { get; }
         public Dictionary<string, double> Stats;
-
         public LevelableEntity Entity { get; }
 
         public Player(IGameEngine engine, ClassTemplate myClass)

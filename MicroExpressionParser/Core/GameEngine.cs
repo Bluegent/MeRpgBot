@@ -11,6 +11,7 @@ using RPGEngine.Entities;
 using RPGEngine.Cleanup;
 using RPGEngine.Game;
 using RPGEngine.GameInterface;
+using RPGEngine.Parser;
 
 namespace RPGEngine.Core
 {
@@ -36,6 +37,8 @@ namespace RPGEngine.Core
         void SetVariable(string key, MeVariable var);
         ILogHelper Log();
 
+        long GetMaxExp(int level);
+
         void EnqueueCommand(Command command);
         void Update();
 
@@ -44,6 +47,8 @@ namespace RPGEngine.Core
     {
 
         private ConcurrentQueue<Command> commandsQueue;
+
+        private List<long> ExpValues;
 
 
         public Dictionary<string, Entity> Players { get; }
@@ -54,9 +59,11 @@ namespace RPGEngine.Core
         private ILogHelper _log;
         public ITimer Timer { get; set; }
         private Dictionary<string,StatusTemplate> statuses;
+        public MeNode ExpFormula { get; set; }
         public GameEngine(ILogHelper log)
         {
             Definer.Instance().Init(this);
+            ExpValues = new List<long>();
             _log = log;
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
@@ -68,6 +75,12 @@ namespace RPGEngine.Core
 
             commandsQueue = new ConcurrentQueue<Command>();
 
+        }
+
+        public void SetStartExp(long value)
+        {
+            if(ExpValues.Count == 0)
+                ExpValues.Add(value);
         }
 
         public void AddPlayer(Entity entity)
@@ -154,6 +167,21 @@ namespace RPGEngine.Core
         public ILogHelper Log()
         {
             return _log;
+        }
+
+        public long GetMaxExp(int level)
+        {
+            if (ExpValues.Count <= level)
+            {
+                ExpValues.Capacity = level+1;
+                for (int i = ExpValues.Count-1; i <= level; ++i)
+                {
+                    double prev = ExpValues[i];
+                    MeNode sanitized = Sanitizer.ReplaceExpValues(ExpFormula, (long)prev, i+1);
+                    ExpValues.Add((long)Math.Floor(sanitized.Resolve().Value.ToDouble()));
+                }
+            }
+            return ExpValues[level]; ;
         }
 
         public void Update()

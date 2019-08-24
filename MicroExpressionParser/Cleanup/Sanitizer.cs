@@ -234,5 +234,34 @@ namespace RPGEngine.Cleanup
 
         }
 
+        public static MeNode ReplaceExpValues(MeNode tree, double prev, long level)
+        {
+            List<MeNode> leaves = new List<MeNode>();
+            foreach (MeNode leaf in tree.Leaves)
+                leaves.Add(ReplaceExpValues(leaf, prev,level));
+            MeNode node;
+            if (tree.Value.Type == VariableType.PlaceHolder)
+            {
+                if (tree.Value.ToPlaceholder().Equals(LConstants.ExpPrevKeyword))
+                {
+                    node = new MeNode(prev);
+                }
+                else if (tree.Value.ToPlaceholder().Equals(LConstants.LevelKeyword))
+                {
+                    node = new MeNode(level);
+                }
+                else
+                {
+                    node = new MeNode(tree.Value);
+                }
+            }
+            else
+            {
+                node = new MeNode(tree.Value);
+            }
+            node.Leaves.AddRange(leaves);
+
+            return node;
+        }
     }
 }

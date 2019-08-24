@@ -77,7 +77,8 @@ namespace RPGEngine.Parser
                         {
                             opParameters.Add(subNode.Value);
                         }
-                        return new MeNode(node.Value.ToOperator().Execute(opParameters.ToArray()));
+                        MeNode amt = new MeNode(node.Value.ToOperator().Execute(opParameters.ToArray()));
+                        return amt;
                     }
                 default:
                     {

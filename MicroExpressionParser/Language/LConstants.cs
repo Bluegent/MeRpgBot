@@ -39,7 +39,7 @@ namespace RPGEngine.Language
         public const string SAY_F = "SAY";
         public const string PUSH_BACK_F = "PUSH_BACK";
         public const string INTERRUPT_F = "INTERRUPT";
-       
+        public const string FLOOR_F = "FLOOR";
 
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';
@@ -53,6 +53,10 @@ namespace RPGEngine.Language
         public static readonly string SourceKeyword = SPECIAL_CHAR + "S";
 
         public static readonly string ValueKeyword = SPECIAL_CHAR + "V";
+
+        public static readonly string ExpPrevKeyword = SPECIAL_CHAR + "PREV";
+
+        public static readonly string LevelKeyword = SPECIAL_CHAR + "LEVEL";
 
         public const char FUNCTION_SEPARATOR = ';';
 

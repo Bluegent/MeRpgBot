@@ -243,6 +243,14 @@ namespace RPGEngine.Language
                     return parameters.Max();
                 });
 
+            AddFunction(LConstants.FLOOR_F,
+                (values, func) =>
+                {
+                    func.ValidateParameters(values.Length);
+                    return Math.Floor(values[0].ToDouble());
+                },1);
+
+
             AddFunction(LConstants.MIN_F,
                 (values, func) =>
                 {

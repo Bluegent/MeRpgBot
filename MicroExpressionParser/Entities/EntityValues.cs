@@ -14,6 +14,7 @@ namespace RPGEngine.Entities
     public class EntityAttribute : BaseProperty
     {
         public double Base { get; set; }
+        public double FromPoints { get; set; }
         public List<StatModifier> Modifiers { get; }
 
         public EntityAttribute(double value = 0)
@@ -25,7 +26,7 @@ namespace RPGEngine.Entities
 
         public void Refresh()
         {
-            Value = Base;
+            Value = Base + FromPoints;
             foreach (StatModifier mod in Modifiers)
             {
                 Value += mod.Amount;
