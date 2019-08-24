@@ -18,7 +18,7 @@ namespace EngineTest.Leveling
         {
             double power = Math.Floor((double)level / 5.0);
             double multiplier = Math.Pow(2, power);
-            long current = (long)Math.Floor(prev + 50 * multiplier);
+            long current = (long)Math.Floor(prev*1.1 + 50 * multiplier);
             return current;
         }
 
@@ -26,7 +26,7 @@ namespace EngineTest.Leveling
         public static void StartUp(TestContext ctx)
         {
             Definer.Instance().Engine = Engine;
-            Engine.ExpFormula = TreeConverter.Build($"{LConstants.ExpPrevKeyword}+50*2^{LConstants.FLOOR_F}({LConstants.LevelKeyword}/5.0)", Engine);
+            Engine.ExpFormula = TreeConverter.Build($"{LConstants.ExpPrevKeyword}*1.1+50*2^{LConstants.FLOOR_F}({LConstants.LevelKeyword}/5.0)", Engine);
             Engine.SetStartExp(StartExp);
         }
 
