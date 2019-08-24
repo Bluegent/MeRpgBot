@@ -122,10 +122,10 @@ namespace EngineTest.Parser
         public void FunctionalTreeConverterTestHarmEntity()
         {
             string expression = $"{LConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,20)";
-            double expected = MockPlayer.GetProperty("CHP").Value - 20;
+            double expected = MockPlayer.GetProperty(Entity.HP_KEY).Value - 20;
             TreeResolver.Resolve(expression, Engine);
 
-            Assert.AreEqual(expected, MockPlayer.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, MockPlayer.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -156,18 +156,18 @@ namespace EngineTest.Parser
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatDoesntChangeThings()
         {
             string expression = $"{LConstants.IF_F}(10>3,10,{LConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,10))";
-            double expectedHp = MockPlayer.GetProperty("CHP").Value;
+            double expectedHp = MockPlayer.GetProperty(Entity.HP_KEY).Value;
             TreeResolver.Resolve(expression, Engine);
-            Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, MockPlayer.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
             string expression = $"{LConstants.IF_F}(1>3,10,{LConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,10))";
-            double expectedHp = MockPlayer.GetProperty("CHP").Value-10;
+            double expectedHp = MockPlayer.GetProperty(Entity.HP_KEY).Value-10;
             TreeResolver.Resolve(expression, Engine);
-            Assert.AreEqual(expectedHp, MockPlayer.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, MockPlayer.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]

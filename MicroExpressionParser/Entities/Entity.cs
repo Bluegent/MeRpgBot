@@ -13,6 +13,8 @@ namespace RPGEngine.Entities
     }
     public abstract class Entity
     {
+        public const string HP_KEY = "HP";
+
         public string Name { get; set; }
         public string Key { get; set; }
         public Dictionary<string, double> InteralAttributes { get; protected set; }
@@ -49,6 +51,12 @@ namespace RPGEngine.Entities
         public abstract bool HasProperty(string propertyKey);
 
         public abstract void RegenResources(long deltaTMs);
+
+
+        public ResourceInstance GetResource(string key)
+        {
+            return ResourceMap.ContainsKey(key) ? ResourceMap[key] : null;
+        }
 
         public void AddAttribute(string key, double value)
         {

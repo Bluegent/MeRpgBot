@@ -21,7 +21,7 @@ namespace RPGEngine.Entities
 
         public Dictionary<string, SkillInstance> Skills;
 
-        public BaseEntity(IGameEngine engine)
+        public BaseEntity(IGameEngine engine) : base()
         {
             Free = true;
             CurrentlyCasting = null;
@@ -97,6 +97,11 @@ namespace RPGEngine.Entities
             }
         }
 
+        private void TakeActualDamage(double amount)
+        {
+            ResourceMap[Entity.HP_KEY].CurrentAmount -= amount;
+        }
+
         public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
         {
             if (type.GetDodge(source, this))
@@ -107,8 +112,7 @@ namespace RPGEngine.Entities
             }
             double actualAmount = type.GetMitigatedAmount(amount, source, this);
             double resisted = amount - actualAmount;
-            Attributes[C_HP_KEY] -= actualAmount;
-            InteralAttributes[C_HP_KEY] -= actualAmount;
+            TakeActualDamage(actualAmount);
 
             if (!periodic)
             {
@@ -118,7 +122,7 @@ namespace RPGEngine.Entities
 
         public override void GetHealed(double amount, Entity source, bool log = true)
         {
-            Attributes[C_HP_KEY] += amount;
+            TakeActualDamage(-amount);
         }
 
         public override bool Cast(Entity target, string skillKey)
@@ -166,6 +170,8 @@ namespace RPGEngine.Entities
         {
             if (Attributes.ContainsKey(key))
                 return new EntityProperty() { Key = key, Value = Attributes[key] };
+            if(ResourceMap.ContainsKey(key))
+                return new EntityProperty() { Key = key, Value = ResourceMap[key].CurrentAmount };
             return null;
         }
 

@@ -63,18 +63,18 @@ namespace EngineTest
         public void SanitizerTestResolveSimpleSkill()
         {
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword}, T, {LConstants.GET_PROP_F}({LConstants.SourceKeyword}, STR))";
-            double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value;
+            double expected = MockEnemy.GetProperty(Entity.HP_KEY).Value - MockPlayer.GetProperty("STR").Value;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
-            Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, MockEnemy.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
         public void SanitizerTestResolveMutlipleCalls()
         {
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword}, T, {LConstants.GET_PROP_F}({LConstants.SourceKeyword}, STR));{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword}, T, {LConstants.GET_PROP_F}({LConstants.SourceKeyword}, STR))";
-            double expected = MockEnemy.GetProperty("CHP").Value - MockPlayer.GetProperty("STR").Value * 2;
+            double expected = MockEnemy.GetProperty(Entity.HP_KEY).Value - MockPlayer.GetProperty("STR").Value * 2;
             SanitizerInstance.SanitizeSkill(expression, MockPlayer, MockEnemy);
-            Assert.AreEqual(expected, MockEnemy.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, MockEnemy.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]

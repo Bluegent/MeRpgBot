@@ -120,9 +120,9 @@ namespace EngineTest.Core
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             ent.ApplyStatus(test,ent,5,null);
-            double expectedHp = ent.GetProperty("CHP").Value - damage;
+            double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
             ent.Update();
-            Assert.AreEqual(expectedHp,ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp,ent.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -134,12 +134,12 @@ namespace EngineTest.Core
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 20, 10 };
             ent.ApplyStatus(test, ent, 5, values);
-            double expectedHp = ent.GetProperty("CHP").Value - values[0];
+            double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
             double expected = ent.GetProperty("STR").Value + values[1];
 
             ent.Update();
 
-            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, ent.GetProperty(Entity.HP_KEY).Value);
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
         }
 
@@ -153,16 +153,16 @@ namespace EngineTest.Core
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build(timeValues[0].ToString(), Engine) };
             double[] values = { 20};
             ent.ApplyStatus(test, ent, timeValues[0], values);
-            double expectedHp = ent.GetProperty("CHP").Value - values[0];
+            double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
             MockTimer timer = (MockTimer)Engine.GetTimer();
             ent.Update();
-            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, ent.GetProperty(Entity.HP_KEY).Value);
 
             timer.ForceTick();
             timer.ForceTick();
             ent.Update();
             
-            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, ent.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -176,26 +176,26 @@ namespace EngineTest.Core
             MeNode intervalNode = TreeConverter.Build(intervalExpression, Engine);
             StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = intervalNode };
             ent.ApplyStatus(test, ent, 5, null);
-            double expectedHp = ent.GetProperty("CHP").Value - damage;
-            double expectedHp2 = ent.GetProperty("CHP").Value - damage*2;
+            double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
+            double expectedHp2 = ent.GetProperty(Entity.HP_KEY).Value - damage*2;
             MockTimer timer = (MockTimer)Engine.GetTimer();
 
             ent.Update();
             timer.ForceTick();
-            Assert.AreEqual(expectedHp, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp, ent.GetProperty(Entity.HP_KEY).Value);
 
             ent.Update();
-            Assert.AreEqual(expectedHp2, ent.GetProperty("CHP").Value);
+            Assert.AreEqual(expectedHp2, ent.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
         public void EntityTestAlwaysDodge()
         {
             string expression = $"{LConstants.HARM_F}({BaseEntity.Key},{BaseEntity.Key},AD,20)";
-            double expected = BaseEntity.GetProperty("CHP").Value;
+            double expected = BaseEntity.GetProperty(Entity.HP_KEY).Value;
             TreeResolver.Resolve(expression, Engine);
 
-            Assert.AreEqual(expected, BaseEntity.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, BaseEntity.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -204,10 +204,10 @@ namespace EngineTest.Core
 
             double amt = 20;
             string expression = $"{LConstants.HARM_F}({BaseEntity.Key},{BaseEntity.Key},AC,{amt})";
-            double expected = BaseEntity.GetProperty("CHP").Value - amt*2;
+            double expected = BaseEntity.GetProperty(Entity.HP_KEY).Value - amt*2;
             TreeResolver.Resolve(expression, Engine);
 
-            Assert.AreEqual(expected, BaseEntity.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, BaseEntity.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -218,11 +218,11 @@ namespace EngineTest.Core
             string expression = $"{LConstants.HARM_F}({BaseEntity.Key},{BaseEntity.Key},T,{amt});{LConstants.HARM_F}({BaseEntity.Key},{BaseEntity.Key},P,{amt});";
             double physAmt = amt - BaseEntity.GetProperty("DEF").Value;
             physAmt = physAmt < 0 ? 0 : physAmt;
-            double expected = BaseEntity.GetProperty("CHP").Value - amt - physAmt;
+            double expected = BaseEntity.GetProperty(Entity.HP_KEY).Value - amt - physAmt;
             MeNode[] trees = Engine.GetSanitizer().SplitAndConvert(expression);
             foreach (MeNode node in trees)
                 node.Resolve();
-            Assert.AreEqual(expected, BaseEntity.GetProperty("CHP").Value);
+            Assert.AreEqual(expected, BaseEntity.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]

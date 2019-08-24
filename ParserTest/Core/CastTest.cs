@@ -136,20 +136,20 @@ namespace EngineTest.Core
         [TestMethod]
         public void CastTestFormulaIsNotExecutedInstantly()
         {
-            double expected = _testPlayer.GetProperty("CHP").Value;
+            double expected = _testPlayer.GetProperty(Entity.HP_KEY).Value;
 
             _testPlayer.Cast(_testPlayer, _testSkill.Key);
             _testPlayer.Update();
 
-            double actual = _testPlayer.GetProperty("CHP").Value;
+            double actual = _testPlayer.GetProperty(Entity.HP_KEY).Value;
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void CastTestFormulaIsExecutedWithTime()
         {
-            double expected = _testPlayer.GetProperty("CHP").Value - 10;
-            double before = _testPlayer.GetProperty("CHP").Value;
+            double expected = _testPlayer.GetProperty(Entity.HP_KEY).Value - 10;
+            double before = _testPlayer.GetProperty(Entity.HP_KEY).Value;
 
             _testPlayer.Cast(_testPlayer, _testSkill.Key);
             MockTimer timer = (MockTimer)Engine.GetTimer();
@@ -160,12 +160,12 @@ namespace EngineTest.Core
             for (int i = 0; i < skillDuration; ++i)
             {
                 timer.ForceTick();
-                actual = _testPlayer.GetProperty("CHP").Value;
+                actual = _testPlayer.GetProperty(Entity.HP_KEY).Value;
                 Assert.AreEqual(before, actual);
                 _testPlayer.Update();
             }
 
-            actual = _testPlayer.GetProperty("CHP").Value;
+            actual = _testPlayer.GetProperty(Entity.HP_KEY).Value;
             Assert.AreEqual(expected, actual);
 
         }
@@ -173,22 +173,22 @@ namespace EngineTest.Core
         [TestMethod]
         public void CastTestChannelSkill()
         {
-            double expected = _testPlayer.GetProperty("CHP").Value - 60;
+            BaseEntity mob = new MockEntity(Engine);
+            double expected = mob.GetProperty(Entity.HP_KEY).Value - 60;
 
-            _testPlayer.Cast(_testPlayer, _testChannelSkill.Key);
+            _testPlayer.Cast(mob, _testChannelSkill.Key);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             MeNode duration = _testChannelSkill.ByLevel[0].Duration;
             duration = Sanitizer.ReplaceTargetAndSource(duration, _testPlayer, _testPlayer);
-            double actual;
-            long skillDuration = duration.Resolve().Value.ToLong(); ;
+            
+            long skillDuration = duration.Resolve().Value.ToLong(); 
             for (int i = 0; i <= skillDuration; ++i)
             {
                 timer.ForceTick();
                 _testPlayer.Update();
-
             }
-
-            actual = _testPlayer.GetProperty("CHP").Value;
+          
+            double actual = mob.GetProperty(Entity.HP_KEY).Value;
             Assert.AreEqual(expected, actual);
 
         }
@@ -201,7 +201,7 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
             long delay = 5;
 
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value;
             double expectedMobHealthAfter = expectedMobHealth - 10;
             _testPlayer.Cast(mob, _testSkill.Key);
             _testPlayer.AddPushback(delay);
@@ -216,13 +216,13 @@ namespace EngineTest.Core
                 timer.ForceTick();
                 _testPlayer.Update();
                 mob.Update();
-                Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+                Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
             }
 
             timer.ForceTick();
             _testPlayer.Update();
             mob.Update();
-            Assert.AreEqual(expectedMobHealthAfter, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealthAfter, mob.GetProperty(Entity.HP_KEY).Value);
 
         }
 
@@ -233,7 +233,7 @@ namespace EngineTest.Core
             long delay = 10;
             BaseEntity mob = new MockEntity(Engine);
 
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 50;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 50;
             _testPlayer.Cast(mob, _testChannelSkill.Key);
             _testPlayer.AddPushback(delay);
 
@@ -253,7 +253,7 @@ namespace EngineTest.Core
             timer.ForceTick();
             _testPlayer.Update();
             mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -262,7 +262,7 @@ namespace EngineTest.Core
             long delay = 10;
             BaseEntity mob = new MockEntity(Engine);
 
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _unpushable.Key);
             _testPlayer.AddPushback(delay);
 
@@ -282,7 +282,7 @@ namespace EngineTest.Core
             timer.ForceTick();
             _testPlayer.Update();
             mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -292,7 +292,7 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
 
 
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value;
             _testPlayer.Cast(mob, _testSkill.Key);
             _testPlayer.InterruptCasting();
 
@@ -312,7 +312,7 @@ namespace EngineTest.Core
             timer.ForceTick();
             _testPlayer.Update();
             mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
         }
 
 
@@ -323,7 +323,7 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
 
 
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value-10;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value-10;
             _testPlayer.Cast(mob, _unpushable.Key);
             _testPlayer.InterruptCasting();
 
@@ -336,14 +336,11 @@ namespace EngineTest.Core
             for (int i = 0; i < skillDuration; ++i)
             {
                 timer.ForceTick();
-                _testPlayer.Update();
-                mob.Update();
             }
 
             timer.ForceTick();
             _testPlayer.Update();
-            mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
         }
 
         [TestMethod]
@@ -351,14 +348,13 @@ namespace EngineTest.Core
         {
 
             BaseEntity mob = new MockEntity(Engine);
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _costly.Key);
             Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             timer.ForceTick();
             _testPlayer.Update();
-            mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
             
 
         }
@@ -368,7 +364,7 @@ namespace EngineTest.Core
         {
 
             BaseEntity mob = new MockEntity(Engine);
-            double expectedMobHealth = mob.GetProperty(BaseEntity.C_HP_KEY).Value - 10;
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _costly.Key);
             Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
 
@@ -376,7 +372,7 @@ namespace EngineTest.Core
             timer.ForceTick();
             _testPlayer.Update();
             mob.Update();
-            Assert.AreEqual(expectedMobHealth, mob.GetProperty(BaseEntity.C_HP_KEY).Value);
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
           
 
             bool secondRes = _testPlayer.Cast(mob, _costly.Key);
