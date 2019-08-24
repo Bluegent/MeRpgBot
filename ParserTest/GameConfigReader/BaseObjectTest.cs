@@ -16,7 +16,7 @@ namespace EngineTest.GameConfigReader
         [ClassInitialize]
         public static void StartUp(TestContext ctx)
         {
-            Definer.Get().Engine = Engine;
+            Definer.Instance().Engine = Engine;
         }
 
         [TestMethod]

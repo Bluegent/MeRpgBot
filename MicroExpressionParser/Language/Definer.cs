@@ -13,7 +13,7 @@ namespace RPGEngine.Language
 
     public class Definer
     {
-        private static readonly  Definer Instance = new Definer();
+        private static readonly  Definer _instance = new Definer();
         public Dictionary<string, Operator> Operators;
         public Dictionary<string, Function> Functions;
 
@@ -21,9 +21,9 @@ namespace RPGEngine.Language
         private bool _initialized;
         public IGameEngine Engine { get; set; }
 
-        public static Definer Get()
+        public static Definer Instance()
         {
-            return Instance;
+            return _instance;
         }
 
         private Definer()
@@ -191,19 +191,19 @@ namespace RPGEngine.Language
                {
                    op.ValidateParameters(values.Length);
                    string key = values[0].ToString();
-                   MeVariable leftSide = Definer.Get().Engine.GetVariable(key);
+                   MeVariable leftSide = Definer.Instance().Engine.GetVariable(key);
                    MeVariable rightSide = values[1];
                    if (rightSide.Type == VariableType.String)
                    {
-                       rightSide = Definer.Get().Engine.GetVariable(rightSide.Value.ToString());
+                       rightSide = Definer.Instance().Engine.GetVariable(rightSide.Value.ToString());
                    }
                    if (leftSide == null)
                    {
-                       Definer.Get().Engine.AddVariable(key, rightSide);
+                       Definer.Instance().Engine.AddVariable(key, rightSide);
                    }
                    else
                    {
-                       Definer.Get().Engine.SetVariable(key, rightSide);
+                       Definer.Instance().Engine.SetVariable(key, rightSide);
                    }
                    return null;
                },2);
@@ -279,7 +279,7 @@ namespace RPGEngine.Language
                 (values, func) =>
                 {
                     //func.ValidateParameters(values.Length);
-                    Entity target = values[0].ToEntity();
+                    MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
                     DamageType damageType = values[2].ToDamageType();
                     double amount = values[3].ToDouble();
@@ -287,7 +287,10 @@ namespace RPGEngine.Language
 
                     if (values.Length > func.ParameterCount)
                         periodic = values[4].ToBoolean();
-                    target.TakeDamage(amount, damageType, source,periodic);
+                    foreach (MeVariable variable in targets)
+                    {
+                        variable.ToEntity().TakeDamage(amount, damageType, source, periodic);
+                    }
                     return null;
                 }, 4);
 
@@ -295,10 +298,13 @@ namespace RPGEngine.Language
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
-                    Entity target = values[0].ToEntity();
+                    MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
                     double amount = values[2].ToDouble();
-                    target.GetHealed(amount, source);
+                    foreach (MeVariable variable in targets)
+                    {
+                        variable.ToEntity().GetHealed(amount, source);
+                    }
                     return null;
                 }, 3);
 
@@ -313,7 +319,7 @@ namespace RPGEngine.Language
                 (values, func) =>
                 {
                     func.ValidateParameters(values.Length);
-                    Entity[] players = Definer.Get().Engine.GetAllPlayers();
+                    Entity[] players = Definer.Instance().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
                     foreach (Entity entity in players)
                     {
@@ -327,7 +333,7 @@ namespace RPGEngine.Language
                 {
                     func.ValidateParameters(values.Length);
                     //TODO: Implement retrieving ONLY active players
-                    Entity[] players = Definer.Get().Engine.GetAllPlayers();
+                    Entity[] players = Definer.Instance().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
                     foreach (Entity entity in players)
                     {
@@ -407,9 +413,9 @@ namespace RPGEngine.Language
                {
                    //APPLYSTATUS(target,Source,status_key,duration,amounts)
                    func.ValidateParameters(values.Length);
-                   Entity target = values[0].ToEntity();
+                   MeVariable[] targets = values[0].ToArray();
                    Entity source = values[1].ToEntity();
-                   StatusTemplate effect = Definer.Get().Engine.GetStatusByKey(values[2].ToString());
+                   StatusTemplate effect = Definer.Instance().Engine.GetStatusByKey(values[2].ToString());
                    double duration = values[3].ToDouble();
                    double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
                    func.ValidateParameters(values.Length);
@@ -422,7 +428,7 @@ namespace RPGEngine.Language
             {
                 func.ValidateParameters(values.Length);
                 string key = values[0].ToString();
-                return Definer.Get().Engine.GetVariable(key); ;
+                return Definer.Instance().Engine.GetVariable(key); ;
             },1);
 
             AddFunction(LConstants.SAY_F,
@@ -439,9 +445,12 @@ namespace RPGEngine.Language
                 (values, func) =>
                     {
                         func.ValidateParameters(values.Length);
-                        Entity entity = values[0].ToEntity();
+                        MeVariable[] entity = values[0].ToArray();
                         long amount = values[1].ToLong();
-                        entity.AddPushback(amount);
+                        foreach (MeVariable var in entity)
+                        {
+                            var.ToEntity().AddPushback(amount);
+                        }
                         return null;
                     }, 2);
 

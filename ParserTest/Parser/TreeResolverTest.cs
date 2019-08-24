@@ -22,7 +22,7 @@ namespace EngineTest.Parser
         {
 
             Engine.AddPlayer(MockPlayer);
-            Definer.Get().Engine = Engine;
+            Definer.Instance().Engine = Engine;
         }
 
         [TestMethod]

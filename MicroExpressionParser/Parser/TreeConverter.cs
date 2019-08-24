@@ -20,7 +20,7 @@ namespace RPGEngine.Parser
                     {
                         newNode = new MeNode(new MeVariable()
                         {
-                            Value = Definer.Get().Functions[node.Token.Value],
+                            Value = Definer.Instance().Functions[node.Token.Value],
                             Type = VariableType.Function
                         });
                         break;
@@ -30,7 +30,7 @@ namespace RPGEngine.Parser
                     {
                         newNode = new MeNode(new MeVariable()
                         {
-                            Value = Definer.Get().Operators[node.Token.Value],
+                            Value = Definer.Instance().Operators[node.Token.Value],
                             Type = VariableType.Operator
                         });
                         break;

@@ -136,8 +136,10 @@ namespace RPGEngine.Core
 
         public MeVariable[] ToArray()
         {
-            ValidateType(VariableType.Array);
-            return (MeVariable[])Value;
+            if(Type == VariableType.Array)
+                return (MeVariable[])Value;
+
+            return  new MeVariable[1] {this};
         }
 
         public EntityProperty ToEntityProperty()

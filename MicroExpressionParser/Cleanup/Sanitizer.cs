@@ -221,7 +221,7 @@ namespace RPGEngine.Cleanup
             if (tree.Value.Type == VariableType.String && origin.HasProperty(tree.Value.ToString()))
             {
                 MeNode[] nodeLeaves = new MeNode[2]{new MeNode(origin), tree};
-                Operator prop = Definer.Get().Operators[LConstants.PROP_OP];
+                Operator prop = Definer.Instance().Operators[LConstants.PROP_OP];
                 node = new MeNode(new MeVariable(){Type = VariableType.Operator,Value = prop});
                 node.Leaves.AddRange(nodeLeaves);
             }

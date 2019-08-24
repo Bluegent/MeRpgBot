@@ -41,11 +41,11 @@ namespace RPGEngine.Parser
                 {
                     current += c;
                 }
-                else if (Definer.Get().Ignore(c))
+                else if (Definer.Instance().Ignore(c))
                 {
                     
                 }
-                else if (!Definer.Get().IsSpecialChar(c))
+                else if (!Definer.Instance().IsSpecialChar(c))
                 {
                     current += c;
                 }
@@ -82,10 +82,10 @@ namespace RPGEngine.Parser
                         result.Add(new Token(current));
                         current = "";                       
                     }
-                    if (i < sanitized.Length - 1 &&Definer.Get().IsOperatorChar(c) &&Definer.Get().IsOperatorChar(sanitized[i + 1]))
+                    if (i < sanitized.Length - 1 &&Definer.Instance().IsOperatorChar(c) &&Definer.Instance().IsOperatorChar(sanitized[i + 1]))
                     {
                         string possibleOp = char.ToString(c) + sanitized[i + 1];
-                        if (Definer.Get().IsOperator(possibleOp))
+                        if (Definer.Instance().IsOperator(possibleOp))
                         {
                             result.Add(new Token(possibleOp));
                             ++i;

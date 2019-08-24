@@ -18,15 +18,15 @@ namespace RPGEngine.Parser
         public string Value { get; set; }
         public static TokenType GetType(string str)
         {
-            if (Definer.Get().IsFunction(str))
+            if (Definer.Instance().IsFunction(str))
                 return TokenType.Function;
-            if (Definer.Get().IsOperator(str))
+            if (Definer.Instance().IsOperator(str))
                 return TokenType.Operator;
-            if (Definer.Get().IsLeftParen(str))
+            if (Definer.Instance().IsLeftParen(str))
                 return TokenType.LeftParen;
-            if (Definer.Get().IsRightParen(str))
+            if (Definer.Instance().IsRightParen(str))
                 return TokenType.RightParen;
-            if (Definer.Get().IsSeparator(str))
+            if (Definer.Instance().IsSeparator(str))
                 return TokenType.Separator;
             return TokenType.Variable;
         }

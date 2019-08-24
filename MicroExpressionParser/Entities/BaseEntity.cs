@@ -294,7 +294,7 @@ namespace RPGEngine.Entities
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && tree.Value.Value == Definer.Get().Functions[LConstants.MOD_VALUE_F])
+                            && tree.Value.Value == Definer.Instance().Functions[LConstants.MOD_VALUE_F])
                         {
                             StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
                             Attributes[mod.StatKey] += mod.Amount;
@@ -313,8 +313,8 @@ namespace RPGEngine.Entities
                     foreach (MeNode tree in status.Template.ComponentFormulas)
                     {
                         if (tree.Value.Type == VariableType.Function
-                            && (tree.Value.Value == Definer.Get().Functions[LConstants.HARM_F]
-                                || tree.Value.Value == Definer.Get().Functions[LConstants.HEAL_F]))
+                            && (tree.Value.Value == Definer.Instance().Functions[LConstants.HARM_F]
+                                || tree.Value.Value == Definer.Instance().Functions[LConstants.HEAL_F]))
                         {
                             MeNode newTree = Sanitizer.ReplaceTargetAndSource(tree, status.Source, this);
                             Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);

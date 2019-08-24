@@ -20,8 +20,8 @@
             Token nextTok = opStack.Count == 0 ? null : opStack.Peek();
             while (nextTok != null &&
                 nextTok.Type == TokenType.Operator &&
-                ((op.LeftAsoc && op.Precedence <= Definer.Get().Operators[nextTok.Value].Precedence)
-                || (op.Precedence < Definer.Get().Operators[nextTok.Value].Precedence))
+                ((op.LeftAsoc && op.Precedence <= Definer.Instance().Operators[nextTok.Value].Precedence)
+                || (op.Precedence < Definer.Instance().Operators[nextTok.Value].Precedence))
                 )
             {
                 postfix.Add(opStack.Pop());
@@ -81,7 +81,7 @@
                                 throw new MeException("Missing parameter(s) for operator " + tok.Value + " .");
                             }
 
-                            Operator op = Definer.Get().Operators[tok.Value];
+                            Operator op = Definer.Instance().Operators[tok.Value];
                             ShuntOperators(postFix, opStack, op);
                             opStack.Push(tok);
                             break;
