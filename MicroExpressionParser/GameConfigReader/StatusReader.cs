@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.Parser;
@@ -21,7 +16,8 @@ namespace RPGEngine.GameConfigReader
 
         public StatusTemplate FromJSON(JObject json)
         {
-            StatusTemplate result = new StatusTemplate();
+            MeNode[] formulas = Engine.GetSanitizer().SplitAndConvert(json[GcConstants.FORMULA].ToString());
+            StatusTemplate result = new StatusTemplate(formulas);
             result.LoadBase(json);
 
             result.MaxStacks = json.ContainsKey(GcConstants.MAX_STACK)
@@ -43,7 +39,7 @@ namespace RPGEngine.GameConfigReader
                 ? StatusTemplate.FromString(json[GcConstants.STACK_TYPE].ToString())
                 : StackingType.Independent;
 
-            result.ComponentFormulas = Engine.GetSanitizer().SplitAndConvert(json[GcConstants.FORMULA].ToString());
+           
 
             return result;
         }

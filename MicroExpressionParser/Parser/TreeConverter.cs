@@ -80,7 +80,7 @@ namespace RPGEngine.Parser
                             break;
                         }
                         /*
-                        MeVariable tryVariable = engine.GetVariable(node.Token.Value);
+                        MeVariable tryVariable = engine.GetVariable(node.Token.Final);
                         if (tryVariable != null)
                         {
                             newNode = new MeNode(tryVariable);

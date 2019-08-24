@@ -1,42 +1,35 @@
 ﻿using RPGEngine.Core;
 using RPGEngine.Game;
-using RPGEngine.Parser;
 using System.Collections.Generic;
-using RPGEngine.Cleanup;
-using RPGEngine.Language;
+
 namespace RPGEngine.Entities
 {
-    public class EntityProperty
-    {
-        public string Key { get; set; }
-        public double Value { get; set; }
-    }
+
     public abstract class Entity
     {
         public const string HP_KEY = "HP";
 
         public string Name { get; set; }
         public string Key { get; set; }
-        public Dictionary<string, double> InteralAttributes { get; protected set; }
-        public Dictionary<string, double> Attributes { get; protected set; }
+        public Dictionary<string, EntityAttribute> Attributes { get; protected set; }
         public Dictionary<string, ResourceInstance> ResourceMap { get; protected set; }
 
 
         public Entity()
         {
-            InteralAttributes = new Dictionary<string, double>();
+            Attributes = new Dictionary<string, EntityAttribute>();
             ResourceMap = new Dictionary<string, ResourceInstance>();
         }
 
         public bool Free { get; protected set; }
 
-        public abstract void TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
+        public abstract double TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
 
-        public abstract void GetHealed(double amount, Entity source, bool log = true);
+        public abstract double GetHealed(double amount, Entity source, bool log = true);
 
         public abstract bool Cast(Entity target, string skillKey);
 
-        public abstract EntityProperty GetProperty(string key);
+        public abstract BaseProperty GetProperty(string key);
 
         public abstract void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values);
 
@@ -60,9 +53,9 @@ namespace RPGEngine.Entities
 
         public void AddAttribute(string key, double value)
         {
-            if (InteralAttributes.ContainsKey(key))
+            if (Attributes.ContainsKey(key))
                 return;
-            InteralAttributes.Add(key,value);
+            Attributes.Add(key, new EntityAttribute(value));
             ResetAttributes();
         }
 
@@ -72,15 +65,13 @@ namespace RPGEngine.Entities
                 return;
             ResourceInstance resIn = new ResourceInstance(resource,this);
             ResourceMap.Add(resource.Key,resIn); 
-
-            
         }
 
         protected void ResetAttributes()
         {
-            foreach (KeyValuePair<string, double> pair in InteralAttributes)
+            foreach (KeyValuePair<string, EntityAttribute> pair in Attributes)
             {
-                Attributes[pair.Key] = InteralAttributes[pair.Key];
+                pair.Value.Refresh();
             }
         }
 

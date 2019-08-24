@@ -9,7 +9,7 @@ namespace RPGEngine.Game
         public ClassTemplate Class { get; }
         public Dictionary<string, double> Stats;
 
-        public BaseEntity Entity { get; }
+        public LevelableEntity Entity { get; }
 
         public Player(IGameEngine engine, ClassTemplate myClass)
         {
@@ -22,7 +22,7 @@ namespace RPGEngine.Game
                 skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
             }
 
-            Entity = new BaseEntity(engine);
+            Entity = new LevelableEntity(engine);
             Entity.Skills = skills;
         }
     }

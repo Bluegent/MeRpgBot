@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
+using RPGEngine.Language;
 
 namespace RPGEngine.Game
 {
@@ -19,11 +21,31 @@ namespace RPGEngine.Game
     }
     public class StatusTemplate : BaseObject
     {
-        public MeNode[] ComponentFormulas { get; set; }
+        public List<MeNode> HpMods { get; private set; }
+        public List<MeNode> Modifiers { get; private set; }
         public MeNode Interval { get; set; }
         public MeNode MaxStacks { get; set; }
         public StackingType Type { get; set; }
 
+        public StatusTemplate(MeNode[] formulas)
+        {
+            HpMods = new List<MeNode>();
+            Modifiers = new List<MeNode>();         
+            foreach (MeNode node in formulas)
+            {
+                if (node.Value.Type == VariableType.Function)
+                {
+                    if (node.Value.GetString() == LConstants.HARM_F || node.Value.GetString() == LConstants.HEAL_F)
+                    {
+                        HpMods.Add(node);
+                    }
+                    if (node.Value.GetString() == LConstants.ADD_MOD_F)
+                    {
+                        Modifiers.Add(node);
+                    }
+                }
+            }
+        }
         public static StackingType FromString(string str)
         {
             foreach(StackingType type in Enum.GetValues(typeof(StackingType)))

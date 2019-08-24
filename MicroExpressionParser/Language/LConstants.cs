@@ -1,4 +1,6 @@
-﻿namespace RPGEngine.Language
+﻿using System.Reflection;
+
+namespace RPGEngine.Language
 {
     public static class LConstants
     {
@@ -31,7 +33,7 @@
         public const string ARR_RANDOM_F = "ARR_RANDOM";
         public const string CHANCE_F = "CHANCE";
         public const string CAST_F = "CAST";
-        public const string MOD_VALUE_F = "MOD_VALUE";
+        public const string ADD_MOD_F = "ADD_MOD";
         public const string APPLY_F = "APPLY";
         public const string GET_F = "GET";
         public const string SAY_F = "SAY";

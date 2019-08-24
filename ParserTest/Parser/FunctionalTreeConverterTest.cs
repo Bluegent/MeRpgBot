@@ -39,7 +39,7 @@ namespace EngineTest.Parser
         public void FunctionalTreeConverterTestComplexFunctionWithAttributes()
         {
             string expression = $"{LConstants.GET_PROP_F}({MockPlayer.Key},STR)*100+{LConstants.MAX_F}({LConstants.GET_PROP_F}({MockPlayer.Key},AGI),3)";
-            double expected = MockPlayer.GetProperty("STR").Value * 100 + (MockPlayer.GetProperty("AGI").Value>3? MockPlayer.GetProperty("AGI").Value : 3);
+            double expected = MockPlayer.GetProperty("STR").Value * 100 + (MockPlayer.GetProperty("AGI").Value > 3? MockPlayer.GetProperty("AGI").Value : 3);
             Assert.AreEqual(expected, TreeResolver.Resolve(expression, Engine).Value.ToDouble());
         }
 
@@ -165,7 +165,7 @@ namespace EngineTest.Parser
         public void FunctionalTreeConverterTestExecuteLaterFunctionThatChangesThings()
         {
             string expression = $"{LConstants.IF_F}(1>3,10,{LConstants.HARM_F}({MockPlayer.Key},{MockPlayer.Key},T,10))";
-            double expectedHp = MockPlayer.GetProperty(Entity.HP_KEY).Value-10;
+            double expectedHp = MockPlayer.GetProperty(Entity.HP_KEY).Value - 10;
             TreeResolver.Resolve(expression, Engine);
             Assert.AreEqual(expectedHp, MockPlayer.GetProperty(Entity.HP_KEY).Value);
         }

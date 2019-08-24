@@ -350,7 +350,7 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
             double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _costly.Key);
-            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
+            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].Value);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             timer.ForceTick();
             _testPlayer.Update();
@@ -366,7 +366,7 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
             double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - 10;
             _testPlayer.Cast(mob, _costly.Key);
-            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].CurrentAmount);
+            Assert.AreEqual(0, _testPlayer.ResourceMap["MP"].Value);
 
             MockTimer timer = (MockTimer)Engine.GetTimer();
             timer.ForceTick();

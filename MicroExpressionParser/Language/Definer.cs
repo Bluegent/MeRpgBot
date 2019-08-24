@@ -287,11 +287,12 @@ namespace RPGEngine.Language
 
                     if (values.Length > func.ParameterCount)
                         periodic = values[4].ToBoolean();
+                    double totalAmt = 0;
                     foreach (MeVariable variable in targets)
                     {
-                        variable.ToEntity().TakeDamage(amount, damageType, source, periodic);
+                        totalAmt += variable.ToEntity().TakeDamage(amount, damageType, source, periodic);
                     }
-                    return null;
+                    return totalAmt;
                 }, 4);
 
             AddFunction(LConstants.HEAL_F,
@@ -301,11 +302,12 @@ namespace RPGEngine.Language
                     MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
                     double amount = values[2].ToDouble();
+                    double totalAmt = 0;
                     foreach (MeVariable variable in targets)
                     {
-                        variable.ToEntity().GetHealed(amount, source);
+                        totalAmt+= variable.ToEntity().GetHealed(amount, source);
                     }
-                    return null;
+                    return totalAmt;
                 }, 3);
 
             AddFunction(LConstants.ARRAY_F,
@@ -398,7 +400,7 @@ namespace RPGEngine.Language
                     return null;
 
                 }, 3);
-            AddFunction(LConstants.MOD_VALUE_F,
+            AddFunction(LConstants.ADD_MOD_F,
                (values, func) =>
                {
                    //MOD_VALUE(stat,Amount)

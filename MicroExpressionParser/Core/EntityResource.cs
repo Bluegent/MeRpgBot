@@ -9,14 +9,16 @@ namespace RPGEngine.Core
     public class ResourceTemplate
     {
         public string Key { get; }
+        public double StartMod { get; }
         public MeNode Formula { get; }
         public MeNode RegenFormula { get; }
 
-        public ResourceTemplate(string key, MeNode formula, MeNode regenFormula)
+        public ResourceTemplate(string key, MeNode formula, MeNode regenFormula, double modifier = 1)
         {
             Key = key;
             Formula = formula;
             RegenFormula = regenFormula;
+            StartMod = modifier;
         }
 
         public double ResolveRegen(Entity target)
@@ -33,11 +35,10 @@ namespace RPGEngine.Core
 
     }
 
-    public class ResourceInstance
+    public class ResourceInstance : BaseProperty
     {
         public ResourceTemplate Resource { get; }
         public Entity Parent { get; }
-        public double CurrentAmount { get; set; }
         public double MaxAmount { get; private set; }
         public double RegenAmount { get; private set; }
 
@@ -46,7 +47,7 @@ namespace RPGEngine.Core
             Resource = template;
             Parent = parent;
             Refresh();
-            CurrentAmount = MaxAmount;
+            Value = MaxAmount * Resource.StartMod;
         }
 
         public void Refresh()
@@ -57,23 +58,23 @@ namespace RPGEngine.Core
 
         private void Clamp()
         {
-            CurrentAmount = Utils.Utility.Clamp(CurrentAmount, 0, MaxAmount);
+            Value = Utils.Utility.Clamp(Value, 0, MaxAmount);
         }
 
         public void Regen(long deltaTMs)
         {
-            CurrentAmount += RegenAmount * deltaTMs / GameConstants.TickTime;
+            Value += RegenAmount * deltaTMs / GameConstants.TickTime;
             Clamp();
         }
 
         public bool CanCast(double amount)
         {
-            return CurrentAmount >= amount;
+            return Value >= amount;
         }
 
         public void Cast(double amount)
         {
-            CurrentAmount -= amount;
+            Value -= amount;
         } 
     }
 }

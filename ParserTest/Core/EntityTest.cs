@@ -39,9 +39,9 @@ namespace EngineTest.Core
         public void EntityTestModifierStatusEffect()
         {
             BaseEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            string expression = $"{LConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             ent.ApplyStatus(test, ent,5,values);
             double expected = ent.GetProperty("STR").Value+10;
@@ -53,9 +53,9 @@ namespace EngineTest.Core
         public void EntityTestModifierStatusEffectsRemoved()
         {
             BaseEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            string expression = $"{LConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             int duration = 5;
             ent.ApplyStatus(test, ent, duration, values);
@@ -74,10 +74,10 @@ namespace EngineTest.Core
         public void EntityTestModifierStatusEffectsMultiple()
         {
             BaseEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            string expression = $"{LConstants.MOD_VALUE_F}(STR,$0)";
+            string expression = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             int duration = 5;
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine),Type = StackingType.Independent,MaxStacks =  TreeConverter.Build("0",Engine)};
+            StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine),Type = StackingType.Independent,MaxStacks =  TreeConverter.Build("0",Engine)};
             test.Key = "shonen_powerup";
             double[] values = { 10 };
             ent.ApplyStatus(test, ent, duration, values);
@@ -97,10 +97,10 @@ namespace EngineTest.Core
         public void EntityTestModifierMultipleStatusEffects()
         {
             BaseEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            string expression = $"{LConstants.MOD_VALUE_F}(STR,$0);{LConstants.MOD_VALUE_F}(AGI,$1)";
+            string expression = $"{LConstants.ADD_MOD_F}(STR,$0);{LConstants.ADD_MOD_F}(AGI,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
 
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate(statuses){Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 ,5};
             ent.ApplyStatus(test, ent, 5, values);
             double expectedStr = ent.GetProperty("STR").Value + values[0];
@@ -118,7 +118,7 @@ namespace EngineTest.Core
             double damage = 10;
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate(statuses){Interval = TreeConverter.Build("0", Engine)};
             ent.ApplyStatus(test,ent,5,null);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
             ent.Update();
@@ -129,9 +129,9 @@ namespace EngineTest.Core
         public void EntityTestModifierAndHarm()
         {
             BaseEntity ent = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
-            string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,$0);{LConstants.MOD_VALUE_F}(STR,$1)";
+            string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,$0);{LConstants.ADD_MOD_F}(STR,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses,Interval = TreeConverter.Build("0", Engine)};
+            StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 20, 10 };
             ent.ApplyStatus(test, ent, 5, values);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
@@ -150,7 +150,7 @@ namespace EngineTest.Core
             int[] timeValues = { 10, 5 };
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build(timeValues[0].ToString(), Engine) };
+            StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build(timeValues[0].ToString(), Engine) };
             double[] values = { 20};
             ent.ApplyStatus(test, ent, timeValues[0], values);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
@@ -174,7 +174,7 @@ namespace EngineTest.Core
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             string intervalExpression = $"10-{LConstants.GET_PROP_F}({LConstants.SourceKeyword},INT)*2";
             MeNode intervalNode = TreeConverter.Build(intervalExpression, Engine);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = intervalNode };
+            StatusTemplate test = new StatusTemplate(statuses){ Interval = intervalNode };
             ent.ApplyStatus(test, ent, 5, null);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
             double expectedHp2 = ent.GetProperty(Entity.HP_KEY).Value - damage*2;
@@ -237,9 +237,9 @@ namespace EngineTest.Core
             Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
 
             //apply a status that modifies the value
-            string expression2 = $"{LConstants.MOD_VALUE_F}(STR,$0)";
+            string expression2 = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine) };
+            StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build("0", Engine) };
             double[] values = { 10 };
 
             BaseEntity.ApplyStatus(test, BaseEntity, 10, values);
@@ -264,9 +264,9 @@ namespace EngineTest.Core
             Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
 
             //apply a status that modifies the value
-            string expression2 = $"{LConstants.MOD_VALUE_F}(STR,$0)";
+            string expression2 = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
-            StatusTemplate test = new StatusTemplate() { ComponentFormulas = statuses, Interval = TreeConverter.Build("0", Engine) };
+            StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build("0", Engine) };
             double[] values = { 10 };
 
             BaseEntity.ApplyStatus(test, BaseEntity, 10, values);

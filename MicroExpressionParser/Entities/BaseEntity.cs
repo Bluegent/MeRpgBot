@@ -25,7 +25,6 @@ namespace RPGEngine.Entities
         {
             Free = true;
             CurrentlyCasting = null;
-            Attributes = new Dictionary<string, double>();
             Engine = engine;
             Statuses = new List<AppliedStatus>();
             Skills = new Dictionary<string, SkillInstance>();
@@ -83,7 +82,9 @@ namespace RPGEngine.Entities
 
         public override bool HasProperty(string propertyKey)
         {
-            if (InteralAttributes.ContainsKey(propertyKey))
+            if (Attributes.ContainsKey(propertyKey))
+                return true;
+            if (ResourceMap.ContainsKey(propertyKey))
                 return true;
             return false;
         }
@@ -99,16 +100,16 @@ namespace RPGEngine.Entities
 
         private void TakeActualDamage(double amount)
         {
-            ResourceMap[Entity.HP_KEY].CurrentAmount -= amount;
+            ResourceMap[Entity.HP_KEY].Value -= amount;
         }
 
-        public override void TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
+        public override double TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
         {
             if (type.GetDodge(source, this))
             {
                 if (!periodic)
                     Engine.Log().LogDodge(this, source);
-                return;
+                return 0;
             }
             double actualAmount = type.GetMitigatedAmount(amount, source, this);
             double resisted = amount - actualAmount;
@@ -118,11 +119,13 @@ namespace RPGEngine.Entities
             {
                 Engine.Log().LogDamage(this, source, type, actualAmount, resisted);
             }
+            return actualAmount;
         }
 
-        public override void GetHealed(double amount, Entity source, bool log = true)
+        public override double GetHealed(double amount, Entity source, bool log = true)
         {
             TakeActualDamage(-amount);
+            return amount;
         }
 
         public override bool Cast(Entity target, string skillKey)
@@ -166,12 +169,12 @@ namespace RPGEngine.Entities
             return true;
         }
 
-        public override EntityProperty GetProperty(string key)
+        public override BaseProperty GetProperty(string key)
         {
             if (Attributes.ContainsKey(key))
-                return new EntityProperty() { Key = key, Value = Attributes[key] };
-            if(ResourceMap.ContainsKey(key))
-                return new EntityProperty() { Key = key, Value = ResourceMap[key].CurrentAmount };
+                return Attributes[key];
+            if (ResourceMap.ContainsKey(key))
+                return ResourceMap[key];
             return null;
         }
 
@@ -210,6 +213,12 @@ namespace RPGEngine.Entities
             MeNode intervalTree = Sanitizer.ReplaceTargetAndSource(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
+            foreach (MeNode tree in newStatus.Template.Modifiers)
+            {
+                StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, newStatus.NumericValues).ToModifier();
+                newStatus.MyMods.Add(mod);
+                Attributes[mod.StatKey].Modifiers.Add(mod);
+            }
         }
 
         private long GetRemoveTime(double duration)
@@ -272,7 +281,10 @@ namespace RPGEngine.Entities
             }
 
             foreach (AppliedStatus status in remove)
+            {
+                status.Remove(this);
                 Statuses.Remove(status);
+            }
         }
 
 
@@ -285,54 +297,26 @@ namespace RPGEngine.Entities
             return false;
         }
 
-        private void ApplyModifiers()
-        {
-            foreach (AppliedStatus status in Statuses)
-            {
-                if (IsTime(status))
-                {
-                    foreach (MeNode tree in status.Template.ComponentFormulas)
-                    {
-                        if (tree.Value.Type == VariableType.Function
-                            && tree.Value.Value == Definer.Instance().Functions[LConstants.MOD_VALUE_F])
-                        {
-                            StatModifier mod = Engine.GetSanitizer().ResolveStatus(tree, status.NumericValues).ToModifier();
-                            Attributes[mod.StatKey] += mod.Amount;
-                        }
-                    }
-                }
-            }
-        }
-
         private void ApplyHealAndHarm()
         {
             foreach (AppliedStatus status in Statuses)
             {
                 if (IsTime(status))
                 {
-                    foreach (MeNode tree in status.Template.ComponentFormulas)
+                    foreach (MeNode tree in status.Template.HpMods)
                     {
-                        if (tree.Value.Type == VariableType.Function
-                            && (tree.Value.Value == Definer.Instance().Functions[LConstants.HARM_F]
-                                || tree.Value.Value == Definer.Instance().Functions[LConstants.HEAL_F]))
+                        MeNode newTree = Sanitizer.ReplaceTargetAndSource(tree, status.Source, this);
+                        Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
+                        newTree = newTree.Resolve();
+                        if (tree.Value.GetString() == LConstants.HEAL_F)
                         {
-                            MeNode newTree = Sanitizer.ReplaceTargetAndSource(tree, status.Source, this);
-                            Engine.GetSanitizer().ReplaceNumericPlaceholders(newTree, status.NumericValues);
-                            newTree.Resolve();
+                            status.TotalHeal += newTree.Value.ToDouble();
+                        }
+                        else
+                        {
+                            status.TotalDamamge += newTree.Value.ToDouble();
                         }
                     }
-
-                }
-            }
-        }
-
-
-        private void SetLastTicks()
-        {
-            foreach (AppliedStatus status in Statuses)
-            {
-                if (IsTime(status))
-                {
                     status.LastTick = Engine.GetTimer().GetNow();
                 }
             }
@@ -398,10 +382,8 @@ namespace RPGEngine.Entities
             //Template handling
             RemoveExpiredStatuses();
             ResetAttributes();
-            ApplyModifiers();
             RegenResources(1000);
             ApplyHealAndHarm();
-            SetLastTicks();
             TickCooldownds();
             TickCurrentCast();
         }

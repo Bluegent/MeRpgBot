@@ -1,0 +1,35 @@
+﻿
+
+using System.Collections.Generic;
+using RPGEngine.Game;
+
+namespace RPGEngine.Entities
+{
+
+    public class BaseProperty
+    {
+        public double Value { get; set; }
+    }
+
+    public class EntityAttribute : BaseProperty
+    {
+        public double Base { get; set; }
+        public List<StatModifier> Modifiers { get; }
+
+        public EntityAttribute(double value = 0)
+        {
+            Base = value;
+            Modifiers = new List<StatModifier>();
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            Value = Base;
+            foreach (StatModifier mod in Modifiers)
+            {
+                Value += mod.Amount;
+            }
+        }
+    }
+}

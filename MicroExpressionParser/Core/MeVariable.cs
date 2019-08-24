@@ -142,10 +142,10 @@ namespace RPGEngine.Core
             return  new MeVariable[1] {this};
         }
 
-        public EntityProperty ToEntityProperty()
+        public EntityAttribute ToEntityProperty()
         {
             ValidateType(VariableType.EntityProperty);
-            return (EntityProperty)Value;
+            return (EntityAttribute)Value;
         }
 
         public new string ToString()
