@@ -10,7 +10,7 @@ Header.\
         "type":"cast",
 ```
 Details:
-* ` "aliases":["punch","attack"],` - What the skill can be referred to as when a player types in `cast <attack>`. All skill aliases need to be unique to avoid conflicts.
+* ` "aliases":["punch","attack"],` - What the skill can be referred to as when a player types in `cast <attack>`. All skill aliases need to be unique to avoid conflicts. If this field is missing, the alias used will be the key.
 * `"type":"cast",` - The type of the skill.
     * `cast` - The action happens after the skill is done casting.
     * `channel` - The action happens repeatedly while the caster keeps channelling the skill, up to a duration.

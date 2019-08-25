@@ -25,7 +25,7 @@ namespace EngineTest.GameConfigReader
             string name = "TEST_NAME";
             string key = "TEST_KEY";
             string desc = "TEST_DESC";
-            string jsonStr = $"{{\"{GcConstants.KEY}\":\"{key}\",\"{GcConstants.NAME}\":\"{name}\",\"{GcConstants.DESC}\":\"{desc}\"}}";
+            string jsonStr = $"{{\"{GcConstants.General.KEY}\":\"{key}\",\"{GcConstants.General.NAME}\":\"{name}\",\"{GcConstants.General.DESC}\":\"{desc}\"}}";
 
             JObject json = JObject.Parse(jsonStr);
             BaseObject obj = new BaseObject();
@@ -40,7 +40,7 @@ namespace EngineTest.GameConfigReader
         public void BaseObjectTestDefaultValues()
         {
             string key = "TEST_KEY";
-            string jsonStr = $"{{\"{GcConstants.KEY}\":\"{key}\"}}";
+            string jsonStr = $"{{\"{GcConstants.General.KEY}\":\"{key}\"}}";
 
             JObject json = JObject.Parse(jsonStr);
             BaseObject obj = new BaseObject();

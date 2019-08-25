@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Newtonsoft.Json.Linq;
 
 namespace RPGEngine.GameConfigReader
@@ -15,9 +11,9 @@ namespace RPGEngine.GameConfigReader
 
         public void LoadBase(JObject json)
         {
-            Key = json[GcConstants.KEY].ToString();
-            Name = json.ContainsKey(GcConstants.NAME) ? json[GcConstants.NAME].ToString() : Key;
-            Description = json.ContainsKey(GcConstants.DESC) ? json[GcConstants.DESC].ToString() : GcConstants.Defaults.DESC;
+            Key = json[GcConstants.General.KEY].ToString();
+            Name = json.ContainsKey(GcConstants.General.NAME) ? json[GcConstants.General.NAME].ToString() : Key;
+            Description = json.ContainsKey(GcConstants.General.DESC) ? json[GcConstants.General.DESC].ToString() : GcConstants.Defaults.DESC;
         }
     }
 }

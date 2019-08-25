@@ -35,7 +35,8 @@ namespace RPGEngine.Game
         public MeNode PushBack { get; set; }
         public SkillCost Cost { get; set; }
         public MeNode Interruptible { get; set; }
-        public long NeededLevel { get; set; }
+        public MeNode NeededLevel { get; set; }
+        public MeNode SkillThreat { get; set; }
 
         public SkillLevelTemplate()
         {
@@ -52,14 +53,15 @@ namespace RPGEngine.Game
         public SkillTemplate()
         {
             ByLevel = new List<SkillLevelTemplate>();
+            Aliases = new List<string>();
         }
 
-        public static SkillType FromString(string str)
+        public void TypeFromString(string str)
         {
             foreach (SkillType type in Enum.GetValues(typeof(SkillType)))
                 if (str.Equals(type.ToString().ToLower()))
-                    return type;
-            return SkillType.Cast;
+                    Type = type;
+            throw new MeException($"Unknown skill type {str} for skill {Name}.");
         }
 
     }

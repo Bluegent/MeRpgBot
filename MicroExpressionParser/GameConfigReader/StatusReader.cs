@@ -16,27 +16,27 @@ namespace RPGEngine.GameConfigReader
 
         public StatusTemplate FromJSON(JObject json)
         {
-            MeNode[] formulas = Engine.GetSanitizer().SplitAndConvert(json[GcConstants.FORMULA].ToString());
+            MeNode[] formulas = Engine.GetSanitizer().SplitAndConvert(json[GcConstants.General.FORMULA].ToString());
             StatusTemplate result = new StatusTemplate(formulas);
             result.LoadBase(json);
 
-            result.MaxStacks = json.ContainsKey(GcConstants.MAX_STACK)
-                ? TreeConverter.Build(json[GcConstants.MAX_STACK].ToString(), Engine)
+            result.MaxStacks = json.ContainsKey(GcConstants.Statuses.MAX_STACK)
+                ? TreeConverter.Build(json[GcConstants.Statuses.MAX_STACK].ToString(), Engine)
                 : new MeNode(1);
             ;
 
-            result.Interval = json.ContainsKey(GcConstants.INTERVAL)
-                ? TreeConverter.Build(json[GcConstants.MAX_STACK].ToString(), Engine)
+            result.Interval = json.ContainsKey(GcConstants.Statuses.INTERVAL)
+                ? TreeConverter.Build(json[GcConstants.Statuses.MAX_STACK].ToString(), Engine)
                 : new MeNode(1);
             ;
 
-            result.Interval = json.ContainsKey(GcConstants.INTERVAL)
-                ? TreeConverter.Build(json[GcConstants.MAX_STACK].ToString(), Engine)
+            result.Interval = json.ContainsKey(GcConstants.Statuses.INTERVAL)
+                ? TreeConverter.Build(json[GcConstants.Statuses.MAX_STACK].ToString(), Engine)
                 : new MeNode(1);
             ;
 
-            result.Type = json.ContainsKey(GcConstants.STACK_TYPE)
-                ? StatusTemplate.FromString(json[GcConstants.STACK_TYPE].ToString())
+            result.Type = json.ContainsKey(GcConstants.Statuses.STACK_TYPE)
+                ? StatusTemplate.FromString(json[GcConstants.Statuses.STACK_TYPE].ToString())
                 : StackingType.Independent;
 
            

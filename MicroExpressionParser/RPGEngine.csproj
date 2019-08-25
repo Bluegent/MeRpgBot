@@ -202,6 +202,7 @@
     <Compile Include="Entities\EntityValues.cs" />
     <Compile Include="Entities\LevelableEntity.cs" />
     <Compile Include="Entities\MockEntity.cs" />
+    <Compile Include="GameConfigReader\SkillReader.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\GameConstants.cs" />
     <Compile Include="Game\Player.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Data\ValueByLevel.cs" />
     <Compile Include="GameInterface\LogHelper.cs" />
     <Compile Include="Cleanup\Sanitizer.cs" />
+    <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\FileReader.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
@@ -243,7 +245,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Core\SkillManager.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

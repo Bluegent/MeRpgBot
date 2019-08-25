@@ -19,6 +19,7 @@ namespace RPGEngine.Core
 
     public interface IGameEngine
     {
+        SkillManager GetSkillManager();
         void AddPlayer(Entity entity);
 
         void AddEnemy(Entity entity);
@@ -36,8 +37,9 @@ namespace RPGEngine.Core
         void AddVariable(string key, MeVariable var);
         void SetVariable(string key, MeVariable var);
         ILogHelper Log();
-
         long GetMaxExp(int level);
+
+        long GetDefaultSkillThreat();
 
         void EnqueueCommand(Command command);
         void Update();
@@ -49,8 +51,8 @@ namespace RPGEngine.Core
         private ConcurrentQueue<Command> commandsQueue;
 
         private List<long> ExpValues;
-
-
+        public long SkillThreat { get; set; }
+        private SkillManager _skillManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
@@ -63,6 +65,8 @@ namespace RPGEngine.Core
         public GameEngine(ILogHelper log)
         {
             Definer.Instance().Init(this);
+            SkillThreat = 5;
+            _skillManager = new SkillManager();
             ExpValues = new List<long>();
             _log = log;
             Players = new Dictionary<string, Entity>();
@@ -81,6 +85,11 @@ namespace RPGEngine.Core
         {
             if(ExpValues.Count == 0)
                 ExpValues.Add(value);
+        }
+
+        public SkillManager GetSkillManager()
+        {
+            return _skillManager;
         }
 
         public void AddPlayer(Entity entity)
@@ -184,6 +193,11 @@ namespace RPGEngine.Core
                 }
             }
             return ExpValues[level]; ;
+        }
+
+        public long GetDefaultSkillThreat()
+        {
+            return SkillThreat;
         }
 
         public void Update()

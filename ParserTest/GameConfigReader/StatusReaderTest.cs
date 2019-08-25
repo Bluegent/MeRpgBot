@@ -31,11 +31,11 @@ namespace EngineTest.GameConfigReader
             string intervalFormula = $"{LConstants.MAX_F}(10,5)";
             string formula = $"{ LConstants.HARM_F }({ LConstants.TargetKeyword},{ LConstants.TargetKeyword},T,$0)";
 
-            string jsonStr = $"{{\"{GcConstants.KEY}\":\"{key}\",";
-            jsonStr += $"\"{GcConstants.MAX_STACK}\":\"{maxStack}\",";
-            jsonStr += $"\"{GcConstants.STACK_TYPE}\":\"{type.ToString().ToLower()}\",";
-            jsonStr += $"\"{GcConstants.INTERVAL}\":\"{intervalFormula}\",";
-            jsonStr += $"\"{GcConstants.FORMULA}\":\"{formula}\"}}";
+            string jsonStr = $"{{\"{GcConstants.General.KEY}\":\"{key}\",";
+            jsonStr += $"\"{GcConstants.Statuses.MAX_STACK}\":\"{maxStack}\",";
+            jsonStr += $"\"{GcConstants.Statuses.STACK_TYPE}\":\"{type.ToString().ToLower()}\",";
+            jsonStr += $"\"{GcConstants.Statuses.INTERVAL}\":\"{intervalFormula}\",";
+            jsonStr += $"\"{GcConstants.General.FORMULA}\":\"{formula}\"}}";
 
             JObject json = JObject.Parse(jsonStr);
             StatusTemplate status = Reader.FromJSON(json);
