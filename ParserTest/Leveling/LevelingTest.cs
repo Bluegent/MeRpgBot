@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RPGEngine.Core;
+using RPGEngine.Entities;
 using RPGEngine.GameInterface;
 using RPGEngine.Language;
 using RPGEngine.Parser;
@@ -18,7 +19,7 @@ namespace EngineTest.Leveling
         {
             double power = Math.Floor((double)level / 5.0);
             double multiplier = Math.Pow(2, power);
-            long current = (long)Math.Floor(prev*1.1 + 50 * multiplier);
+            long current = (long)Math.Floor(prev * 1.1 + 50 * multiplier);
             return current;
         }
 
@@ -39,29 +40,29 @@ namespace EngineTest.Leveling
                 MeNode ExpFormula = TreeConverter.Build($"{prev}+50*2^{LConstants.FLOOR_F}({i}/5.0)",
                     Engine);
                 double res = ExpFormula.Resolve().Value.ToDouble();
-                double exp = prev+50*Math.Pow(2, Math.Floor(i/5.0));
+                double exp = prev + 50 * Math.Pow(2, Math.Floor(i / 5.0));
                 prev = exp;
-                Assert.AreEqual(exp,res);
+                Assert.AreEqual(exp, res);
             }
         }
 
         [TestMethod]
         public void LevelingTestNextLevelExp()
         {
-;           long expected = StartExp;
+            ; long expected = StartExp;
             for (int i = 0; i <= 40; ++i)
             {
-               
+
                 Assert.AreEqual(expected, Engine.GetMaxExp(i));
                 long prev = expected;
-                expected = expHelper(prev, i+1);
+                expected = expHelper(prev, i + 1);
             }
         }
 
         [TestMethod]
         public void LevelingTestNextLevelExpJump()
         {
-             long expected = StartExp;
+            long expected = StartExp;
             for (int i = 0; i < 40; ++i)
             {
 
@@ -71,6 +72,34 @@ namespace EngineTest.Leveling
             }
 
             Assert.AreEqual(expected, Engine.GetMaxExp(40));
+        }
+
+        [TestMethod]
+        public void LevelTestStatIncrease()
+        {
+            MockEntity ent = new MockEntity(Engine);
+            double expected = ent.GetProperty("STR").Value + 1;
+            Assert.AreEqual(false, ent.AssignAttributePoint("STR"));
+
+            ent.AddExp(StartExp);
+            Assert.AreEqual(1, ent.AttributePoints);
+            Assert.AreEqual(true, ent.AssignAttributePoint("STR"));
+            Assert.AreEqual(expected,ent.GetProperty("STR").Value);
+        }
+
+        [TestMethod]
+        public void LevelTestStatIncreaseAffectsResource()
+        {
+            string stat = "VIT";
+            MockEntity ent = new MockEntity(Engine);
+            double expected = ent.GetProperty(stat).Value + 1;
+            ResourceInstance hp = ((ResourceInstance) ent.GetProperty(Entity.HP_KEY));
+            double expectedRes = hp.MaxAmount+20;
+            ent.AddExp(StartExp);
+            ent.AssignAttributePoint(stat);
+            Assert.AreEqual(expected, ent.GetProperty(stat).Value);
+            Assert.AreEqual(expectedRes, hp.MaxAmount);
+
         }
     }
 }

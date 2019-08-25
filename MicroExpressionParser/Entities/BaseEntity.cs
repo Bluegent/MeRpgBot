@@ -41,16 +41,16 @@ namespace RPGEngine.Entities
             switch (CurrentlyCasting.Skill.Skill.Type)
             {
                 case SkillType.Cast:
-                {
-                    CurrentlyCasting.CastFinishTime += delay * 1000;
-                    break;
-                }
+                    {
+                        CurrentlyCasting.CastFinishTime += delay * 1000;
+                        break;
+                    }
 
                 case SkillType.Channel:
-                {
-                    CurrentlyCasting.CastFinishTime -= delay * 1000;
-                    break;
-                }
+                    {
+                        CurrentlyCasting.CastFinishTime -= delay * 1000;
+                        break;
+                    }
             }
         }
 
@@ -91,9 +91,8 @@ namespace RPGEngine.Entities
 
         public override void RegenResources(long deltaTMs)
         {
-            foreach(ResourceInstance resIn in ResourceMap.Values)
+            foreach (ResourceInstance resIn in ResourceMap.Values)
             {
-                resIn.Refresh();
                 resIn.Regen(deltaTMs);
             }
         }
@@ -159,7 +158,7 @@ namespace RPGEngine.Entities
                 //log that the player doesn't have enough of resource
                 return false;
             }
-            
+
             res.Cast(amount);
 
             Free = false;
@@ -219,19 +218,20 @@ namespace RPGEngine.Entities
                 newStatus.MyMods.Add(mod);
                 Attributes[mod.StatKey].Modifiers.Add(mod);
             }
+            RefreshProperties();
         }
 
         private long GetRemoveTime(double duration)
         {
             if (duration > 0.0)
                 return Engine.GetTimer().GetNow() + (long)duration * 1000;
-            return 0;        
+            return 0;
         }
 
         public override void Cleanse()
         {
             Statuses.Clear();
-            ResetAttributes();
+            RefreshProperties();
         }
 
         public override void ApplyStatus(StatusTemplate status, Entity source, double duration, double[] values)
@@ -239,33 +239,33 @@ namespace RPGEngine.Entities
             switch (status.Type)
             {
                 case StackingType.Refresh:
-                {
-                    AppliedStatus refresh = GetStatusInstance(status.Key);
-                    if (refresh != null)
-                        refresh.RemovalTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
-                    break;
-                }
+                    {
+                        AppliedStatus refresh = GetStatusInstance(status.Key);
+                        if (refresh != null)
+                            refresh.RemovalTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
+                        break;
+                    }
                 case StackingType.None:
-                {
-                    AppliedStatus refresh = GetStatusInstance(status.Key);
-                    if (refresh == null)
                     {
-                        AddStatusFromTemplate(status, source, duration, values);
-                    }
+                        AppliedStatus refresh = GetStatusInstance(status.Key);
+                        if (refresh == null)
+                        {
+                            AddStatusFromTemplate(status, source, duration, values);
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case StackingType.Independent:
-                {
-                    long maxStacks = status.MaxStacks.Resolve().Value.ToLong();
-                    int currentStacks = GetStatusStackCount(status.Key);
-                    if (maxStacks == 0 || maxStacks > currentStacks)
                     {
-                        AddStatusFromTemplate(status, source, duration, values);
-                    }
+                        long maxStacks = status.MaxStacks.Resolve().Value.ToLong();
+                        int currentStacks = GetStatusStackCount(status.Key);
+                        if (maxStacks == 0 || maxStacks > currentStacks)
+                        {
+                            AddStatusFromTemplate(status, source, duration, values);
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
 
         }
@@ -285,6 +285,8 @@ namespace RPGEngine.Entities
                 status.Remove(this);
                 Statuses.Remove(status);
             }
+            if (remove.Count != 0)
+                RefreshProperties();
         }
 
 
@@ -381,7 +383,6 @@ namespace RPGEngine.Entities
         {
             //Template handling
             RemoveExpiredStatuses();
-            ResetAttributes();
             RegenResources(1000);
             ApplyHealAndHarm();
             TickCooldownds();

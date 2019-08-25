@@ -171,6 +171,8 @@ namespace RPGEngine.Core
 
         public long GetMaxExp(int level)
         {
+            if (ExpFormula == null)
+                return 0;
             if (ExpValues.Count <= level)
             {
                 ExpValues.Capacity = level+1;

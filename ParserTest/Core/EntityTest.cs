@@ -43,8 +43,9 @@ namespace EngineTest.Core
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
-            ent.ApplyStatus(test, ent,5,values);
+            
             double expected = ent.GetProperty("STR").Value+10;
+            ent.ApplyStatus(test, ent, 5, values);
             ent.Update();
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
         }
@@ -58,11 +59,12 @@ namespace EngineTest.Core
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 };
             int duration = 5;
-            ent.ApplyStatus(test, ent, duration, values);
             double expected = ent.GetProperty("STR").Value + 10;
+           
             double removedExpected = ent.GetProperty("STR").Value;
+
+            ent.ApplyStatus(test, ent, duration, values);
             MockTimer timer = (MockTimer)Engine.GetTimer();
-            ent.Update();
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
             for(int i=0;i<= duration; ++i)
                 timer.ForceTick();
@@ -80,10 +82,12 @@ namespace EngineTest.Core
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine),Type = StackingType.Independent,MaxStacks =  TreeConverter.Build("0",Engine)};
             test.Key = "shonen_powerup";
             double[] values = { 10 };
-            ent.ApplyStatus(test, ent, duration, values);
-            ent.ApplyStatus(test, ent, duration, values);
+          
             double expected = ent.GetProperty("STR").Value + values[0]*2;
             double removedExpected = ent.GetProperty("STR").Value;
+
+            ent.ApplyStatus(test, ent, duration, values);
+            ent.ApplyStatus(test, ent, duration, values);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             ent.Update();
             Assert.AreEqual(expected, ent.GetProperty("STR").Value);
@@ -102,9 +106,11 @@ namespace EngineTest.Core
 
             StatusTemplate test = new StatusTemplate(statuses){Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 10 ,5};
-            ent.ApplyStatus(test, ent, 5, values);
+           
             double expectedStr = ent.GetProperty("STR").Value + values[0];
             double expetedDex = ent.GetProperty("AGI").Value + values[1];
+
+            ent.ApplyStatus(test, ent, 5, values);
             MockTimer timer = (MockTimer)Engine.GetTimer();
             ent.Update();
             Assert.AreEqual(expectedStr, ent.GetProperty("STR").Value);
@@ -133,10 +139,10 @@ namespace EngineTest.Core
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
             double[] values = { 20, 10 };
-            ent.ApplyStatus(test, ent, 5, values);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
             double expected = ent.GetProperty("STR").Value + values[1];
 
+            ent.ApplyStatus(test, ent, 5, values);
             ent.Update();
 
             Assert.AreEqual(expectedHp, ent.GetProperty(Entity.HP_KEY).Value);

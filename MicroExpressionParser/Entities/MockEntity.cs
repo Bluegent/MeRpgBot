@@ -4,7 +4,7 @@ using RPGEngine.Parser;
 namespace RPGEngine.Entities
 {
 
-    public class MockEntity : BaseEntity
+    public class MockEntity : LevelableEntity
     {
 
         public static ResourceTemplate getMockHP(IGameEngine engine)

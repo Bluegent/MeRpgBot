@@ -56,7 +56,7 @@ namespace RPGEngine.Entities
             if (Attributes.ContainsKey(key))
                 return;
             Attributes.Add(key, new EntityAttribute(value));
-            ResetAttributes();
+            RefreshProperties();
         }
 
         public void AddResource(ResourceTemplate resource)
@@ -67,11 +67,16 @@ namespace RPGEngine.Entities
             ResourceMap.Add(resource.Key,resIn); 
         }
 
-        protected void ResetAttributes()
+        protected void RefreshProperties()
         {
-            foreach (KeyValuePair<string, EntityAttribute> pair in Attributes)
+            foreach (EntityAttribute atr in Attributes.Values)
             {
-                pair.Value.Refresh();
+                atr.Refresh();
+            }
+
+            foreach (ResourceInstance res in ResourceMap.Values)
+            {
+                res.Refresh();
             }
         }
 
