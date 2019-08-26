@@ -1,6 +1,7 @@
 ﻿namespace RPGEngine.GameConfigReader
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Newtonsoft.Json.Linq;
@@ -18,7 +19,7 @@
             Engine = engine;
         }
 
-        (string Key, double Value) ValueFromJson(JToken json)
+        KeyValuePair<string,double> ValueFromJson(JToken json)
         {
             JToken key = json[GcConstants.General.KEY];
             if (key == null)
@@ -34,15 +35,13 @@
             }
 
             double resultValue = value.Value<double>();
-
-            var result = (Key: resultKey, Value: resultValue);
-            return result;
+            return new KeyValuePair<string, double>(resultKey,resultValue);
         }
 
-        (string Key, SkillTemplate Template) SkillFromJson(JToken json)
+        KeyValuePair<string,SkillTemplate> SkillFromJson(JToken json)
         {
             string skillKey = json.Value<string>();
-            return (skillKey,Engine.GetSkillManager().GetSkill(skillKey));
+            return new KeyValuePair<string, SkillTemplate>(skillKey,Engine.GetSkillManager().GetSkill(skillKey));
         }
 
         public ClassTemplate FromJson(JObject json)
@@ -55,7 +54,7 @@
                 JToken[] baseValuesArray = baseValues.ToArray();
                 foreach (JToken value in baseValuesArray)
                 {
-                    var bValue = ValueFromJson(value);
+                    KeyValuePair<string, double> bValue = ValueFromJson(value);
                     result.BasicValues.Add(bValue.Key, bValue.Value);
                 }
             }
@@ -70,7 +69,7 @@
                 JToken[] baseAttributesArray = basicAttributes.ToArray();
                 foreach (JToken value in baseAttributesArray)
                 {
-                    var aValue = ValueFromJson(value);
+                    KeyValuePair<string,double> aValue = ValueFromJson(value);
                     result.Attributes.Add(aValue.Key, aValue.Value);
                 }
             }
@@ -84,10 +83,10 @@
                 JToken[] skillsArray = skills.ToArray();
                 foreach (JToken value in skillsArray)
                 {
-                    var skill = SkillFromJson(value);
-                    if (skill.Template != null)
+                    KeyValuePair<string,SkillTemplate> skill = SkillFromJson(value);
+                    if (skill.Value != null)
                     {
-                        result.Skills.Add(skill.Key, skill.Template);
+                        result.Skills.Add(skill.Key, skill.Value);
                     }
                     else
                     {
@@ -107,10 +106,10 @@
             }
             else
             {
-                var skill = SkillFromJson(baseAttack);
-                if (skill.Template != null)
+                KeyValuePair<string,SkillTemplate> skill = SkillFromJson(baseAttack);
+                if (skill.Value != null)
                 {
-                    result.BaseAttack = skill.Template;
+                    result.BaseAttack = skill.Value;
                 }
                 else
                 {
