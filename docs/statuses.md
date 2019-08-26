@@ -35,3 +35,13 @@ Details:
     	* `independent` - Status stacks have independent durations, so applying a new one will not affect the others.
     * __[Default/Missing]__ `indepdent`
 * __[Note]__ A status duration is missing, as it is actually provided by the `MOD_VALUE(...)` function. See: [micro_expression.md](micro_expression.md) for more information.
+
+Minimum Example:
+Structure explanation:
+```
+    {   
+        "key":"shonen_powerup",
+        "name":"Shonen Powerup",
+        "formula":"MOD_VALUE(STR,$0);MOD_VALUE(DEX,$1);MOD_VALUE(INT,$2);"
+    }
+```
