@@ -1,0 +1,22 @@
+[
+	{
+		"key": "STR",
+		"name": "Strength",
+		"description": "Boosts physical abilities."
+	},
+	{
+		"key": "INT",
+		"name": "Intellect",
+		"description": "Boosts magical abilities."
+	},
+	{
+		"key": "AGI",
+		"name": "Agility",
+		"description": "Boosts crit and dodge chances.."
+	},
+	{
+		"key": "VIT",
+		"name": "Vitality",
+		"description": "Boosts health."
+	}
+]

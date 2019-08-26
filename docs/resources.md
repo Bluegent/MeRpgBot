@@ -14,7 +14,6 @@ Struncture explanation:
 	},
 	...
 ```
-Details:
 * `"formula": "BASE_HP+VIT*20",` 
 	* __[Formula]__ _Maximum_ value of this resource.
 * `"interval":"5",` 

@@ -1,0 +1,35 @@
+{
+
+	"compound_stats": [
+        {
+			"key": "DODGE",
+			"formula": "1+DEX/2000",
+			"name": "Physical Defense",
+			"description": "Chance to avoid an enemy attack."
+		},
+        {
+			"key": "DEF",
+			"formula": "BASE_DEF+STR/4",
+			"name": "Physical Defense",
+			"description": "Helps you avoid physical damage."
+		},
+		{
+			"key": "MDEF",
+			"formula": "BASE_MDEF+INT/4",
+			"name": "Magic Defense",
+			"description": "Helps you avoid magic damage."
+		},
+		{
+			"key": "ATT_SPEED",
+			"formula": "BASE_MDEF+INT/4",
+			"name": "Attack Speed",
+			"description": "How fast your normal attack is casted when auto attacking."
+		},
+		{
+			"key":"THREAT",
+			"formula":"1",
+			"name":"Thread Multiplier",
+			"description":"Modifies the amount of threat generated when using skills."
+		}
+	]
+}
