@@ -9,8 +9,13 @@ using RPGEngine.Utils;
 
 namespace RPGEngine.GameConfigReader
 {
+    using System.Diagnostics;
+
+    using RPGEngine.Entities;
+
     public class SkillReader
     {
+
         public IGameEngine Engine { get; }
 
         public SkillReader(IGameEngine engine)
@@ -19,6 +24,88 @@ namespace RPGEngine.GameConfigReader
         }
 
 
+        private SkillCost CostFromJson(JToken json, SkillTemplate skill)
+        {
+            string key;
+            string amountFormula;
+            if (json == null)
+            {
+                key = Entity.HP_KEY;
+                amountFormula = GcConstants.Skills.DEFAULT_COST_VALUE;
+            }
+            else
+            {
+                JObject costObj = json.ToObject<JObject>();
+                
+                key = JsonUtils.ValidateJsonEntry(GcConstants.General.KEY,
+                    costObj, 
+                    JTokenType.String, 
+                    $"No cost key for skill {skill.Name}.")
+                    .ToString();
+                amountFormula = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE,
+                        costObj,
+                        JTokenType.String,
+                        $"No cost amount for skill {skill.Name}.")
+                    .ToString();
+            }
+           
+            return new SkillCost(key, TreeConverter.Build(amountFormula,Engine));
+        }
+
+        private SkillLevelTemplate LevelFromJson(JObject levelValue, SkillTemplate skill)
+        {
+            SkillLevelTemplate levelTemplate = new SkillLevelTemplate();
+
+            //get cost
+            levelTemplate.Cost = CostFromJson(levelValue[GcConstants.Skills.COST],skill);
+
+            //get needed level, push-back and interrupt because they have default values
+            levelTemplate.NeededLevel = new MeNode(JsonUtils.GetValueOrDefault<long>(levelValue, GcConstants.Skills.NEEDED_LEVEL, GcConstants.Skills.DEFAULT_NEEDED_LEVEL));
+            levelTemplate.PushBack = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.PUSH_BACK, GcConstants.Skills.DEFAULT_PUSHBACK));
+            levelTemplate.Interruptible = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.INTERRUPT, GcConstants.Skills.DEFAULT_INTERRUPT));
+
+            //get cast duration
+            string durationFormula = JsonUtils.GetValueOrDefault(levelValue,
+                GcConstants.Skills.CAST_DURATION,
+                GcConstants.Skills.DEFAULT_CAST_DURATION);
+            levelTemplate.Duration = TreeConverter.Build(durationFormula, Engine);
+
+            //get cooldown
+            string cdFormula = JsonUtils.GetValueOrDefault(
+                levelValue,
+                GcConstants.Skills.COOLDOWN,
+                GcConstants.Skills.DEFAULT_COOLDOWN);
+            levelTemplate.Cooldown = TreeConverter.Build(cdFormula, Engine);
+
+            //get skill threat
+            string threatFormula = JsonUtils.GetValueOrDefault<string>(levelValue, GcConstants.Skills.THREAT, null);
+            if (threatFormula == null)
+            {
+                threatFormula = Engine.GetDefaultSkillThreat().ToString();
+            }
+            levelTemplate.SkillThreat = TreeConverter.Build(threatFormula, Engine);
+
+            //get formulas
+            string formulas = JsonUtils.ValidateJsonEntry(GcConstants.General.FORMULA,
+                levelValue,
+                JTokenType.String,
+                $"Missing formula for skill {skill.Name}.").ToString();
+            levelTemplate.Formulas.AddRange(Engine.GetSanitizer().SplitAndConvert(formulas));
+
+
+            //get interval
+            if (skill.Type == SkillType.Channel)
+            {
+                string intervalFormula = JsonUtils.GetValueOrDefault(
+                    levelValue,
+                    GcConstants.Skills.INTERVAL,
+                    GcConstants.Skills.DEFAULT_INTERVAL_VALUE);
+                levelTemplate.Interval = TreeConverter.Build(intervalFormula, Engine);
+            }
+
+            return levelTemplate;
+
+        }
 
         public SkillTemplate FromJson(JObject json)
         {
@@ -42,49 +129,31 @@ namespace RPGEngine.GameConfigReader
             }
 
             //get skill type
-            string type = json.ContainsKey(GcConstants.Skills.SKILL_TYPE)
-                ? json[GcConstants.Skills.SKILL_TYPE].ToString()
-                : GcConstants.Skills.DEFAULT_TYPE;
+            string type = JsonUtils.GetValueOrDefault(
+                json,
+                GcConstants.Skills.SKILL_TYPE,
+                GcConstants.Skills.DEFAULT_TYPE);
             result.TypeFromString(type);
 
             //start reading the values by skill level
-
-
             JToken[] values = JsonUtils.ValidateJsonEntry(GcConstants.Skills.VALUES_BY_LEVEL,
                     json,
                     JTokenType.Array,
                     $"Missing \"{GcConstants.Skills.VALUES_BY_LEVEL}\" or wrong format entry for skill {result.Name}")
                 .ToArray();
 
+            if (values.Length == 0)
+            {
+                throw new MeException($"Skill {result.Name} has no level values.");
+            }
             foreach (JToken jToken in values)
             {
                 //validate sub object
                 if (jToken.Type != JTokenType.Object)
                     throw new MeException($"Invalid entry {jToken.ToString()} when parsing skill {result.Name}");
                 JObject levelValue = (JObject)jToken; 
-                SkillLevelTemplate levelTemplate = new SkillLevelTemplate();
-
-                //get needed level, push-back and interrupt, because they have default values
-                levelTemplate.NeededLevel = new MeNode(JsonUtils.GetValueOrDefault<long>(levelValue, GcConstants.Skills.NEEDED_LEVEL, 1));
-                levelTemplate.PushBack = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.PUSH_BACK, true));
-                levelTemplate.Interruptible = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.INTERRUPT, true));
-       
-                //get skill threat
-                string threatFormula = JsonUtils.GetValueOrDefault<string>(levelValue, GcConstants.Skills.THREAT, null);
-                if (threatFormula == null)
-                {
-                    threatFormula = Engine.GetDefaultSkillThreat().ToString();
-                }
-                levelTemplate.SkillThreat = TreeConverter.Build(threatFormula,Engine);
-
-                //get formulas
-                string formulas = JsonUtils.ValidateJsonEntry(GcConstants.General.FORMULA,
-                    levelValue,
-                    JTokenType.String,
-                    $"Missing formula for skill {result.Name}.").ToString();
-                levelTemplate.Formulas.AddRange(Engine.GetSanitizer().SplitAndConvert(formulas));
-
-                result.ByLevel.Add(levelTemplate);
+               
+                result.ByLevel.Add(LevelFromJson(levelValue,result));
             }
             return result;
         }
@@ -93,7 +162,7 @@ namespace RPGEngine.GameConfigReader
 }
 
 /*
- *         "key":"basic_heal",
+        "key":"basic_heal",
         "name":"Inspiration",
         "aliases":["heal","mend"],
         "description":"Remember the words of your mentor and feel better.",   

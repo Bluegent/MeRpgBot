@@ -67,7 +67,8 @@ Details:
     * If this line is missing, the skill can be interrupted.
     * Accepts formulas that return true/false like operators `> < or =`.
 * `"treat":"5"` - How much threat this level of this skill generates before threat multiplier is taken into account.
-
+* '"cost":{"key":"MP","value":"10"}, ' - How much of a resource casting this skill costs. If this field is missing, it is assume the skill costs 0 HP to cast.
+ (HP is used because it is the only guaranteed resource of the engine)
 
 
 

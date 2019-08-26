@@ -8,6 +8,8 @@ using RPGEngine.GameConfigReader;
 
 namespace RPGEngine.Game
 {
+    using Newtonsoft.Json.Linq;
+
     public enum SkillType
     {
         Cast, //after a dureation, the skill formula is applied
@@ -60,7 +62,10 @@ namespace RPGEngine.Game
         {
             foreach (SkillType type in Enum.GetValues(typeof(SkillType)))
                 if (str.Equals(type.ToString().ToLower()))
+                {
                     Type = type;
+                    return;
+                }
             throw new MeException($"Unknown skill type {str} for skill {Name}.");
         }
 

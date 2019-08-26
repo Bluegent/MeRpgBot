@@ -42,8 +42,19 @@ namespace RPGEngine.GameConfigReader
             public const string INTERRUPT = "interrupt";
             public const string THREAT = "threat";
             public const string COST = "cost";
+            public const string INTERVAL = "interval";
 
             public const string DEFAULT_TYPE = "cast";
+            public const string DEFAULT_CAST_DURATION = "0";
+            public const string DEFAULT_COOLDOWN = "1";
+            public const string DEFAULT_COST_VALUE = "1";
+            public const string DEFAULT_INTERVAL_VALUE = "0";
+
+            public const long DEFAULT_NEEDED_LEVEL = 1;
+            public const bool DEFAULT_INTERRUPT = true;
+            public const bool DEFAULT_PUSHBACK = true;
+
+
         }
 
 
