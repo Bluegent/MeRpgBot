@@ -4,6 +4,8 @@ using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
+    using System.Collections;
+
     public class SkillManager
     {
         public Dictionary<string, SkillTemplate> SkillsByAlias;
@@ -21,9 +23,13 @@ namespace RPGEngine.Core
 
             foreach (string alias in skill.Aliases)
             {
-                if (SkillsByAlias.ContainsKey(skill.Key))
-                    throw new MeException($"Attempted to add skill with alias {alias}, but a skill with that alias already exists.");
-                SkillsByAlias.Add(skill.Key, skill);
+                if (!alias.Equals(skill.Name))
+                {
+                    if (SkillsByAlias.ContainsKey(skill.Key))
+                        throw new MeException(
+                            $"Attempted to add skill with alias {alias}, but a skill with that alias already exists.");
+                    SkillsByAlias.Add(skill.Key, skill);
+                }
             }
         }
 
