@@ -12,7 +12,7 @@ It might be hard to grasp things at first ,especially for a non-programmer, but 
 
 
 #### Contents:
-* [Glossary](glosarry.md)
+* [Glossary](glossary.md)
 * [MicroExpression notes](functions.md)
 * [Explanation of tags](tags.md)
 * [Core](core.md)
