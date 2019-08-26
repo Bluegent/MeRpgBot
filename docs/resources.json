@@ -1,0 +1,18 @@
+[
+	{
+		"key": "HP",
+		"formula": "BASE_HP+VIT*20",
+		"regen":"15+VIT/1000",
+		"interval":"5",
+		"name": "Health",
+		"description": "Your health pool. You die if it drops to 0."
+	},
+	{
+		"key": "MP",
+		"formula": "BASE_MP+INT*10",
+		"regen":"5",
+		"interval":"5",
+		"name": "Mana",
+		"description": "Used to casts spells."
+	}
+]

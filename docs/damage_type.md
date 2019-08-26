@@ -1,7 +1,6 @@
-Damage Types. \
+# Damage Types
 While most aspects of damage types are optional, at least one is required for a functional game as the HARM function takes a damage type as a paramater. \
-
-Struncture explanation: \
+Struncture explanation: 
 ```
 	{
 		"key": "P",
@@ -15,21 +14,26 @@ Struncture explanation: \
 	...
     ]
 ```
-* `"mitigation": "NON_NEG($V-DEF)",` - The formula for modifying damage.
-    * If this line is missing, the full amount of damage will be dealt.
-* ` "dodge":"GET_PROP($TARGET,DEX)/1000",` - Formula to calculate dodge chance or this damage type . Lowest chance taken into account is .1%, amount given is percentage. (EG: 100 means you always dodge)
-* `"crit":"GET_PROP($SOURCE,DEX)/1000",` - Formula to calculate critical chance for this damage type. 
-    *if "dodge" or "crit" are missing, default values are 0.
-* `"crit_multiplier":"3",` - The mutliplier for crit damage.
-    * If this line is missing, default crit multiplier is 2.
-    * Damage is multiplied _BEFORE_ mitigation.
-* In this example case, physical damage is calculated as a flat deduction from DEF, however the value cannot be lower than 0.
-\
+* `"mitigation": "NON_NEG($V-DEF)",` 
+	* __[Formula]__ - How damage is mitingated.
+    * __[Default/Missing]__ - The full amount of damage will be dealt.
+    * __[Keyword]__ `$V` - Represents the amount of damage that would be received before mitigation.
+* ` "dodge":"GET_PROP($TARGET,DEX)/1000",` 
+	* __[Formula]__ - How to calculate dodge chance for this damage type . Lowest chance taken into account is .1%, amount given is percentage. (eg.: 100 means you always dodge)
+	* __[Default/Missing]__ - The damage type cannot be dodged.
+* `"crit":"GET_PROP($SOURCE,DEX)/1000",` - 
+	* __[Formula]__ How to calculate critical chance. Similar to dodge chance.
+    * __[Default/Missing]__ - The damage type cannot deal critical damage.
+* `"crit_multiplier":"3",`
+	* __[Formula]__ The mutliplier for critical damage.
+    * __[Default/Missing]__ Default value is 2 or 200% damage.
+    * __[Note]__ Damage is multiplied _BEFORE_ mitigation.
+* __[Summary]__ Physical damage is calculated as a flat deduction from DEF, however the value cannot be lower than 0.
 
-Minimum example : \
+Minimum example : 
 
 ```
 	{
-		"key": "P",
+		"key": "P"
 	}
 ```
