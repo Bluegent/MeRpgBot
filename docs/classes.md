@@ -1,56 +1,65 @@
+# Classes
 A class defines basic values, starting attributes as well as what skills a character of that class can use.
 
-Header.\
+#### Header
 ```
     {
         "key":"shonen_protag",
         "name":"Shonen protagonist",
         "description":"Generic brand Naruto. Really good at punching things.",
 ```
-Details:
-* Simple details about the class. Read core.md for more info.
+* __[Note]__ Simple details about the class. Read [attributes.md](attributes.md) for more info.
 
-Base Values.\
+#### Base Values
 ```
         "base_values":
         [   
-            {"key":"BASE_DMG","value":"10"},
-            {"key":"BASE_HP","value":"100"},
-            {"key":"BASE_MP","value":"50"},
-            {"key":"BASE_DEF","value":"0"}
+            {"key":"BASE_DMG","value":10},
+            {"key":"BASE_HP","value":100},
+            {"key":"BASE_MP","value":50},
+            {"key":"BASE_DEF","value":0}
         ],
 ```
-Details:
-* How much of every base value defined in core.json this class gets.
-* If a line for a specific key defined there is missing, default value is 0.
-* These values are all numeric. You can use MicroExpression formulas, but that's discouraged.
+* __[Integer]__ How much of every base value defined in [core.json](core.json) this class gets.
+* __[Missing/Default]__ If a line for a specific key defined there is missing, default value is 0. Entire section can be missing.
 
-Base attributes.\
+#### Base attributes
 ```
         "basic_attributes":
         [   
-            {"key":"STR","value":"5"},
-            {"key":"INT","value":"5"},
-            {"key":"AGI","value":"5"},
-            {"key":"VIT","value":"10"}
+            {"key":"STR","value":5},
+            {"key":"INT","value":5},
+            {"key":"AGI","value":5},
+            {"key":"VIT","value":10}
         ],
 ```
 Details:
-* How much of each attribute this class gets at the start.
-* If a line for a specific key defined there is missing, default value is 0.
-* These values are all numeric. You can use MicroExpression formulas, but that's discouraged.
+* __[Integer]__ How much of each attribute this class gets at the start.
+* __[Missing/Default]__ If a line for a specific key defined there is missing, default value is 0. Entire section can be missing.
 
-Skills.\
+
+#### Skills
 ```
+       	"base_attack":"punch",
         "skills":
         [
-            "punch",
             "big_punch",
             "beatdown",
             "powerup"
         ]
     }
 ```
-Details:
-* Keys of skills (from skills.json) that are given to this class.
-* The first one in the list is considered the class' basic attack and will be used for their auto-attack option.
+* `"base_attack":"punch",`
+	* __[String]__	The key of the skill used as the basic attack of this class. Also used for auto attacking.
+* `"skills":[ "big_punch",`
+	* __[String]__ Keys of skills (from skills.json) that are given to this class.
+	* __[Missing/Default]__ The only skills this class will get is the basic attack.
+
+
+Minimum Example:
+```
+    {
+        "key":"shonen_protag",
+		"base_attack":"punch"
+    }
+```
