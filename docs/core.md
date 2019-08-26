@@ -72,6 +72,7 @@ Important Note: `"HP"` is an engine-required resource, it is necessary for the n
             "interval":"5",
 			"name": "Health",
 			"description": "Your health pool. You die if it drops to 0."
+            "start_percentage":"1",
 		},
         ...
     ]
@@ -83,6 +84,7 @@ Details:
     * The value can be negative as well, meaning the resource slowly goes down as time passes.
 * `"interval":"5",` - How often the regeneration happens, in seconds.
     * If this line is missing or the value is 0, the regeneration happens once per second.
+* `"start_percentage":"1",` - How mouch of the resource is present by default. EG: a resource like Health starts at 100%.
 * In the example case, we regenerate 15+ 1000th of vitality every 5 seconds.
 
 

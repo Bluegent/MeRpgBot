@@ -4,16 +4,12 @@ using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
 using RPGEngine.GameInterface;
 using RPGEngine.Language;
+using Newtonsoft.Json.Linq;
+using RPGEngine.Entities;
+using RPGEngine.Game;
 
 namespace EngineTest.GameConfigReader
 {
-    using System;
-
-    using Newtonsoft.Json.Linq;
-
-    using RPGEngine;
-    using RPGEngine.Entities;
-    using RPGEngine.Game;
 
     [TestClass]
     public class SkillReaderTest

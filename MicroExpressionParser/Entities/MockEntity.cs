@@ -3,6 +3,9 @@ using RPGEngine.Parser;
 
 namespace RPGEngine.Entities
 {
+    using System;
+
+    using RPGEngine.GameConfigReader;
 
     public class MockEntity : LevelableEntity
     {
@@ -11,7 +14,11 @@ namespace RPGEngine.Entities
         {
             MeNode max = TreeConverter.Build("VIT*20", engine); ;
             MeNode regen = TreeConverter.Build("0", engine);
-            ResourceTemplate hp = new ResourceTemplate(Entity.HP_KEY,max,regen);
+            ResourceTemplate hp = new ResourceTemplate();
+            hp.Formula = max;
+            hp.RegenFormula = regen;
+            hp.Key = Entity.HP_KEY;
+            hp.RegenInterval = new MeNode(GcConstants.Resources.DEFAULT_INTERVAL);
             return hp;
         }
          
@@ -27,7 +34,11 @@ namespace RPGEngine.Entities
             AddResource(getMockHP(engine));
             MeNode mpNode = TreeConverter.Build("INT*10", engine);
             MeNode mpRegen = TreeConverter.Build("INT/100", engine);
-            ResourceTemplate resTemp = new ResourceTemplate("MP", mpNode, mpRegen);
+            ResourceTemplate resTemp = new ResourceTemplate();
+            resTemp.Formula = mpNode;
+            resTemp.RegenFormula = mpRegen;
+            resTemp.Key = "MP";
+            resTemp.RegenInterval = new MeNode(GcConstants.Resources.DEFAULT_INTERVAL);
             AddResource(resTemp);
 
         }

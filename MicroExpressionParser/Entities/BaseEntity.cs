@@ -93,7 +93,7 @@ namespace RPGEngine.Entities
         {
             foreach (ResourceInstance resIn in ResourceMap.Values)
             {
-                resIn.Regen(deltaTMs);
+                resIn.Regen(Engine.GetTimer().GetNow());
             }
         }
 

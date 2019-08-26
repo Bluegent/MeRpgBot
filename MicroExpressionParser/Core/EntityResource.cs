@@ -4,21 +4,18 @@ using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
-    
+    using RPGEngine.GameConfigReader;
 
-    public class ResourceTemplate
+    public class ResourceTemplate : BaseObject
     {
-        public string Key { get; }
-        public double StartMod { get; }
-        public MeNode Formula { get; }
-        public MeNode RegenFormula { get; }
+        public MeNode StartMod { get; set; }
+        public MeNode Formula { get; set; }
+        public MeNode RegenFormula { get; set; }
+        public MeNode RegenInterval { get; set; }
 
-        public ResourceTemplate(string key, MeNode formula, MeNode regenFormula, double modifier = 1)
+        public ResourceTemplate()
         {
-            Key = key;
-            Formula = formula;
-            RegenFormula = regenFormula;
-            StartMod = modifier;
+            StartMod = new MeNode(GcConstants.Resources.DEFAULT_MODIFIER);
         }
 
         public double ResolveRegen(Entity target)
@@ -33,6 +30,18 @@ namespace RPGEngine.Core
             return entityNode.Resolve().Value.ToDouble();
         }
 
+        public long ResolveInterval(Entity target)
+        {
+            MeNode entityNode = Sanitizer.ReplacePropeties(RegenInterval, target);
+            return entityNode.Resolve().Value.ToLong();
+        }
+
+        public double ResolveModifier(Entity target)
+        {
+            MeNode entityNode = Sanitizer.ReplacePropeties(StartMod, target);
+            return entityNode.Resolve().Value.ToDouble();
+        }
+
     }
 
     public class ResourceInstance : BaseProperty
@@ -41,19 +50,28 @@ namespace RPGEngine.Core
         public Entity Parent { get; }
         public double MaxAmount { get; private set; }
         public double RegenAmount { get; private set; }
+        public long LastRegenTick { get; set; }
+        public long RegenInterval { get; set; }
+        public double Modifier { get; set; }
+
+
 
         public ResourceInstance(ResourceTemplate template, Entity parent)
         {
             Resource = template;
             Parent = parent;
             Refresh();
-            Value = MaxAmount * Resource.StartMod;
+            Value = MaxAmount * Modifier;
+            LastRegenTick = 0;
         }
 
         public void Refresh()
         {
             MaxAmount = Resource.ResolveMaxAmount(Parent);
             RegenAmount = Resource.ResolveRegen(Parent);
+            RegenInterval = Resource.ResolveInterval(Parent);
+            Modifier = Resource.ResolveModifier(Parent);
+
         }
 
         private void Clamp()
@@ -61,10 +79,14 @@ namespace RPGEngine.Core
             Value = Utils.Utility.Clamp(Value, 0, MaxAmount);
         }
 
-        public void Regen(long deltaTMs)
+        public void Regen(long now)
         {
-            Value += RegenAmount * deltaTMs / GameConstants.TickTime;
-            Clamp();
+            if (now - LastRegenTick * GameConstants.TickTime >= RegenInterval)
+            {
+                Value += RegenAmount;
+                Clamp();
+                LastRegenTick = now;
+            }
         }
 
         public bool CanCast(double amount)

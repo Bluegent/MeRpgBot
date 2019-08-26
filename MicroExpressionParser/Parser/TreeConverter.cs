@@ -6,7 +6,7 @@ using RPGEngine.Language;
 
 namespace RPGEngine.Parser
 {
-
+    using System.Globalization;
 
     public static class TreeConverter
     {
@@ -39,7 +39,7 @@ namespace RPGEngine.Parser
                     {
                         //first, try a number
                         double result = 0;
-                        bool success = double.TryParse(node.Token.Value, out result);
+                        bool success = double.TryParse(node.Token.Value,NumberStyles.Any,CultureInfo.InvariantCulture, out result);
                         if (success)
                         {
                             newNode = new MeNode(

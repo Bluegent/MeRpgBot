@@ -9,8 +9,6 @@ using RPGEngine.Utils;
 
 namespace RPGEngine.GameConfigReader
 {
-    using System.Diagnostics;
-
     using RPGEngine.Entities;
 
     public class SkillReader
@@ -36,10 +34,10 @@ namespace RPGEngine.GameConfigReader
             else
             {
                 JObject costObj = json.ToObject<JObject>();
-                
+
                 key = JsonUtils.ValidateJsonEntry(GcConstants.General.KEY,
-                    costObj, 
-                    JTokenType.String, 
+                    costObj,
+                    JTokenType.String,
                     $"No cost key for skill {skill.Name}.")
                     .ToString();
                 amountFormula = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE,
@@ -48,8 +46,8 @@ namespace RPGEngine.GameConfigReader
                         $"No cost amount for skill {skill.Name}.")
                     .ToString();
             }
-           
-            return new SkillCost(key, TreeConverter.Build(amountFormula,Engine));
+
+            return new SkillCost(key, TreeConverter.Build(amountFormula, Engine));
         }
 
         private SkillLevelTemplate LevelFromJson(JObject levelValue, SkillTemplate skill)
@@ -57,7 +55,7 @@ namespace RPGEngine.GameConfigReader
             SkillLevelTemplate levelTemplate = new SkillLevelTemplate();
 
             //get cost
-            levelTemplate.Cost = CostFromJson(levelValue[GcConstants.Skills.COST],skill);
+            levelTemplate.Cost = CostFromJson(levelValue[GcConstants.Skills.COST], skill);
 
             //get needed level, push-back and interrupt because they have default values
             levelTemplate.NeededLevel = JsonUtils.GetValueOrDefault<long>(levelValue, GcConstants.Skills.NEEDED_LEVEL, GcConstants.Skills.DEFAULT_NEEDED_LEVEL);
@@ -151,9 +149,9 @@ namespace RPGEngine.GameConfigReader
                 //validate sub object
                 if (jToken.Type != JTokenType.Object)
                     throw new MeException($"Invalid entry {jToken.ToString()} when parsing skill {result.Name}");
-                JObject levelValue = (JObject)jToken; 
-               
-                result.ByLevel.Add(LevelFromJson(levelValue,result));
+                JObject levelValue = (JObject)jToken;
+
+                result.ByLevel.Add(LevelFromJson(levelValue, result));
             }
             return result;
         }

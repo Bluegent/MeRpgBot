@@ -202,6 +202,7 @@
     <Compile Include="Entities\EntityValues.cs" />
     <Compile Include="Entities\LevelableEntity.cs" />
     <Compile Include="Entities\MockEntity.cs" />
+    <Compile Include="GameConfigReader\ResourceReader.cs" />
     <Compile Include="GameConfigReader\SkillReader.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\GameConstants.cs" />

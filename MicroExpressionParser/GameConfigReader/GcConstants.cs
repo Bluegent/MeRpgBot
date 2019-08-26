@@ -21,7 +21,7 @@ namespace RPGEngine.GameConfigReader
 
         //statuses
 
-        public class Statuses
+        public static class Statuses
         {
             public const string INTERVAL = "interval";
             public const string MAX_STACK = "max_stacks";
@@ -30,7 +30,7 @@ namespace RPGEngine.GameConfigReader
 
 
         //skills
-        public class Skills
+        public static class Skills
         {
             public const string ALIASES = "aliases";
             public const string SKILL_TYPE = "type";
@@ -58,8 +58,20 @@ namespace RPGEngine.GameConfigReader
         }
 
 
+        public static class Resources
+        {
+            public const string REGEN = "regen";
+            public const string INTERVAL = "interval";
+            public const string MODIFIER = "start_percentage";
 
-        public class Defaults
+            public const long DEFAULT_INTERVAL = 1;
+            public const double DEFAULT_MODIFIER = 1;
+
+            public const double DEFAULT_REGEN = 0;
+        }
+
+
+        public static class Defaults
         {
             public const string DESC = "";
         }
