@@ -5,6 +5,7 @@
 	* Must be enclosed between quote marks.
 	* May be substituted for any other type.
 	* In case something is wrong with the formula, the engine will usually give you an error message in the console window.
+	* Multiple functions have to be separated using `;`, like `HARM(...);HARM(...);MOD_VALUE(...)`.
 * __[Missing/Default]__ Indicates that the property is optional and explains what value is taken by default if the property is missing.
 * __[String]__ A string of characters like "aaaaa".
 	* Must be enclosed between quote marks. 
