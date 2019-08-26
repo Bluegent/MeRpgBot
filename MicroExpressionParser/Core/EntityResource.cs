@@ -54,8 +54,6 @@ namespace RPGEngine.Core
         public long RegenInterval { get; set; }
         public double Modifier { get; set; }
 
-
-
         public ResourceInstance(ResourceTemplate template, Entity parent)
         {
             Resource = template;
@@ -63,6 +61,11 @@ namespace RPGEngine.Core
             Refresh();
             Value = MaxAmount * Modifier;
             LastRegenTick = 0;
+        }
+
+        public void Replentish()
+        {
+            Value = MaxAmount * Modifier;
         }
 
         public void Refresh()

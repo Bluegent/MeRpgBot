@@ -4,28 +4,20 @@ using RPGEngine.Cleanup;
 using RPGEngine.Core;
 using RPGEngine.Game;
 using RPGEngine.Language;
-using RPGEngine.Parser;
 
 namespace RPGEngine.Entities
 {
     public class BaseEntity : Entity
     {
-
-        public const string C_HP_KEY = "CHP";
-        public const string M_HP_KEY = "MHP";
-
         public List<AppliedStatus> Statuses;
-
-        public IGameEngine Engine { get; set; }
         public SkillCastData CurrentlyCasting;
 
         public Dictionary<string, SkillInstance> Skills;
 
-        public BaseEntity(IGameEngine engine) : base()
+        public BaseEntity(IGameEngine engine) : base(engine)
         {
             Free = true;
             CurrentlyCasting = null;
-            Engine = engine;
             Statuses = new List<AppliedStatus>();
             Skills = new Dictionary<string, SkillInstance>();
 
@@ -57,6 +49,8 @@ namespace RPGEngine.Entities
         private void SetCurrentCD()
         {
             //set skill's cooldown]
+            if (CurrentlyCasting == null)
+                return;
             MeNode cd = CurrentlyCasting.Skill.Values().Cooldown;
             cd = Sanitizer.ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
             CurrentlyCasting.Skill.CooldownFinishTime = Engine.GetTimer().GetNow() + (long)cd.Resolve().Value.ToDouble() * 1000;
@@ -89,7 +83,7 @@ namespace RPGEngine.Entities
             return false;
         }
 
-        public override void RegenResources(long deltaTMs)
+        public override void RegenResources()
         {
             foreach (ResourceInstance resIn in ResourceMap.Values)
             {
@@ -100,6 +94,22 @@ namespace RPGEngine.Entities
         private void TakeActualDamage(double amount)
         {
             ResourceMap[Entity.HP_KEY].Value -= amount;
+        }
+
+        public override void Die()
+        {
+            ResourceMap[HP_KEY].Value = 0;
+            Cleanse();
+            FinishCasting();
+        }
+
+        public override void Revive()
+        {
+            RefreshProperties();
+            foreach (ResourceInstance res in ResourceMap.Values)
+            {
+                res.Replentish();
+            }
         }
 
         public override double TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
@@ -382,11 +392,19 @@ namespace RPGEngine.Entities
         public override void Update()
         {
             //Template handling
-            RemoveExpiredStatuses();
-            RegenResources(1000);
-            ApplyHealAndHarm();
-            TickCooldownds();
-            TickCurrentCast();
+            if (!IsDead)
+            {
+                RemoveExpiredStatuses();
+                RegenResources();
+                ApplyHealAndHarm();
+                TickCooldownds();
+                TickCurrentCast();
+                CheckDeath();
+            }
+            else
+            {
+                CheckRevive();
+            }
         }
     }
 

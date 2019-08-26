@@ -4,24 +4,64 @@ using System.Collections.Generic;
 
 namespace RPGEngine.Entities
 {
+    using System.Dynamic;
+
+    using RPGEngine.Cleanup;
 
     public abstract class Entity
     {
         public const string HP_KEY = "HP";
-
+        public IGameEngine Engine { get; set; }
         public string Name { get; set; }
         public string Key { get; set; }
         public Dictionary<string, EntityAttribute> Attributes { get; protected set; }
         public Dictionary<string, ResourceInstance> ResourceMap { get; protected set; }
 
+        public MeNode ReviveDuration { get; set; }
+        public long ResolvedReviveDuration { get; set; }
+        public long ReviveTime { get; set; }
 
-        public Entity()
+        public bool IsDead { get; set; }
+
+
+        public Entity(IGameEngine engine)
         {
+            Engine = engine;
             Attributes = new Dictionary<string, EntityAttribute>();
             ResourceMap = new Dictionary<string, ResourceInstance>();
+            ReviveDuration = new MeNode(0);
+        }
+
+        public void Kill()
+        {
+            ResourceMap[HP_KEY].Value = 0;
+        }
+        public abstract void Die();
+        public abstract void Revive();
+
+
+        public void CheckRevive()
+        {
+            if ( IsDead && Engine.GetTimer().GetNow() >= ReviveTime)
+            {
+                Revive();
+                IsDead = false;
+            }
+        }
+
+        public void CheckDeath()
+        {
+            if (!IsDead && ResourceMap[HP_KEY].Value <= 0)
+            {
+                Die();
+                IsDead = true;
+                ReviveTime = Engine.GetTimer().GetNow() + ResolvedReviveDuration * GameConstants.TickTime;
+            }
         }
 
         public bool Free { get; protected set; }
+
+
 
         public abstract double TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
 
@@ -43,7 +83,7 @@ namespace RPGEngine.Entities
 
         public abstract bool HasProperty(string propertyKey);
 
-        public abstract void RegenResources(long deltaTMs);
+        public abstract void RegenResources();
 
 
         public ResourceInstance GetResource(string key)
@@ -67,7 +107,7 @@ namespace RPGEngine.Entities
             ResourceMap.Add(resource.Key,resIn); 
         }
 
-        protected void RefreshProperties()
+        public void RefreshProperties()
         {
             foreach (EntityAttribute atr in Attributes.Values)
             {
@@ -78,6 +118,8 @@ namespace RPGEngine.Entities
             {
                 res.Refresh();
             }
+
+            ResolvedReviveDuration = Sanitizer.ReplacePropeties(ReviveDuration, this).Resolve().Value.ToLong();
         }
 
 
