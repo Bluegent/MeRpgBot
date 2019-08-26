@@ -13,7 +13,7 @@ It might be hard to grasp things at first ,especially for a non-programmer, but 
 
 #### Contents:
 * [Glossary](glossary.md)
-* [MicroExpression notes](functions.md)
+* [MicroExpression notes](micro_expression.md)
 * [Explanation of tags](tags.md)
 * [Core](core.md)
 * [Attributes](attributes.md)
@@ -23,7 +23,7 @@ It might be hard to grasp things at first ,especially for a non-programmer, but 
 * [Statuses](statuses.md)
 * [Skills](skills.md)
 * [Classes](classes.md)
-* [Bosses](bosses.md)
+* [Bosses]( TBD )
 
 
 
