@@ -20,7 +20,7 @@ namespace RPGEngine.Discord
         private DiscordSocketClient client;
         private Action ready;
 
-        private IGameEngine engine;
+        public IGameEngine Engine { get; set; }
 
         private DiscordConfig config;
 
@@ -58,10 +58,6 @@ namespace RPGEngine.Discord
 
             await client.LoginAsync(TokenType.Bot, config.Token);
             await client.StartAsync();
-        }
-        public void SetEngine(IGameEngine eng)
-        {
-            engine = eng;
         }
 
         SocketGuild GetServer()
@@ -103,7 +99,7 @@ namespace RPGEngine.Discord
                 if (message.Content[0].ToString() == config.Prefix)
                 {
                     Command command=Command.FromMessage((long)message.Author.Id,message.Content.Substring(1, message.Content.Length - 1));
-                    engine.EnqueueCommand(command);
+                    Engine.EnqueueCommand(command);
                 }
             }
             return Task.CompletedTask;

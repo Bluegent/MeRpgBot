@@ -12,6 +12,7 @@ namespace RPGEngine.Game
         public Dictionary<string,SkillTemplate> Skills { get; }
         public Dictionary<string, double> Attributes { get; }
         public Dictionary<string, double> BasicValues { get; }
+        public SkillTemplate BaseAttack { get; set; }
 
         public ClassTemplate()
         {

@@ -9,9 +9,11 @@ namespace RPGEngine.Game
         public ClassTemplate Class { get; }
         public Dictionary<string, double> Stats;
         public LevelableEntity Entity { get; }
+        public long Id { get; set; }
 
-        public Player(IGameEngine engine, ClassTemplate myClass)
+        public Player(IGameEngine engine, long id, ClassTemplate myClass)
         {
+            Id = id;
             Stats = new Dictionary<string, double>();
             Class = myClass;
             Dictionary<string, SkillInstance> skills = new Dictionary<string, SkillInstance>();

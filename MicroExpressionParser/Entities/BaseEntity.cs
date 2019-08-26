@@ -11,6 +11,14 @@ namespace RPGEngine.Entities
     {
         public List<AppliedStatus> Statuses;
         public SkillCastData CurrentlyCasting;
+        public Entity CurrentTarget { get; private set; }
+        public bool HasTarget
+        {
+            get
+            {
+                return (CurrentTarget != null && !CurrentTarget.IsDead);
+            }
+        }
 
         public Dictionary<string, SkillInstance> Skills;
 
@@ -142,6 +150,7 @@ namespace RPGEngine.Entities
             SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
             if (skill == null)
             {
+                Engine.Log().Log($"You do not have a skill with the key {skillKey}");
                 //log that you don't have that skill
                 return false;
             }
@@ -174,9 +183,12 @@ namespace RPGEngine.Entities
             Free = false;
 
             CurrentlyCasting = new SkillCastData(skill, target, this, Engine.GetTimer().GetNow());
-
+            Engine.Log().Log($"{Name} is casting {skill.Skill.Name}");
             return true;
         }
+
+
+        
 
         public override BaseProperty GetProperty(string key)
         {
@@ -387,6 +399,23 @@ namespace RPGEngine.Entities
                     }
                 }
             }
+        }
+
+        public void Target(Entity target)
+        {
+            if (!Free)
+            {
+                Engine.Log().Log("Casting...");
+                return;
+            }
+
+            if (IsDead)
+            {
+                Engine.Log().Log("You are dead.");
+                return;
+            }
+            CurrentTarget = target;
+            Engine.Log().Log($"{Name} is now targeting {target.Name}.");
         }
 
         public override void Update()

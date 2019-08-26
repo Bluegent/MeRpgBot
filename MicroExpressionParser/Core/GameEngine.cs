@@ -20,6 +20,9 @@ namespace RPGEngine.Core
     public interface IGameEngine
     {
         SkillManager GetSkillManager();
+        PlayerManager GetPlayerManager();
+
+        ClassManager GetClassManager();
         void AddPlayer(Entity entity);
 
         void AddEnemy(Entity entity);
@@ -42,6 +45,7 @@ namespace RPGEngine.Core
         long GetDefaultSkillThreat();
 
         void EnqueueCommand(Command command);
+
         void Update();
 
     }
@@ -53,6 +57,8 @@ namespace RPGEngine.Core
         private List<long> ExpValues;
         public long SkillThreat { get; set; }
         private SkillManager _skillManager;
+        private PlayerManager _playerManager;
+        private ClassManager _classManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
@@ -67,6 +73,10 @@ namespace RPGEngine.Core
             Definer.Instance().Init(this);
             SkillThreat = 5;
             _skillManager = new SkillManager();
+            _playerManager = new PlayerManager();
+            _playerManager.Engine = this;
+            _classManager = new ClassManager();
+            _classManager.Engine = this;
             ExpValues = new List<long>();
             _log = log;
             Players = new Dictionary<string, Entity>();
@@ -90,6 +100,16 @@ namespace RPGEngine.Core
         public SkillManager GetSkillManager()
         {
             return _skillManager;
+        }
+
+        public PlayerManager GetPlayerManager()
+        {
+            return _playerManager;
+        }
+
+        public ClassManager GetClassManager()
+        {
+            return _classManager;
         }
 
         public void AddPlayer(Entity entity)
@@ -192,14 +212,13 @@ namespace RPGEngine.Core
                     ExpValues.Add((long)Math.Floor(sanitized.Resolve().Value.ToDouble()));
                 }
             }
-            return ExpValues[level]; ;
+            return ExpValues[level];
         }
 
         public long GetDefaultSkillThreat()
         {
             return SkillThreat;
         }
-
         public void Update()
         {
             PollCommands();
@@ -214,8 +233,8 @@ namespace RPGEngine.Core
                 bool result = commandsQueue.TryDequeue(out command);
                 if (result)
                 {
+                    CommandManager.Instance.Execute(command);
                     //handle command
-                    Console.WriteLine(command);
                 }
             }
         }
