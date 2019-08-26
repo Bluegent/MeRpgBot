@@ -50,7 +50,7 @@ namespace RPGEngine.GameConfigReader
             public const string DEFAULT_COST_VALUE = "1";
             public const string DEFAULT_INTERVAL_VALUE = "0";
 
-            public const long DEFAULT_NEEDED_LEVEL = 1;
+            public const long DEFAULT_NEEDED_LEVEL = 0;
             public const bool DEFAULT_INTERRUPT = true;
             public const bool DEFAULT_PUSHBACK = true;
 

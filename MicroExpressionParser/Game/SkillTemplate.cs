@@ -37,7 +37,7 @@ namespace RPGEngine.Game
         public MeNode PushBack { get; set; }
         public SkillCost Cost { get; set; }
         public MeNode Interruptible { get; set; }
-        public MeNode NeededLevel { get; set; }
+        public long NeededLevel { get; set; }
         public MeNode SkillThreat { get; set; }
 
         public SkillLevelTemplate()

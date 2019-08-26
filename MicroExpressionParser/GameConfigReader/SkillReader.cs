@@ -60,7 +60,7 @@ namespace RPGEngine.GameConfigReader
             levelTemplate.Cost = CostFromJson(levelValue[GcConstants.Skills.COST],skill);
 
             //get needed level, push-back and interrupt because they have default values
-            levelTemplate.NeededLevel = new MeNode(JsonUtils.GetValueOrDefault<long>(levelValue, GcConstants.Skills.NEEDED_LEVEL, GcConstants.Skills.DEFAULT_NEEDED_LEVEL));
+            levelTemplate.NeededLevel = JsonUtils.GetValueOrDefault<long>(levelValue, GcConstants.Skills.NEEDED_LEVEL, GcConstants.Skills.DEFAULT_NEEDED_LEVEL);
             levelTemplate.PushBack = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.PUSH_BACK, GcConstants.Skills.DEFAULT_PUSHBACK));
             levelTemplate.Interruptible = new MeNode(JsonUtils.GetValueOrDefault(levelValue, GcConstants.Skills.INTERRUPT, GcConstants.Skills.DEFAULT_INTERRUPT));
 
