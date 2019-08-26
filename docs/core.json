@@ -1,4 +1,4 @@
-{
+{	
 	"base_values": [
 		"BASE_DMG",
 		"BASE_HP",
@@ -7,110 +7,13 @@
 		"BASE_MDEF",
 		"BASE_ATT_SPEED"
 	],
-	"attributes": [{
-			"key": "STR",
-			"name": "Strength",
-			"description": "Boosts physical abilities."
-		},
-		{
-			"key": "INT",
-			"name": "Intellect",
-			"description": "Boosts magical abilities."
-		},
-		{
-			"key": "AGI",
-			"name": "Agility",
-			"description": "Boosts crit and dodge chances.."
-		},
-		{
-			"key": "VIT",
-			"name": "Vitality",
-			"description": "Boosts health."
-		}
-	],
-    "level_values":
-    {
-        "points_per_level":"1",
-        "start_exp":"500",
-        "exp_formula":"$PREV * 1.1 +20*2^(LEVEL/5)"
-    },
-	"compound_stats": [
-        {
-			"key": "DODGE",
-			"formula": "1+DEX/2000",
-			"name": "Physical Defense",
-			"description": "Chance to avoid an enemy attack."
-		},
-        {
-			"key": "DEF",
-			"formula": "BASE_DEF+STR/4",
-			"name": "Physical Defense",
-			"description": "Helps you avoid physical damage."
-		},
-		{
-			"key": "MDEF",
-			"formula": "BASE_MDEF+INT/4",
-			"name": "Magic Defense",
-			"description": "Helps you avoid magic damage."
-		},
-		{
-			"key": "ATT_SPEED",
-			"formula": "BASE_MDEF+INT/4",
-			"name": "Attack Speed",
-			"description": "How fast your normal attack is casted when auto attacking."
-		},
-		{
-			"key":"THREAT",
-			"formula":"1",
-			"name":"Thread Multiplier",
-			"description":"Modifies the amount of threat generated when using skills."
-		}
-	],
-
-	"entity_resource": [{
-			"key": "HP",
-			"formula": "BASE_HP+VIT*20",
-            "regen":"15+VIT/1000",
-            "interval":"5",
-			"name": "Health",
-			"description": "Your health pool. You die if it drops to 0."
-		},
-		{
-			"key": "MP",
-			"formula": "BASE_MP+INT*10",
-            "regen":"5",
-            "interval":"5",
-			"name": "Mana",
-			"description": "Used to casts spells."
-		}
-	],
-
-	"damage_types": [{
-            "key": "P",
-			"mitigation": "NON_NEG($V-GET_PROP($T,DEF))",
-            "dodge":"GET_PROP($T,DEX)/1000",
-            "crit":"GET_PROP($SOURCE,DEX)/1000",
-			"name": "Physical",
-			"description": "Physical damage, mitigated by a target's DEF attribute."
-		},
-		{
-            "key": "M",
-			"mitigation": "NON_NEG($V-GET_PROP($T,MDEF))",
-            "crit":"10",
-            "crit_multiplier":"3",
-			"name": "Magic",
-			"description": "Magical damage, mitigated by a target's MDEF attribute."
-		},
-		{
-            "key": "T",
-			"name": "True Damage",
-			"description": "The damage train has no breaks."
-		}
-	],
     "misc_config":
     {
         "revive_time":"1800",
         "revive_modifier":"0.5",
-		"skill_threat":"5"
-    }
+		"skill_threat":"5",
+        "attribute_points_per_level":"1",
+        "start_exp":"500",
+        "exp_formula":"$PREV * 1.1 +20*2^(LEVEL/5)"
+    },
 }

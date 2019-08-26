@@ -61,58 +61,7 @@ Details:
 * `"formula": "BASE_DEF+STR/4",` - the formula based on which the stat is calculated, in a MicroExpression format. For more info, read Functions.md
     * STR,BASE_DEF - Here we use keys defined previously, these will be resolved the amount of the attribute or base value the entity has when calculating the total value of the stat.
     * In our current case, the DEF stat is calculated as base defence + a quarter of the entity's strength attribute.
-    
-Resources
-While the name is a bit misleading, these are the resources used for using skills, casting spells and so on. Some examples would be mana, stamina, rage and so on.
-Important Note: `"HP"` is an engine-required resource, it is necessary for the normal functioning of RPGBot.  While HP itself needs to be present, the formula for calculating it is up to you.
-```	"entity_resource": [{
-			"key": "HP",
-			"formula": "BASE_HP+VIT*20",
-            "regen":"15+VIT/1000",
-            "interval":"5",
-			"name": "Health",
-			"description": "Your health pool. You die if it drops to 0."
-            "start_percentage":"1",
-		},
-        ...
-    ]
-```
-Details:
-* `"formula": "BASE_HP+VIT*20",` - Formula for calculating the _maximum_ value of this resource.
-* `"regen":"15+VIT/1000",` - Formula for calculating how much of this resource regenerates every interval.
-    * If this line is missing, the resource does not regenerate by itself.
-    * The value can be negative as well, meaning the resource slowly goes down as time passes.
-* `"interval":"5",` - How often the regeneration happens, in seconds.
-    * If this line is missing or the value is 0, the regeneration happens once per second.
-* `"start_percentage":"1",` - How mouch of the resource is present by default. EG: a resource like Health starts at 100%.
-* In the example case, we regenerate 15+ 1000th of vitality every 5 seconds.
-
-
-Damage Types.
-All of these are optional but if you don't have at least one I don't know how your game will work.
-```
-	"damage_types": [{
-            "key": "P",
-			"mitigation": "NON_NEG($V-GET_PROP($TARGET,DEF))",
-            "dodge":"GET_PROP($T,DEX)/1000",
-            "crit":"GET_PROP($S,DEX)/1000",
-            "crit_multiplier":"3",
-			"name": "Physical",
-			"description": "Physical damage, mitigated by a target's DEF attribute."
-		},
-        ...
-    ]
-```
-Details:
-* `"mitigation": "NON_NEG($V-DEF)",` - The formula for modifying damage.
-    * If this line is missing, the full amount of damage will be dealt.
-* ` "dodge":"GET_PROP($TARGET,DEX)/1000",` - Formula to calculate dodge chance or this damage type . Lowest chance taken into account is .1%, amount given is percentage. (EG: 100 means you always dodge)
-* `"crit":"GET_PROP($SOURCE,DEX)/1000",` - Formula to calculate critical chance for this damage type. 
-    *if "dodge" or "crit" are missing, default values are 0.
-* `"crit_multiplier":"3",` - The mutliplier for crit damage.
-    * If this line is missing, default crit multiplier is 2.
-    * Damage is multiplied _BEFORE_ mitigation.
-* In this example case, physical damage is calculated as a flat deduction from DEF, however the value cannot be lower than 0.
+   
 
 
 Other configuration items.
