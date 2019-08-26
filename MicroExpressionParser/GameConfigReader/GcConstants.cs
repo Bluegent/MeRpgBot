@@ -70,6 +70,13 @@ namespace RPGEngine.GameConfigReader
             public const double DEFAULT_REGEN = 0;
         }
 
+        public static class Classes
+        {
+            public const string BASE_VALUES = "base_values";
+            public const string BASIC_ATTRIBUTES = "basic_attributes";
+            public const string SKILLS = "skills";
+            public const string BASE_ATTACK = "base_attack";
+        }
 
         public static class Defaults
         {
