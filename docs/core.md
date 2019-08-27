@@ -1,31 +1,15 @@
 # Core
-The core module is mostly used to defined the attributes, statistics and generally the numbers that are used by the game.
-    
-# Base values
-Each row contains the key that the engine will use to identify this specific value in formulas. The names can contain anything except special characters reserved for formulas (see [glosarry.md](glosarry.md)).
-The values themselves are defined by the class of the entity or the boss type.
-```
-	"base_values": [
-		"BASE_DMG",
-		"BASE_HP",
-		"BASE_MP"
-	],
-```
-* `"BASE_DMG",`
-	* __[String]__ Key used to identify this base value. 
+The core module is mostly used to define configuration values for the engine.
 
-
-# Other configuration items
 ```
-	"misc_config":
-    {
-        "revive_time":"1800",
-		"skill_threat":5,
-        "attribute_points_per_level":1,
-        "start_exp":500,
-        "exp_formula":"$PREV * 1.1 +50*2^($LEVEL/5)"
-    },
-    ...
+{
+  "revive_time":"1800",
+  "skill_threat":5,
+  "attribute_points_per_level":1,
+  "start_exp":500,
+  "exp_formula":"$PREV * 1.1 +50*2^($LEVEL/5)",
+  "max_level":100
+}
    
 ```
 * `"revive_time":"1800",` 
@@ -42,3 +26,7 @@ The values themselves are defined by the class of the entity or the boss type.
 	* __[Keyword]__ `$PREV` - Experience necessary for the previous level.
 	* __[Keyword]__ `$LEVEL` - Current player level.
 	* __[Summary]__ Assuming our player is level 10, and it took 1000 experience to get from level 9 to 10, then to get from level 10 to 11, they would need `1000 * 1.1 + 50 * 2^2 = 1300` experience points.
+* "max_level":100
+	* __[Integer]__ Maximum level.
+	* __[Missing/Default]__ No maximum level, players can keep leveling forever. Technical limit is actually around 2 billions. Equivalent to `"max_level":0`.
+	* __[Note]__ If the value is negative, that means leveling is disabled.

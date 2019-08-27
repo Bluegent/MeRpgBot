@@ -16,6 +16,7 @@ It might be hard to grasp things at first, especially for a non-programmer, but 
 * [MicroExpression notes](micro_expression.md)
 * [Explanation of tags](tags.md)
 * [Core](core.md)
+* [Base Values](base_values.md)
 * [Attributes](attributes.md)
 * [Stats](stats.md)
 * [Resources](resources.md)

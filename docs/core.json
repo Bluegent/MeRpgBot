@@ -1,19 +1,8 @@
 {	
-	"base_values": [
-		"BASE_DMG",
-		"BASE_HP",
-		"BASE_MP",
-		"BASE_DEF",
-		"BASE_MDEF",
-		"BASE_ATT_SPEED"
-	],
-    "misc_config":
-    {
-        "revive_time":"1800",
-        "revive_modifier":"0.5",
-		"skill_threat":"5",
-        "attribute_points_per_level":"1",
-        "start_exp":"500",
-        "exp_formula":"$PREV * 1.1 +50*2^($LEVEL/5)"
-    },
+    "revive_time":"1800",
+    "revive_modifier":"0.5",
+    "skill_threat":"5",
+    "attribute_points_per_level":"1",
+    "start_exp":"500",
+    "exp_formula":"$PREV * 1.1 +50*2^($LEVEL/5)"
 }

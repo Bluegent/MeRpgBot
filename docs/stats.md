@@ -3,16 +3,14 @@
 Numeric values based on other values. \
 Check [Attributes](attributes.md) for additional info.
 
-
 ```
-	{
-      "key": "DEF",
-      "formula": "BASE_DEF+STR/4",
-      "name": "Physical Defense",
-      "description": "Helps you avoid physical damage."
+    {
+        "key": "DEF",
+        "formula": "BASE_DEF+STR/4",
+        "name": "Physical Defense",
+        "description": "Helps you avoid physical damage."
     },
-    ...
-
+...
 ```  
 Details:      
 * `"formula": "BASE_DEF+STR/4",`
@@ -22,9 +20,9 @@ Details:
 Minimum example:
 
 ```
-	{
-      "key": "DEF",
-      "formula": "BASE_DEF+STR/4",
+    {
+        "key": "DEF",
+        "formula": "BASE_DEF+STR/4",
     }
 ```  
    

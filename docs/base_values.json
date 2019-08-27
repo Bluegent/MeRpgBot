@@ -1,0 +1,8 @@
+[
+    {"key":"BASE_DMG" ,"name":"Base Damage", "description":"Base amount of damage"},
+    {"key":"BASE_HP"},
+    {"key":"BASE_MP"},
+    {"key":"BASE_DEF"},
+    {"key":"BASE_MDEF"},
+    {"key":"BASE_ATT_SPEED"}
+]

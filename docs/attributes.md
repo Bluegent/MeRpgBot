@@ -11,7 +11,6 @@ You can add anything you want as an attribute, just be careful with the `key` pr
     },
     ...
 ```
-Details:
 * `"key": "STR",`
 	* __[String]__ A unique string that will be used to look up this attribute in scripts
 * `"name": "Strength",` 
