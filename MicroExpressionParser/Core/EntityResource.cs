@@ -50,7 +50,7 @@ namespace RPGEngine.Core
         public Entity Parent { get; }
         public double MaxAmount { get; private set; }
         public double RegenAmount { get; private set; }
-        public long LastRegenTick { get; set; }
+        public long NextRegenTick { get; set; }
         public long RegenInterval { get; set; }
         public double Modifier { get; set; }
 
@@ -60,7 +60,7 @@ namespace RPGEngine.Core
             Parent = parent;
             Refresh();
             Value = MaxAmount * Modifier;
-            LastRegenTick = 0;
+            NextRegenTick = 0;
         }
 
         public void Replentish()
@@ -84,11 +84,11 @@ namespace RPGEngine.Core
 
         public void Regen(long now)
         {
-            if (now - LastRegenTick * GameConstants.TickTime >= RegenInterval)
+            if (NextRegenTick == 0 || now <= NextRegenTick)
             {
                 Value += RegenAmount;
                 Clamp();
-                LastRegenTick = now;
+                NextRegenTick = now + RegenInterval * GameConstants.TickTime;
             }
         }
 
