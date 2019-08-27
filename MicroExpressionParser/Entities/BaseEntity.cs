@@ -383,7 +383,11 @@ namespace RPGEngine.Entities
                     MeNode[] toResolve = CurrentlyCasting.Skill.Formulas;
                     foreach (MeNode node in toResolve)
                     {
-                        Sanitizer.ReplaceTargetAndSource(node, this, CurrentlyCasting.Target).Resolve();
+
+                        MeNode sanitized = Sanitizer.ReplaceTargetAndSource(node, this, CurrentlyCasting.Target);
+                        string unsanitized = node.ToString();
+                        string debug = sanitized.ToString();
+                        sanitized.Resolve();
                     }
 
                     FinishCasting();

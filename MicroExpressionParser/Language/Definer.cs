@@ -190,7 +190,7 @@ namespace RPGEngine.Language
             AddOperator(LConstants.ASSIGN_OP, -1, true, (values, op) =>
                {
                    op.ValidateParameters(values.Length);
-                   string key = values[0].ToString();
+                   string key = values[0].ToMeString();
                    MeVariable leftSide = Definer.Instance().Engine.GetVariable(key);
                    MeVariable rightSide = values[1];
                    if (rightSide.Type == VariableType.String)
@@ -211,7 +211,7 @@ namespace RPGEngine.Language
             AddOperator(LConstants.PROP_OP, 20, true, (values, op) =>
                   {
                   op.ValidateParameters(values.Length);
-                  string key = values[1].ToString();
+                  string key = values[1].ToMeString();
                   MeVariable var = values[0];
                   switch (var.Type)
                   {
@@ -357,7 +357,7 @@ namespace RPGEngine.Language
                 {
                     func.ValidateParameters(values.Length);
                     Entity entity = values[0].ToEntity();
-                    string prop = values[1].ToString();
+                    string prop = values[1].ToMeString();
                     return new MeVariable() {Value = new Property(entity, prop), Type = VariableType.Property};
                     ;
                 }, 2);
@@ -403,7 +403,7 @@ namespace RPGEngine.Language
                     func.ValidateParameters(values.Length);
                     Entity caster = values[0].ToEntity();
                     Entity target = values[1].ToEntity();
-                    string skillKey = values[2].ToString();
+                    string skillKey = values[2].ToMeString();
                     caster.Cast(target, skillKey);
                     return null;
 
@@ -413,7 +413,7 @@ namespace RPGEngine.Language
                {
                    //MOD_VALUE(stat,Amount)
                    func.ValidateParameters(values.Length);
-                   string stat = values[0].ToString();
+                   string stat = values[0].ToMeString();
                    double amount = values[1].ToDouble();
                    StatModifier mod = new StatModifier() { Amount = amount, StatKey = stat };
                    return new MeVariable { Type = VariableType.StatModifier, Value = mod };
@@ -425,7 +425,7 @@ namespace RPGEngine.Language
                    func.ValidateParameters(values.Length);
                    MeVariable[] targets = values[0].ToArray();
                    Entity source = values[1].ToEntity();
-                   StatusTemplate effect = Definer.Instance().Engine.GetStatusByKey(values[2].ToString());
+                   StatusTemplate effect = Definer.Instance().Engine.GetStatusByKey(values[2].ToMeString());
                    double duration = values[3].ToDouble();
                    double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
                    func.ValidateParameters(values.Length);
@@ -437,7 +437,7 @@ namespace RPGEngine.Language
                 (values, func) =>
             {
                 func.ValidateParameters(values.Length);
-                string key = values[0].ToString();
+                string key = values[0].ToMeString();
                 return Definer.Instance().Engine.GetVariable(key); ;
             },1);
 
@@ -446,7 +446,7 @@ namespace RPGEngine.Language
                 {
                     func.ValidateParameters(values.Length);
                     Entity entity = values[0].ToEntity();
-                    string msg = values[1].ToString();
+                    string msg = values[1].ToMeString();
                     Engine.Log().LogSay(entity,msg);
                     return null;
                 }, 2);

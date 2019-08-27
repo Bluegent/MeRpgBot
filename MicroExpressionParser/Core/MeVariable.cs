@@ -1,4 +1,5 @@
-﻿using RPGEngine.Game;
+﻿using System.Globalization;
+using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
@@ -57,7 +58,7 @@ namespace RPGEngine.Core
                     return ToOperator().Key;
 
                 case VariableType.String:
-                    return ToString();
+                    return ToMeString();
 
                 case VariableType.Entity:
                     return ToEntity().Key;
@@ -88,7 +89,7 @@ namespace RPGEngine.Core
         protected void ValidateType(VariableType type)
         {
             if (Type != type)
-                throw new MeException($"Exception when converting variable of type {Type} to {type}.");
+                throw new MeException($"Exception when converting variable of type {Type}({GetString()}) to {type}.");
         }
 
         public long ToLong()
@@ -148,7 +149,7 @@ namespace RPGEngine.Core
             return (EntityAttribute)Value;
         }
 
-        public new string ToString()
+        public string ToMeString()
         {
             ValidateType(VariableType.String);
             return (string)Value;
@@ -187,6 +188,44 @@ namespace RPGEngine.Core
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            switch (Type)
+            {
+                case VariableType.Invalid:
+                    break;
+                case VariableType.Function:
+                    return $"func:{ToFunction().Key}";
+                case VariableType.NumericValue:
+                    return ToDouble().ToString(CultureInfo.InvariantCulture);
+                case VariableType.Entity:
+                    return $"entity:{ToEntity().Name}";
+                case VariableType.EntityProperty:
+                    return $"prop:{ToEntityProperty().Value}";
+                case VariableType.Operator:
+                    return $"op:{ToOperator().Key}";
+                case VariableType.DamageType:
+                    return $"dmgT:{ToDamageType().Key}";
+                case VariableType.Array:
+                    return "[]";
+                case VariableType.String:
+                    return ToMeString();
+                case VariableType.Boolean:
+                    return ToBoolean().ToString();
+                case VariableType.Status:
+                    return $"status:{ToDamageType().Key}";
+                case VariableType.StatModifier:
+                    return $"mod:{ToModifier().StatKey}";
+                case VariableType.PlaceHolder:
+                    return $"$:{ToPlaceholder()}";
+                case VariableType.Property:
+                    return $"prop:{ToProperty().Value}";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return "";
         }
     }
 

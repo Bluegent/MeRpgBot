@@ -6,6 +6,7 @@ using RPGEngine.GameInterface;
 using RPGEngine.Parser;
 using RPGEngine.Entities;
 using RPGEngine.Cleanup;
+using System;
 
 namespace EngineTest.Core
 {
@@ -404,6 +405,10 @@ namespace EngineTest.Core
             BaseEntity mob = new MockEntity(Engine);
             double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - _testPlayer.GetProperty("STR").Value*10 - _testPlayer.GetProperty(BASE_VALUE).Value;
             _testPlayer.Cast(mob, _skillUsingStat.Key);
+            foreach (MeNode node in _skillUsingStat.ByLevel[0].Formulas)
+            {
+                Console.WriteLine(node.ToString()); 
+            }
             MockTimer timer = (MockTimer)Engine.GetTimer();
             timer.ForceTick();
             _testPlayer.Update();

@@ -67,6 +67,15 @@
             result.LoadBase(json);
 
             AddBaseValueVector(GcConstants.Classes.BASE_VALUES, json, result, result.BasicValues);
+            foreach (string baseV in result.BasicValues.Keys)
+            {
+                if (!Engine.GetPropertyManager().HasBaseValue(baseV))
+                {
+                    throw new MeException($"Class {result.Name} references unknown base value {baseV}.");
+                }
+
+            }
+
             foreach (BaseObject baseValue in Engine.GetPropertyManager().BaseValues.Values)
             {
                 if (!result.BasicValues.ContainsKey(baseValue.Key))
@@ -75,7 +84,17 @@
                 }
             }
 
+
+
             AddBaseValueVector(GcConstants.Classes.BASIC_ATTRIBUTES, json, result, result.Attributes);
+            foreach (string baseV in result.Attributes.Keys)
+            {
+                if (!Engine.GetPropertyManager().HasAttribute(baseV))
+                {
+                    throw new MeException($"Class {result.Name} references unknown attribute {baseV}.");
+                }
+
+            }
             foreach (BaseObject attribute in Engine.GetPropertyManager().Attributes.Values)
             {
                 if (!result.Attributes.ContainsKey(attribute.Key))

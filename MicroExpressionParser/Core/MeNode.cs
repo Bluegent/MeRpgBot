@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 
 namespace RPGEngine.Core
@@ -20,6 +21,25 @@ namespace RPGEngine.Core
         public MeNode Resolve()
         {
             return TreeResolver.Resolve(this);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(Value.ToString());
+            if (Leaves.Count != 0)
+            {
+                builder.Append("(");
+                foreach (MeNode node in Leaves)
+                {
+                    builder.Append(node.ToString());
+                    builder.Append(", ");
+                }
+
+                builder.Remove(builder.Length - 2, 2);
+                builder.Append(")");
+            }
+            return builder.ToString();
         }
     }
 }

@@ -87,6 +87,7 @@ namespace RPGEngine.Cleanup
             {
                 node = new MeNode(tree.Value);
             }
+            node.Leaves.Clear();
             node.Leaves.AddRange(leaves);
             return node;
         }
@@ -218,7 +219,7 @@ namespace RPGEngine.Cleanup
             foreach (MeNode leaf in tree.Leaves)
                 leaves.Add(ReplacePropeties(leaf,origin));
             MeNode node = null;
-            if (tree.Value.Type == VariableType.String && origin.HasProperty(tree.Value.ToString()))
+            if (tree.Value.Type == VariableType.String && origin.HasProperty(tree.Value.ToMeString()))
             {
                 MeNode[] nodeLeaves = new MeNode[2]{new MeNode(origin), tree};
                 Operator prop = Definer.Instance().Operators[LConstants.PROP_OP];

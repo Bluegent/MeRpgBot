@@ -90,7 +90,7 @@ namespace EngineTest
             MeNode result = Sanitizer.ReplacePropeties(TreeConverter.Build(expression, Engine),MockPlayer);
 
             Assert.AreEqual(LConstants.PROP_OP, result.Leaves[1].Value.GetString());
-            Assert.AreEqual(expected,result.Leaves[1].Leaves[1].Value.ToString());
+            Assert.AreEqual(expected,result.Leaves[1].Leaves[1].Value.ToMeString());
 
             MeNode resolved = result.Resolve();
             
