@@ -22,8 +22,12 @@ namespace EngineTest.GameConfigReader
         public static void StartUp(TestContext ctx)
         {
             Definer.Instance().Engine = Engine;
-            DamageType trueDamage = new DamageType(Engine, "T",null,null,null,null);
+            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
             Engine.AddDamageType(trueDamage);
+            ResourceTemplate mana = new ResourceTemplate();
+            mana.Key = "MP";
+            Engine.GetPropertyManager().AddResource(mana);
+
         }
 
         [TestMethod]
@@ -44,19 +48,19 @@ namespace EngineTest.GameConfigReader
             SkillTemplate skill = Reader.FromJson(json);
 
             Assert.AreEqual(skill.Key, key);
-            Assert.AreEqual(1,skill.Aliases.Count);
-            Assert.AreEqual(key,skill.Aliases[0]);
-            
-            Assert.AreEqual(skill.Type,SkillType.Cast);
-            Assert.AreEqual(1,skill.ByLevel.Count);
+            Assert.AreEqual(1, skill.Aliases.Count);
+            Assert.AreEqual(key, skill.Aliases[0]);
+
+            Assert.AreEqual(skill.Type, SkillType.Cast);
+            Assert.AreEqual(1, skill.ByLevel.Count);
 
 
             SkillLevelTemplate levelTemplate = skill.ByLevel[0];
-            Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_COST_VALUE),levelTemplate.Cost.Amount.Value.ToDouble());
-            Assert.AreEqual(Entity.HP_KEY,levelTemplate.Cost.ResourceKey);
-            Assert.AreEqual(GcConstants.Skills.DEFAULT_NEEDED_LEVEL,levelTemplate.NeededLevel);
+            Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_COST_VALUE), levelTemplate.Cost.Amount.Value.ToDouble());
+            Assert.AreEqual(Entity.HP_KEY, levelTemplate.Cost.ResourceKey);
+            Assert.AreEqual(GcConstants.Skills.DEFAULT_NEEDED_LEVEL, levelTemplate.NeededLevel);
 
-            Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_CAST_DURATION),levelTemplate.Duration.Value.ToDouble());
+            Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_CAST_DURATION), levelTemplate.Duration.Value.ToDouble());
             Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_COOLDOWN), levelTemplate.Cooldown.Value.ToDouble());
 
             Assert.AreEqual(Engine.GetDefaultSkillThreat(), levelTemplate.SkillThreat.Value.ToDouble());
@@ -64,7 +68,7 @@ namespace EngineTest.GameConfigReader
             Assert.AreEqual(GcConstants.Skills.DEFAULT_INTERRUPT, levelTemplate.PushBack.Value.ToBoolean());
             Assert.AreEqual(GcConstants.Skills.DEFAULT_PUSHBACK, levelTemplate.Interruptible.Value.ToBoolean());
 
-            Assert.AreEqual(1,levelTemplate.Formulas.Count);
+            Assert.AreEqual(1, levelTemplate.Formulas.Count);
             Assert.IsNotNull(levelTemplate.Formulas[0]);
         }
 
@@ -79,38 +83,38 @@ namespace EngineTest.GameConfigReader
 
             JObject json = new JObject();
             json.Add(new JProperty(GcConstants.General.KEY, key));
-            json.Add( new JProperty(GcConstants.Skills.ALIASES, new JArray( new[]{testAlias,testAlias2})));
-            json.Add(GcConstants.Skills.SKILL_TYPE,SkillType.Channel.ToString().ToLower());
+            json.Add(new JProperty(GcConstants.Skills.ALIASES, new JArray(new[] { testAlias, testAlias2 })));
+            json.Add(GcConstants.Skills.SKILL_TYPE, SkillType.Channel.ToString().ToLower());
 
             JArray valuesByLevel = new JArray();
             JObject valueByLevel1 = new JObject();
 
-            valueByLevel1.Add(GcConstants.General.FORMULA,$"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},T,10)");
-            valueByLevel1.Add(GcConstants.Skills.CAST_DURATION,"10*10");
+            valueByLevel1.Add(GcConstants.General.FORMULA, $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},T,10)");
+            valueByLevel1.Add(GcConstants.Skills.CAST_DURATION, "10*10");
 
             JObject cost = new JObject();
-            cost.Add(GcConstants.General.KEY,"MP");
-            cost.Add(GcConstants.General.VALUE,100);
+            cost.Add(GcConstants.General.KEY, "MP");
+            cost.Add(GcConstants.General.VALUE, 100);
 
-            valueByLevel1.Add(GcConstants.Skills.COST,cost);
+            valueByLevel1.Add(GcConstants.Skills.COST, cost);
             long level = 10;
             valueByLevel1.Add(GcConstants.Skills.NEEDED_LEVEL, level);
 
             long cd = 25;
-            valueByLevel1.Add(GcConstants.Skills.COOLDOWN,cd);
+            valueByLevel1.Add(GcConstants.Skills.COOLDOWN, cd);
 
             long interval = 15;
-            valueByLevel1.Add(GcConstants.Skills.INTERVAL,interval);
+            valueByLevel1.Add(GcConstants.Skills.INTERVAL, interval);
 
             long threat = 3;
-            valueByLevel1.Add(GcConstants.Skills.THREAT,threat);
+            valueByLevel1.Add(GcConstants.Skills.THREAT, threat);
 
-            valueByLevel1.Add(GcConstants.Skills.INTERRUPT,false);
+            valueByLevel1.Add(GcConstants.Skills.INTERRUPT, false);
             valueByLevel1.Add(GcConstants.Skills.PUSH_BACK, false);
 
 
             valuesByLevel.Add(valueByLevel1);
-            json.Add(new JProperty(GcConstants.Skills.VALUES_BY_LEVEL,valuesByLevel));
+            json.Add(new JProperty(GcConstants.Skills.VALUES_BY_LEVEL, valuesByLevel));
 
             SkillTemplate skill = Reader.FromJson(json);
 
@@ -122,24 +126,24 @@ namespace EngineTest.GameConfigReader
 
             Assert.AreEqual(skill.Key, key);
 
-            Assert.AreEqual(skill.Type,SkillType.Channel);
-            Assert.AreEqual(1,skill.ByLevel.Count);
+            Assert.AreEqual(skill.Type, SkillType.Channel);
+            Assert.AreEqual(1, skill.ByLevel.Count);
 
 
 
-            Assert.AreEqual(100,levelTemplate.Cost.Amount.Value.ToDouble());
-            Assert.AreEqual("MP",levelTemplate.Cost.ResourceKey);
+            Assert.AreEqual(100, levelTemplate.Cost.Amount.Value.ToDouble());
+            Assert.AreEqual("MP", levelTemplate.Cost.ResourceKey);
 
-            Assert.AreEqual(100,levelTemplate.Duration.Resolve().Value.ToDouble());
+            Assert.AreEqual(100, levelTemplate.Duration.Resolve().Value.ToDouble());
             Assert.AreEqual(cd, levelTemplate.Cooldown.Value.ToDouble());
-            Assert.AreEqual(level,levelTemplate.NeededLevel);
+            Assert.AreEqual(level, levelTemplate.NeededLevel);
 
             Assert.AreEqual(threat, levelTemplate.SkillThreat.Value.ToDouble());
-            Assert.AreEqual(interval,levelTemplate.Interval.Value.ToDouble());
+            Assert.AreEqual(interval, levelTemplate.Interval.Value.ToDouble());
             Assert.AreEqual(false, levelTemplate.PushBack.Value.ToBoolean());
             Assert.AreEqual(false, levelTemplate.Interruptible.Value.ToBoolean());
 
-            Assert.AreEqual(1,levelTemplate.Formulas.Count);
+            Assert.AreEqual(1, levelTemplate.Formulas.Count);
             Assert.IsNotNull(levelTemplate.Formulas[0]);
         }
     }

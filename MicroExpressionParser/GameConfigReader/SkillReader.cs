@@ -40,6 +40,11 @@ namespace RPGEngine.GameConfigReader
                     JTokenType.String,
                     $"No cost key for skill {skill.Name}.")
                     .ToString();
+                if (!Engine.GetPropertyManager().HasResource(key))
+                {
+                    throw new MeException($"Unknown resource {key} used by skill {skill.Name}.");
+                }
+
                 amountFormula = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE,
                         costObj,
                         JTokenType.String,

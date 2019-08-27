@@ -22,6 +22,7 @@ namespace RPGEngine.Core
         SkillManager GetSkillManager();
         PlayerManager GetPlayerManager();
 
+        PropertyManager GetPropertyManager();
         ClassManager GetClassManager();
         void AddPlayer(Entity entity);
 
@@ -59,6 +60,8 @@ namespace RPGEngine.Core
         private SkillManager _skillManager;
         private PlayerManager _playerManager;
         private ClassManager _classManager;
+
+        private PropertyManager _propertyManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, DamageType> DamageTypes { get; }
@@ -68,9 +71,13 @@ namespace RPGEngine.Core
         public ITimer Timer { get; set; }
         private Dictionary<string,StatusTemplate> statuses;
         public MeNode ExpFormula { get; set; }
+
+
         public GameEngine(ILogHelper log)
         {
             Definer.Instance().Init(this);
+            _propertyManager = new PropertyManager();
+            
             SkillThreat = 5;
             _skillManager = new SkillManager();
             _playerManager = new PlayerManager();
@@ -105,6 +112,11 @@ namespace RPGEngine.Core
         public PlayerManager GetPlayerManager()
         {
             return _playerManager;
+        }
+
+        public PropertyManager GetPropertyManager()
+        {
+            return _propertyManager;
         }
 
         public ClassManager GetClassManager()
