@@ -194,6 +194,7 @@
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="Core\ClassManager.cs" />
     <Compile Include="Core\CommandManager.cs" />
+    <Compile Include="Core\CoreManager.cs" />
     <Compile Include="Core\DamageType.cs" />
     <Compile Include="Core\EntityResource.cs" />
     <Compile Include="Core\PlayerManager.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="GameConfigReader\ResourceReader.cs" />
     <Compile Include="GameConfigReader\SkillReader.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
+    <Compile Include="Game\CoreReader.cs" />
     <Compile Include="Game\GameConstants.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\SkillTemplate.cs" />

@@ -10,7 +10,7 @@ namespace RPGEngine.Utils
         public static JToken ValidateJsonEntry(string key, JObject json, JTokenType type, string failureMessage = null)
         {
             string msg = failureMessage ?? $"Entry {key} is missing or is the wrong tpye( expected: {type})";
-            if (!json.ContainsKey(key) && json[key].Type != JTokenType.String && json[key].Type != type)
+            if (!json.ContainsKey(key) || (json[key].Type != JTokenType.String && json[key].Type != type))
             {
                 throw new MeException(msg);
             }

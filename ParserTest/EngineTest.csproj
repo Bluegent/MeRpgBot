@@ -79,6 +79,7 @@
     <Compile Include="GameConfigReader\StatusReaderTest.cs" />
     <Compile Include="GameConfigReader\BaseObjectTest.cs" />
     <Compile Include="GameConfigReader\ClassReaderTest.cs" />
+    <Compile Include="GameConfigReader\CoreReaderTest.cs" />
     <Compile Include="Leveling\LevelingTest.cs" />
     <Compile Include="Parser\ConverterTest.cs" />
     <Compile Include="Parser\FunctionalTreeConverterTest.cs" />

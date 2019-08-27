@@ -17,8 +17,10 @@ The core module is mostly used to define configuration values for the engine.
     * __[Time]__ Format is also supported ("1000h10m10s").
 * `"skill_threat":"5",`
 	* __[Integer]__ How much threat a skill will generate by default. See [__boss.md__](boss.md) for more information.
+    * __[Missing/Default]__ All skills generate 1 point of threat by default, unless the skill specifies otherwise.
 * `"attribute_points_per_level":1,`
 	* __[Integer]__ How many attribute points are given each time a player levels up. See [__intro.md__](intro.md) for more information.
+    * __{Missing/Default}__ One attribute point is given every level up.
 *  `"start_exp":500,`
 	* __[Integer]__ How much experience is needed to get to level 2. See [__intro.md__](intro.md) for more 
 * `"exp_formula":"$PREV * 1.1 +50*2^($LEVEL/5)"` 

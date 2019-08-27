@@ -79,6 +79,21 @@ namespace RPGEngine.GameConfigReader
             public const string RESOURCES = "resources";
         }
 
+
+        public static class Core
+        {
+            public const string REVIVE_TIME = "revive_time";
+            public const string DEFAULT_SKILL_THREAT = "skill_threat";
+            public const string ATTRIBUTES_PER_LEVEL = "attribute_points_per_level";
+            public const string LEVEL_ONE_EXP = "start_exp";
+            public const string EXP_FORMULA = "exp_formula";
+
+            public const string MAX_LEVEL = "max_level";
+            public const long DEFAULT_THREAT = 1;
+            public const long DEFAULT_ATTRIBUTE_POINTS = 1;
+            public const long DEFAULT_MAX_LEVEL = 1;
+        }
+
         public static class Defaults
         {
             public const string DESC = "";
