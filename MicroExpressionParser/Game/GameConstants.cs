@@ -30,5 +30,7 @@ namespace RPGEngine.Game
         public const string TARGET_COMMAND = "target";
 
         public const string ATTACK_COMMAND = "attack";
+
+        public const string CAST_COMMAND = "cast";
     }
 }

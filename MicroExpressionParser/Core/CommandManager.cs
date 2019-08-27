@@ -40,6 +40,7 @@ namespace RPGEngine.Core
             RegisterCommand(CommandsConstants.CREATE_COMMAND,CreateCommand);
             RegisterCommand(CommandsConstants.TARGET_COMMAND,TargetCommand);
             RegisterCommand(CommandsConstants.ATTACK_COMMAND,AttackCommand);
+            RegisterCommand(CommandsConstants.CAST_COMMAND, CastCommand);
         }
 
 
@@ -118,6 +119,35 @@ namespace RPGEngine.Core
                 currentPlayer.Class.BaseAttack.Key);
         }
 
+        private void CastCommand(Command command)
+        {
+            if (command.Args.Length < 1)
+            {
+                Engine.Log().Log("Usage of cast command: cast <skill_alias> [optional] target");
+                return;
+            }
+            
+
+            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            {
+                Engine.Log().Log("You do not have a character. Create one.");
+                return;
+            }
+
+
+
+            string skillAlias = command.Args[0];
+
+            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
+
+            if (!currentPlayer.Entity.HasTarget)
+            {
+                Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                return;
+            }
+
+            currentPlayer.Entity.Cast(currentPlayer.Entity.CurrentTarget, skillAlias);
+        }
 
         public void Execute(Command command)
         {
