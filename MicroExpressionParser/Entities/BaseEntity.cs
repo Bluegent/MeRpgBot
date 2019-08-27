@@ -90,6 +90,9 @@ namespace RPGEngine.Entities
                 return true;
             if (Stats.ContainsKey(propertyKey))
                 return true;
+            if (BaseValueMap.ContainsKey(propertyKey))
+                return true;
+
             return false;
         }
 
@@ -115,7 +118,7 @@ namespace RPGEngine.Entities
 
         public override void Revive()
         {
-            if(!IsDead)
+            if (!IsDead)
                 return;
             RefreshProperties();
             foreach (ResourceInstance res in ResourceMap.Values)
@@ -192,7 +195,7 @@ namespace RPGEngine.Entities
         }
 
 
-        
+
 
         public override BaseProperty GetProperty(string key)
         {
@@ -202,6 +205,8 @@ namespace RPGEngine.Entities
                 return ResourceMap[key];
             if (Stats.ContainsKey(key))
                 return Stats[key];
+            if (BaseValueMap.ContainsKey(key))
+                return BaseValueMap[key];
             return null;
         }
 

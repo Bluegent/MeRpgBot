@@ -1,6 +1,7 @@
 ﻿using RPGEngine.Core;
 using RPGEngine.Game;
 using System.Collections.Generic;
+using RPGEngine.GameConfigReader;
 
 namespace RPGEngine.Entities
 {
@@ -16,7 +17,7 @@ namespace RPGEngine.Entities
         public string Key { get; set; }
         public Dictionary<string, EntityAttribute> Attributes { get; protected set; }
         public Dictionary<string, ResourceInstance> ResourceMap { get; protected set; }
-
+        public Dictionary<string, BaseProperty> BaseValueMap { get; protected set; }
         public Dictionary<string,StatInstance> Stats { get; protected set; }
 
         public MeNode ReviveDuration { get; set; }
@@ -32,6 +33,7 @@ namespace RPGEngine.Entities
             Attributes = new Dictionary<string, EntityAttribute>();
             ResourceMap = new Dictionary<string, ResourceInstance>();
             Stats = new Dictionary<string, StatInstance>();
+            BaseValueMap = new Dictionary<string, BaseProperty>();
             ReviveDuration = new MeNode(0);
         }
 
@@ -98,6 +100,13 @@ namespace RPGEngine.Entities
         public StatInstance GetStat(string key)
         {
             return Stats.ContainsKey(key) ? Stats[key] : null;
+        }
+
+        public void AddBaseValue(string key, double value)
+        {
+            if (BaseValueMap.ContainsKey(key))
+                return;
+            BaseValueMap.Add(key, new BaseProperty() {Value =  value});
         }
 
         public void AddStat(StatInstance stat)
