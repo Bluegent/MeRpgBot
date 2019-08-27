@@ -157,31 +157,31 @@ namespace RPGEngine.Entities
             SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
             if (skill == null)
             {
-                Engine.Log().Log($"You do not have a skill with the key {skillKey}");
+                Engine.Log().Log($"You do not have a skill with the key \"{skillKey}\".");
                 //log that you don't have that skill
                 return false;
             }
             if (skill.CooldownFinishTime != 0)
             {
-                //log that it's on cooldown
+                Engine.Log().Log($"Skill {skill.Skill.Name} is on cooldown for {skill.CooldownFinishTime} seconds.");
                 return false;
             }
             if (!Free)
             {
-                //log that player is busy
+                Engine.Log().Log($"You are busy.");
                 return false;
             }
 
             if (!ResourceMap.ContainsKey(skill.Values().Cost.ResourceKey))
             {
-                //log that the player doesn't have the right resource
+                Engine.Log().Log($"You don't have the necessary resource \"{skill.Values().Cost.ResourceKey}\".");
                 return false;
             }
             ResourceInstance res = ResourceMap[skill.Values().Cost.ResourceKey];
             double amount = Sanitizer.ReplacePropeties(skill.Values().Cost.Amount, this).Resolve().Value.ToDouble();
             if (!res.CanCast(amount))
             {
-                //log that the player doesn't have enough of resource
+                Engine.Log().Log($"Not enough {skill.Values().Cost.ResourceKey}.");
                 return false;
             }
 
