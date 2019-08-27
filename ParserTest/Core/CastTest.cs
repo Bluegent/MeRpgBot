@@ -21,8 +21,8 @@ namespace EngineTest.Core
         private static SkillTemplate _testChannelSkill;
         private static SkillTemplate _costly;
         private static SkillTemplate _unpushable;
-
-
+        private static SkillTemplate _skillUsingStat;
+        private static string BASE_VALUE = "TEST_BASE";
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
@@ -102,6 +102,20 @@ namespace EngineTest.Core
             costlyTemplate.PushBack = TreeConverter.Build("true", Engine);
             costlyTemplate.Cost = notFree;
             _costly.ByLevel.Add(costlyTemplate);
+
+
+            _skillUsingStat = new SkillTemplate();
+            _skillUsingStat.Type = SkillType.Cast;
+            _skillUsingStat.Key = "WITH_STAT";
+            SkillLevelTemplate withStaTemplate = new SkillLevelTemplate();
+            withStaTemplate.Cooldown = TreeConverter.Build("0", Engine);
+            withStaTemplate.Duration = TreeConverter.Build("0", Engine);
+            withStaTemplate.Interruptible = TreeConverter.Build("true", Engine);
+            withStaTemplate.Formulas.Add(TreeConverter.Build($"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.SourceKeyword},{trueDamage.Key},10*{LConstants.SourceKeyword}{LConstants.PROP_OP}STR+{LConstants.GET_PROP_F}({LConstants.SourceKeyword},{BASE_VALUE}))", Engine));
+            withStaTemplate.PushBack = TreeConverter.Build("true", Engine);
+            withStaTemplate.Cost = nullCost;
+
+            _skillUsingStat.ByLevel.Add(withStaTemplate);
         }
 
         [TestInitialize]
@@ -112,6 +126,8 @@ namespace EngineTest.Core
             _testPlayer.Skills.Add(_testChannelSkill.Key, new SkillInstance() { Skill = _testChannelSkill, SkillLevel = 0 });
             _testPlayer.Skills.Add(_unpushable.Key, new SkillInstance() { SkillLevel = 0, Skill = _unpushable });
             _testPlayer.Skills.Add(_costly.Key,new SkillInstance() {SkillLevel =  0, Skill = _costly});
+            _testPlayer.Skills.Add(_skillUsingStat.Key, new SkillInstance(){SkillLevel = 0, Skill =  _skillUsingStat});
+            _testPlayer.AddBaseValue(BASE_VALUE,10);
             Engine.AddPlayer(_testPlayer);
         }
 
@@ -379,6 +395,21 @@ namespace EngineTest.Core
             bool secondRes = _testPlayer.Cast(mob, _costly.Key);
 
             Assert.AreEqual(false, secondRes);
+        }
+
+        [TestMethod]
+        public void CastTestSkillUsingStats()
+        {
+
+            BaseEntity mob = new MockEntity(Engine);
+            double expectedMobHealth = mob.GetProperty(Entity.HP_KEY).Value - _testPlayer.GetProperty("STR").Value*10 - _testPlayer.GetProperty(BASE_VALUE).Value;
+            _testPlayer.Cast(mob, _skillUsingStat.Key);
+            MockTimer timer = (MockTimer)Engine.GetTimer();
+            timer.ForceTick();
+            _testPlayer.Update();
+            Assert.AreEqual(expectedMobHealth, mob.GetProperty(Entity.HP_KEY).Value);
+
+
         }
     }
 }
