@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace RPGEngine.Utils
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     public class FileReader
     {
         public static string Read(string path)
@@ -21,6 +24,11 @@ namespace RPGEngine.Utils
                 }
             }
             return null;
+        }
+
+        public static JObject FromPath(string path)
+        {
+            return JsonConvert.DeserializeObject<JObject>(Read(path));
         }
     }
 }
