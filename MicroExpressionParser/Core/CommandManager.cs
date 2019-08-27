@@ -149,6 +149,104 @@ namespace RPGEngine.Core
             currentPlayer.Entity.Cast(currentPlayer.Entity.CurrentTarget, skillAlias);
         }
 
+        private void DuelCommand(Command command)
+        {
+            if (command.Args.Length < 1)
+            {
+                Engine.Log().Log("Usage of cast command: duel challenge <target>\nduel accept \nduel reject \nduel exit");
+                return;
+            }
+
+            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            {
+                Engine.Log().Log("You do not have a character. Create one.");
+                return;
+            }
+            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
+
+            string option = command.Args[0];
+            switch (option)
+            {
+                case "challenge":
+                    {
+                        if (command.Args.Length < 2)
+                        {
+                            Engine.Log().Log("Please chose a target to challenge (duel challenge <target>)");
+                            return;
+                        }
+
+                        string targetName = command.Args[0];
+
+                        Player target = Engine.GetPlayerManager().FindPlayerByName(targetName);
+                        if (target == null)
+                        {
+                            Engine.Log().Log($"A player with name {targetName} does not exist.");
+                            return;
+                        }
+
+                        if (target.Entity.IsDead)
+                        {
+                            Engine.Log().Log($"{targetName} is dead. You can't challenge a dead player.");
+                            return;
+                        }
+                        
+                        target.AddChallenge(currentPlayer);
+
+                    }
+                    break;
+                case "accept":
+                    {
+                        if (currentPlayer.Dueling)
+                        {
+                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are currently in a duel.");
+                            return;
+                        }
+                        if (currentPlayer.DuelRequests.Count != 0)
+                        {
+                            currentPlayer.AcceptDuel();
+                        }
+                        else
+                        {
+                            Engine.Log().Log($"{currentPlayer.Entity.Name} you do not have duel requests.");
+                        }
+                    }
+                    break;
+                case "reject":
+                    {
+                        if (currentPlayer.Dueling)
+                        {
+                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are currently in a duel.");
+                            return;
+                        }
+                        if (currentPlayer.DuelRequests.Count != 0)
+                        {
+                            currentPlayer.AcceptDuel();
+                        }
+                        else
+                        {
+                            Engine.Log().Log($"{currentPlayer.Entity.Name} you do not have duel requests.");
+                        }
+                    }
+                    break;
+                case "exit":
+                    {
+                        if (currentPlayer.Dueling)
+                        {
+                            currentPlayer.EndDuel();
+                            return;
+                        }
+                        else
+                        {
+                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are not in a duel at the moment.");
+                        }
+                    }
+                    break;
+
+            }
+
+
+        }
+
         public void Execute(Command command)
         {
             if (_commands.ContainsKey(command.Name))

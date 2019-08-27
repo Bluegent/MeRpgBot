@@ -197,6 +197,8 @@
     <Compile Include="Core\CoreManager.cs" />
     <Compile Include="Core\DamageTypeTemplate.cs" />
     <Compile Include="Core\DamageTypeManager.cs" />
+    <Compile Include="Core\DuelInstance.cs" />
+    <Compile Include="Core\DuelManager.cs" />
     <Compile Include="Core\EntityResource.cs" />
     <Compile Include="Core\PlayerManager.cs" />
     <Compile Include="Core\PropertyManager.cs" />

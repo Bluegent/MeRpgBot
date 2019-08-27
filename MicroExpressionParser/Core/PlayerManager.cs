@@ -69,5 +69,13 @@
 
             return false;
         }
+
+        public void Update()
+        {
+            foreach (Player player in _players.Values)
+            {
+                player.Entity.Update();
+            }
+        }
     }
 }

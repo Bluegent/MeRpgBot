@@ -29,6 +29,10 @@ namespace RPGEngine.Core
         StatusManager GetStatusManager();
 
         CoreManager GetCoreManager();
+
+
+        DuelManager GetDuelManager();
+
         void AddPlayer(Entity entity);
 
         void AddEnemy(Entity entity);
@@ -69,6 +73,8 @@ namespace RPGEngine.Core
         private StatusManager _statusManager;
 
         private PropertyManager _propertyManager;
+
+        private DuelManager _duelManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
         private Dictionary<string, MeVariable> DeclaredVariables;
@@ -101,6 +107,8 @@ namespace RPGEngine.Core
             _playerManager.Engine = this;
             _classManager = new ClassManager();
             _classManager.Engine = this;
+            _duelManager = new DuelManager();
+            _duelManager.Engine = this;
             ExpValues = new List<long>();
             _log = log;
             Players = new Dictionary<string, Entity>();
@@ -152,6 +160,11 @@ namespace RPGEngine.Core
         public CoreManager GetCoreManager()
         {
             return _coreManager;
+        }
+
+        public DuelManager GetDuelManager()
+        {
+            return _duelManager;
         }
 
         public void AddPlayer(Entity entity)
@@ -276,6 +289,8 @@ namespace RPGEngine.Core
         public void Update()
         {
             PollCommands();
+            _playerManager.Update();
+            _duelManager.Update();
             //Update entities
             
         }

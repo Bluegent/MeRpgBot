@@ -115,6 +115,8 @@ namespace RPGEngine.Entities
 
         public override void Revive()
         {
+            if(!IsDead)
+                return;
             RefreshProperties();
             foreach (ResourceInstance res in ResourceMap.Values)
             {

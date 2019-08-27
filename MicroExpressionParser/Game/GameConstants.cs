@@ -32,5 +32,7 @@ namespace RPGEngine.Game
         public const string ATTACK_COMMAND = "attack";
 
         public const string CAST_COMMAND = "cast";
+
+        public const string DUEL_COMMAND = "duel";
     }
 }
