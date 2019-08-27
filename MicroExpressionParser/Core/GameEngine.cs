@@ -257,7 +257,10 @@ namespace RPGEngine.Core
             _propertyManager.LoadAttributesFromPath(Utility.GetFilePath(ConfigFiles.ATTRIBUTES));
             _propertyManager.LoadBaseValuesFromPath(Utility.GetFilePath(ConfigFiles.BASE_VALUES));
             _propertyManager.LoadResourcesFromPath(Utility.GetFilePath(ConfigFiles.RESOURCES));
+
             _coreManager = CoreManager.FromFilePath(Utility.GetFilePath(ConfigFiles.CORE),this);
+
+            _damageTypeManager.LoadDamageTypesFromfile(Utility.GetFilePath(ConfigFiles.DAMAGE_TYPES));
 
             _skillManager.LoadSkillsFromFile(Utility.GetFilePath(ConfigFiles.SKILLS));
         }

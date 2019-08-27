@@ -5,6 +5,7 @@
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.Game;
+    using RPGEngine.GameConfigReader;
     using RPGEngine.Utils;
 
     public class DamageTypeManager
@@ -39,7 +40,7 @@
 
         public void LoadDamageTypesFromfile(string path)
         {
-            //DamageTypeReader reader = new DamageTypeReader(Engine);
+            DamageTypeReader reader = new DamageTypeReader(Engine);
             JArray damageTypeJson = FileReader.FromPath<JArray>(path);
 
             foreach (JToken damageValue in damageTypeJson)
@@ -49,8 +50,8 @@
                     throw new MeException($"Expected a json object \"{path}\"at  \"{damageValue}\".");
                 }
 
-                //DamageTypeTemplate newSkill = reader.FromJson(damageValue.ToObject<JObject>());
-                //AddDamageType(newSkill);
+                DamageTypeTemplate newSkill = reader.FromJson(damageValue.ToObject<JObject>());
+                AddDamageType(newSkill);
             }
         }
     }
