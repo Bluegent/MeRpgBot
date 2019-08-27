@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
 
     using Newtonsoft.Json.Linq;
@@ -18,104 +19,63 @@
         {
             Engine = engine;
         }
-
-        KeyValuePair<string,double> ValueFromJson(JToken json)
-        {
-            JToken key = json[GcConstants.General.KEY];
-            if (key == null)
-            {
-                throw new MeException($"Key {GcConstants.General.KEY} does not exist.");
-            }
-
-            string resultKey = key.Value<string>();
-            JToken value = json[GcConstants.General.VALUE];
-            if (value == null)
-            {
-                throw new MeException($"Key {GcConstants.General.VALUE} does not exist.");
-            }
-
-            double resultValue = value.Value<double>();
-            return new KeyValuePair<string, double>(resultKey,resultValue);
-        }
-
-        KeyValuePair<string,SkillTemplate> SkillFromJson(JToken json)
+        Tuple<string, SkillTemplate> SkillFromJson(JToken json, ClassTemplate result)
         {
             string skillKey = json.Value<string>();
-            return new KeyValuePair<string, SkillTemplate>(skillKey,Engine.GetSkillManager().GetSkill(skillKey));
+            SkillTemplate skill = Engine.GetSkillManager().GetSkill(skillKey);
+            if (skill == null)
+            {
+                throw new MeException($"Class {result.Name} references skill with key {skillKey}, which does not exist.");
+            }
+            return new Tuple<string, SkillTemplate>(skillKey, skill);
         }
+
+
+        public void AddBaseValueVector(string key, JObject json, ClassTemplate result, Dictionary<string, double> values)
+        {
+            JToken[] baseValueArray = JsonUtils.ValidateJsonEntry(
+                key,
+                json,
+                JTokenType.Array, $"Key {GcConstants.Classes.BASE_VALUES} does not exist for class {result.Name}.").ToArray();
+            foreach (JToken baseValue in baseValueArray)
+            {
+                if (baseValue.Type != JTokenType.Object)
+                {
+                    throw new MeException($"Unknown key-value pair for basic attributes in class {result.Name}.");
+                }
+
+                JObject baseValueObject = (JObject)baseValue;
+                JToken objectKey = JsonUtils.ValidateJsonEntry(GcConstants.General.KEY, baseValueObject, JTokenType.String, $"Unknown key for basic attributes in class {result.Name}.");
+                JToken value = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE, baseValueObject, JTokenType.String, $"Unknown value for basic attributes {objectKey} in class {result.Name}."); ;
+                values.Add(objectKey.ToString(), double.Parse(value.ToString(),NumberStyles.Any,CultureInfo.InvariantCulture));
+            }
+        }
+
 
         public ClassTemplate FromJson(JObject json)
         {
             ClassTemplate result = new ClassTemplate();
             result.LoadBase(json);
-            JToken baseValues = json[GcConstants.Classes.BASE_VALUES];
-            if (baseValues != null)
-            {
-                JToken[] baseValuesArray = baseValues.ToArray();
-                foreach (JToken value in baseValuesArray)
-                {
-                    KeyValuePair<string, double> bValue = ValueFromJson(value);
-                    result.BasicValues.Add(bValue.Key, bValue.Value);
-                }
-            }
-            else
-            {
-                throw new MeException($"Key {GcConstants.Classes.BASE_VALUES} does not exist.");
-            }
 
-            JToken basicAttributes = json[GcConstants.Classes.BASIC_ATTRIBUTES];
-            if (basicAttributes != null)
-            {
-                JToken[] baseAttributesArray = basicAttributes.ToArray();
-                foreach (JToken value in baseAttributesArray)
-                {
-                    KeyValuePair<string,double> aValue = ValueFromJson(value);
-                    result.Attributes.Add(aValue.Key, aValue.Value);
-                }
-            }
-            else
-            {
-                throw new MeException($"Key {GcConstants.Classes.BASIC_ATTRIBUTES} does not exist.");
-            }
-            JToken skills = json[GcConstants.Classes.SKILLS];
+            AddBaseValueVector(GcConstants.Classes.BASE_VALUES, json, result, result.BasicValues);
+            AddBaseValueVector(GcConstants.Classes.BASIC_ATTRIBUTES, json, result, result.Attributes);
+
+            JToken[] skills = JsonUtils.GetValueOrDefault<JToken[]>(json, GcConstants.Classes.SKILLS, null);
             if (skills != null)
             {
-                JToken[] skillsArray = skills.ToArray();
-                foreach (JToken value in skillsArray)
+                foreach (JToken value in skills)
                 {
-                    KeyValuePair<string,SkillTemplate> skill = SkillFromJson(value);
-                    if (skill.Value != null)
-                    {
-                        result.Skills.Add(skill.Key, skill.Value);
-                    }
-                    else
-                    {
-                        throw new MeException($"A skill with key {skill.Key} does not exist.");
-                    }
+                    Tuple<string, SkillTemplate> skill = SkillFromJson(value, result);
+                    result.Skills.Add(skill.Item1, skill.Item2);
+
                 }
             }
-            else
-            {
-                throw new MeException($"Key {GcConstants.Classes.SKILLS} does not exist.");
-            }
-            
-            JToken baseAttack = json[GcConstants.Classes.BASE_ATTACK];
-            if (baseAttack == null)
-            {
-                throw new MeException($"Key {GcConstants.Classes.BASE_ATTACK} does not exist.");
-            }
-            else
-            {
-                KeyValuePair<string,SkillTemplate> skill = SkillFromJson(baseAttack);
-                if (skill.Value != null)
-                {
-                    result.BaseAttack = skill.Value;
-                }
-                else
-                {
-                    throw new MeException($"A skill with key {skill.Key} does not exist.");
-                }
-            }
+
+            JToken baseAttack = JsonUtils.ValidateJsonEntry(GcConstants.Classes.BASE_ATTACK, json, JTokenType.String, $"Class {result.Name} does not contain a {GcConstants.Classes.BASE_ATTACK} entry.");
+            Tuple<string, SkillTemplate> baseSkill = SkillFromJson(baseAttack, result);
+            result.BaseAttack = baseSkill.Item2;
+
+
             return result;
         }
     }
