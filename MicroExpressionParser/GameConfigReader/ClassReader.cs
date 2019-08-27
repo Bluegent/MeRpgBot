@@ -56,7 +56,7 @@
 
                 JObject baseValueObject = (JObject)baseValue;
                 JToken objectKey = JsonUtils.ValidateJsonEntry(GcConstants.General.KEY, baseValueObject, JTokenType.String, $"Unknown key for basic attributes in class {result.Name}.");
-                JToken value = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE, baseValueObject, JTokenType.String, $"Unknown value for basic attributes {objectKey} in class {result.Name}."); ;
+                JToken value = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE, baseValueObject, JTokenType.Integer, $"Unknown value for basic attributes {objectKey} in class {result.Name}."); ;
                 values.Add(objectKey.ToString(), double.Parse(value.ToString(),NumberStyles.Any,CultureInfo.InvariantCulture));
             }
         }

@@ -269,6 +269,8 @@ namespace RPGEngine.Core
             _statusManager.LoadStatusesFromFile(Utility.GetFilePath(ConfigFiles.STATUSES));
 
             _skillManager.LoadSkillsFromFile(Utility.GetFilePath(ConfigFiles.SKILLS));
+
+            _classManager.LoadClassesFromFile(Utility.GetFilePath(ConfigFiles.CLASSES));
         }
 
         public void Update()

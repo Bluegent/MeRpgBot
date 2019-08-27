@@ -62,7 +62,7 @@ namespace RPGEngine.Core
 
             string name = command.Args[0];
             string classKey = command.Args[1];
-            if (!Engine.GetClassManager().ClassExists(classKey))
+            if (!Engine.GetClassManager().HasClass(classKey))
             {
                 Engine.Log().Log($"The class {classKey} does not exist.");
                 return;
