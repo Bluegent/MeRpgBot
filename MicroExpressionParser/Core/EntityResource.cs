@@ -1,4 +1,5 @@
-﻿using RPGEngine.Cleanup;
+﻿using Discord;
+using RPGEngine.Cleanup;
 using RPGEngine.Entities;
 using RPGEngine.Game;
 
@@ -84,7 +85,7 @@ namespace RPGEngine.Core
 
         public void Regen(long now)
         {
-            if (NextRegenTick == 0 || now <= NextRegenTick)
+            if (NextRegenTick == 0 || now >= NextRegenTick)
             {
                 Value += RegenAmount;
                 Clamp();

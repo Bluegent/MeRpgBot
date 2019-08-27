@@ -55,8 +55,8 @@ namespace RPGEngine.GameInterface
         {
             ResourceInstance hp = target.GetResource(Entity.HP_KEY);
             string hpBar = Utils.Utility.getBar(hp.Value,hp.MaxAmount);
-            string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"and resisted {resisted}";
-            string msg = $"{target.Name} {hpBar} took {amount} {resist} {typeTemplate.Name} damage.";
+            string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"({resisted} resisted)";
+            string msg = $"{target.Name} {hpBar} [-{amount}{resist} {typeTemplate.Name} damage]";
             LogBlock(msg);
         }
 
