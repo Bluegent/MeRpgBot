@@ -2,7 +2,10 @@
 {
     using System.Collections.Generic;
 
+    using Newtonsoft.Json.Linq;
+
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Utils;
 
     public class PropertyManager
     {
@@ -56,6 +59,23 @@
         public ResourceTemplate GetResource(string key)
         {
             return Resources.ContainsKey(key) ? Resources[key] : null;
+        }
+
+        public void LoadAttributesFromPath(string path)
+        {
+            JObject attributeJson = FileReader.FromPath(path);
+            if (attributeJson.Type != JTokenType.Array)
+            {
+                throw new MeException($"Expeted attribute array in \"{path}\".");
+            }
+            JArray attributeArray = attributeJson.ToObject<JArray>();
+            foreach(JToken attribute in attributeArray)
+            {
+                if (attribute.Type != JTokenType.Object)
+                {
+
+                }
+            }
         }
 
     }

@@ -47,7 +47,7 @@ namespace RPGEngine.GameConfigReader
 
                 amountFormula = JsonUtils.ValidateJsonEntry(GcConstants.General.VALUE,
                         costObj,
-                        JTokenType.String,
+                        JTokenType.Integer,
                         $"No cost amount for skill {skill.Name}.")
                     .ToString();
             }
