@@ -24,7 +24,7 @@ namespace RPGEngine.Language
         public const string MIN_F = "MIN";
         public const string ABS_F = "ABS";
         public const string RANDOM_F = "RANDOM";
-        public const string GET_PROP_F = "PROP";
+        public const string GET_PROP_F = "GET_PROP";
         public const string GET_PLAYERS_F = "GET_PLAYERS";
         public const string GET_ACTIVE_PLAYERS_F = "GET_ACTIVE_PLAYERS";
         public const string NON_NEG_F = "NON_NEG";

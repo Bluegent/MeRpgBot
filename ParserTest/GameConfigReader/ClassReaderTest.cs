@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Serialization;
 
 namespace EngineTest.GameConfigReader
 {
@@ -42,6 +43,14 @@ namespace EngineTest.GameConfigReader
             _testSkill.ByLevel.Add(testLevelTemplate);
 
             Engine.GetSkillManager().AddSkill(_testSkill);
+
+            BaseObject bDmg = new BaseObject() {Description = "", Key = "BASE_DMG", Name = "Base damage"};
+           
+            Engine.GetPropertyManager().BaseValues.Add("BASE_DMG",bDmg);
+
+            BaseObject intellect = new BaseObject() { Description = "", Key = "INT", Name = "Intellect" };
+
+            Engine.GetPropertyManager().Attributes.Add("INT", intellect);
         }
 
         [TestMethod]

@@ -35,5 +35,10 @@ namespace RPGEngine.Parser
             Value = value;
             Type = GetType(value);
         }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }
