@@ -5,7 +5,7 @@
         "description":"Generic brand Naruto. Really good at punching things.",
         "base_values":
         [   
-            {"key":"BASE_DMG","value":10},
+            {"key":"B_DMG","value":10},
             {"key":"BASE_HP","value":100},
             {"key":"BASE_MP","value":50},
             {"key":"BASE_DEF","value":0}

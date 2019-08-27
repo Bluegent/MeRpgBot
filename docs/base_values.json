@@ -1,5 +1,5 @@
 [
-    {"key":"BASE_DMG" ,"name":"Base Damage", "description":"Base amount of damage"},
+    {"key":"B_DMG" ,"name":"Base Damage", "description":"Base amount of damage"},
     {"key":"BASE_HP"},
     {"key":"BASE_MP"},
     {"key":"BASE_DEF"},

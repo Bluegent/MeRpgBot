@@ -59,14 +59,14 @@
                 "duration":"60",
                 "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+GET_PROP($S,STR)/2)",
                 "needed_level":15,
-                "interval":"1+NON_NEG(9-DEX/20)"
+                "interval":"1+NON_NEG(9-AGI/20)"
             },
             {
                 "cooldown":"60",
                 "duration":"60",
                 "formula":"HARM($T,$S,P,GET_PROP($S,B_DMG)+GET_PROP($S,STR)/2)",
                 "needed_level":50,
-                "interval":"1+NON_NEG(9-DEX/10)"
+                "interval":"1+NON_NEG(9-AGI/10)"
             }
         ]
     },
