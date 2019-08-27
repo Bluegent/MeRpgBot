@@ -41,6 +41,7 @@ namespace RPGEngine.Core
             RegisterCommand(CommandsConstants.TARGET_COMMAND,TargetCommand);
             RegisterCommand(CommandsConstants.ATTACK_COMMAND,AttackCommand);
             RegisterCommand(CommandsConstants.CAST_COMMAND, CastCommand);
+            RegisterCommand(CommandsConstants.DUEL_COMMAND, DuelCommand);
         }
 
 
