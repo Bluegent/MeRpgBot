@@ -220,6 +220,7 @@
     <Compile Include="Game\SkillTemplate.cs" />
     <Compile Include="GameInterface\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
+    <Compile Include="Game\StatTemplate.cs" />
     <Compile Include="Game\StatusTemplate.cs" />
     <Compile Include="GameConfigReader\BaseObject.cs" />
     <Compile Include="GameConfigReader\GcConstants.cs" />

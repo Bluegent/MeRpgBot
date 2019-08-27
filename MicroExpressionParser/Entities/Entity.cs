@@ -17,6 +17,8 @@ namespace RPGEngine.Entities
         public Dictionary<string, EntityAttribute> Attributes { get; protected set; }
         public Dictionary<string, ResourceInstance> ResourceMap { get; protected set; }
 
+        public Dictionary<string,StatInstance> Stats { get; protected set; }
+
         public MeNode ReviveDuration { get; set; }
         public long ResolvedReviveDuration { get; set; }
         public long ReviveTime { get; set; }
@@ -29,6 +31,7 @@ namespace RPGEngine.Entities
             Engine = engine;
             Attributes = new Dictionary<string, EntityAttribute>();
             ResourceMap = new Dictionary<string, ResourceInstance>();
+            Stats = new Dictionary<string, StatInstance>();
             ReviveDuration = new MeNode(0);
         }
 
@@ -91,6 +94,20 @@ namespace RPGEngine.Entities
             return ResourceMap.ContainsKey(key) ? ResourceMap[key] : null;
         }
 
+
+        public StatInstance GetStat(string key)
+        {
+            return Stats.ContainsKey(key) ? Stats[key] : null;
+        }
+
+        public void AddStat(StatInstance stat)
+        {
+            if (Stats.ContainsKey(stat.Stat.Key))
+                return;
+            Stats.Add(stat.Stat.Key,stat);
+            RefreshProperties();
+        }
+
         public void AddAttribute(string key, double value)
         {
             if (Attributes.ContainsKey(key))
@@ -104,20 +121,39 @@ namespace RPGEngine.Entities
             if (ResourceMap.ContainsKey(resource.Key))
                 return;
             ResourceInstance resIn = new ResourceInstance(resource,this);
-            ResourceMap.Add(resource.Key,resIn); 
+            ResourceMap.Add(resource.Key, resIn);
+            RefreshProperties();
         }
 
-        public void RefreshProperties()
+        public void RefreshResources()
+        {
+            foreach (ResourceInstance res in ResourceMap.Values)
+            {
+                res.Refresh();
+            }
+        }
+
+        public void RefreshAttributes()
         {
             foreach (EntityAttribute atr in Attributes.Values)
             {
                 atr.Refresh();
             }
+        }
 
-            foreach (ResourceInstance res in ResourceMap.Values)
+        public void RefreshStats()
+        {
+            foreach (StatInstance stat in Stats.Values)
             {
-                res.Refresh();
+                stat.Refresh();
             }
+        }
+
+        public void RefreshProperties()
+        {
+            RefreshAttributes();
+            RefreshResources();
+            RefreshStats();
 
             ResolvedReviveDuration = Sanitizer.ReplacePropeties(ReviveDuration, this).Resolve().Value.ToLong();
         }

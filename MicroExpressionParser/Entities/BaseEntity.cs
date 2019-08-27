@@ -88,6 +88,8 @@ namespace RPGEngine.Entities
                 return true;
             if (ResourceMap.ContainsKey(propertyKey))
                 return true;
+            if (Stats.ContainsKey(propertyKey))
+                return true;
             return false;
         }
 
@@ -196,6 +198,8 @@ namespace RPGEngine.Entities
                 return Attributes[key];
             if (ResourceMap.ContainsKey(key))
                 return ResourceMap[key];
+            if (Stats.ContainsKey(key))
+                return Stats[key];
             return null;
         }
 
