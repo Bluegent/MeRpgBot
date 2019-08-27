@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using RPGEngine.Core;
 
 using RPGEngine.Discord;
 using RPGEngine.Language;
@@ -11,22 +10,22 @@ using RPGEngine.Entities;
 using RPGEngine.Cleanup;
 using RPGEngine.Game;
 using RPGEngine.GameInterface;
-using RPGEngine.Parser;
+using RPGEngine.Utils;
+using RPGEngine.Manager;
 
 namespace RPGEngine.Core
 {
-    using RPGEngine.Utils;
+    
 
     public interface IGameEngine
     {
         SkillManager GetSkillManager();
         PlayerManager GetPlayerManager();
-
         PropertyManager GetPropertyManager();
         ClassManager GetClassManager();
-
         DamageTypeManager GetDamageTypeManager();
         StatusManager GetStatusManager();
+        StatManager GetStatManager();
 
         CoreManager GetCoreManager();
 
@@ -71,6 +70,7 @@ namespace RPGEngine.Core
         private CoreManager _coreManager;
         private DamageTypeManager _damageTypeManager;
         private StatusManager _statusManager;
+        private StatManager _statManager;
 
         private PropertyManager _propertyManager;
 
@@ -103,6 +103,8 @@ namespace RPGEngine.Core
 
             _statusManager = new StatusManager();
             _statusManager.Engine = this;
+
+            _statManager = new StatManager(this);
 
             _playerManager.Engine = this;
             _classManager = new ClassManager();
@@ -155,6 +157,11 @@ namespace RPGEngine.Core
         public StatusManager GetStatusManager()
         {
             return _statusManager;
+        }
+
+        public StatManager GetStatManager()
+        {
+            return _statManager;
         }
 
         public CoreManager GetCoreManager()
@@ -274,6 +281,8 @@ namespace RPGEngine.Core
             _propertyManager.LoadAttributesFromPath(Utility.GetFilePath(ConfigFiles.ATTRIBUTES));
             _propertyManager.LoadBaseValuesFromPath(Utility.GetFilePath(ConfigFiles.BASE_VALUES));
             _propertyManager.LoadResourcesFromPath(Utility.GetFilePath(ConfigFiles.RESOURCES));
+
+            _statManager.LoadStatsFromFile(Utility.GetFilePath(ConfigFiles.STATS));
 
             _coreManager = CoreManager.FromFilePath(Utility.GetFilePath(ConfigFiles.CORE),this);
 

@@ -215,6 +215,7 @@
     <Compile Include="GameConfigReader\DamageTypeReader.cs" />
     <Compile Include="GameConfigReader\ResourceReader.cs" />
     <Compile Include="GameConfigReader\SkillReader.cs" />
+    <Compile Include="GameConfigReader\StatReader.cs" />
     <Compile Include="Game\ClassTemplate.cs" />
     <Compile Include="Game\CoreReader.cs" />
     <Compile Include="Game\GameConstants.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Data\Skill.cs" />
     <Compile Include="Data\StatusEffect.cs" />
+    <Compile Include="Manager\StatManager.cs" />
     <Compile Include="Parser\InfixToPostfix.cs" />
     <Compile Include="Parser\TreeConverter.cs" />
     <Compile Include="Parser\Token.cs" />
