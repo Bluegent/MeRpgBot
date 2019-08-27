@@ -426,6 +426,7 @@ namespace RPGEngine.Entities
                 return;
             }
             CurrentTarget = target;
+            if(target != null)
             Engine.Log().Log($"{Name} is now targeting {target.Name}.");
         }
 

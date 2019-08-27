@@ -4,6 +4,8 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.Game
 {
+    using RPGEngine.GameConfigReader;
+
     public class Player 
     {
         public ClassTemplate Class { get; }
@@ -21,14 +23,31 @@ namespace RPGEngine.Game
             Stats = new Dictionary<string, double>();
             Class = myClass;
             Dictionary<string, SkillInstance> skills = new Dictionary<string, SkillInstance>();
+            DuelRequests = new Queue<Player>();
             //TODO: deserialize properly
             foreach (SkillTemplate skill in Class.Skills.Values)
             {
                 skills.Add(skill.Key,new SkillInstance() {Skill =  skill,SkillLevel = 0});
             }
-
+            skills.Add(Class.BaseAttack.Key,new SkillInstance(){Skill = Class.BaseAttack,SkillLevel = 0});
             Entity = new LevelableEntity(engine);
+            foreach (var baseValue in Class.BasicValues)
+            {
+                Entity.AddBaseValue(baseValue.Key, baseValue.Value);
+            }
+            foreach (var attr in Class.Attributes)
+            {
+                Entity.AddAttribute(attr.Key,attr.Value);
+            }
+            Entity.AddResource(Engine.GetPropertyManager().GetResource(Entities.Entity.HP_KEY));
+            foreach (ResourceTemplate resource in Class.Resources.Values)
+            {
+                Entity.AddResource(resource);
+            }
+            
+            
             Entity.Skills = skills;
+            Entity.Key = Id.ToString();
             Dueling = false;
             Duel = null;
         }

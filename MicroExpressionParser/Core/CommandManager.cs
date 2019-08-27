@@ -176,7 +176,7 @@ namespace RPGEngine.Core
                             return;
                         }
 
-                        string targetName = command.Args[0];
+                        string targetName = command.Args[1];
 
                         Player target = Engine.GetPlayerManager().FindPlayerByName(targetName);
                         if (target == null)
