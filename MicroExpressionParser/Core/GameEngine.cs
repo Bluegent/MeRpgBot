@@ -26,6 +26,7 @@ namespace RPGEngine.Core
         ClassManager GetClassManager();
 
         DamageTypeManager GetDamageTypeManager();
+        StatusManager GetStatusManager();
 
         CoreManager GetCoreManager();
         void AddPlayer(Entity entity);
@@ -65,16 +66,15 @@ namespace RPGEngine.Core
         private ClassManager _classManager;
         private CoreManager _coreManager;
         private DamageTypeManager _damageTypeManager;
+        private StatusManager _statusManager;
 
         private PropertyManager _propertyManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
-        private Dictionary<string, DamageTypeTemplate> DamageTypes { get; }
         private Dictionary<string, MeVariable> DeclaredVariables;
         private Sanitizer Sanit { get; set; }
         private ILogHelper _log;
         public ITimer Timer { get; set; }
-        private Dictionary<string,StatusTemplate> statuses;
         public MeNode ExpFormula { get; set; }
 
 
@@ -95,6 +95,9 @@ namespace RPGEngine.Core
             _damageTypeManager = new DamageTypeManager();
             _damageTypeManager.Engine = this;
 
+            _statusManager = new StatusManager();
+            _statusManager.Engine = this;
+
             _playerManager.Engine = this;
             _classManager = new ClassManager();
             _classManager.Engine = this;
@@ -102,10 +105,8 @@ namespace RPGEngine.Core
             _log = log;
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
-            DamageTypes = new Dictionary<string, DamageTypeTemplate>();
             Timer = new MockTimer();
             Sanit = new Sanitizer(this);
-            statuses = new Dictionary<string, StatusTemplate>();
             DeclaredVariables = new Dictionary<string, MeVariable>();
 
             commandsQueue = new ConcurrentQueue<Command>();
@@ -143,6 +144,11 @@ namespace RPGEngine.Core
             return _damageTypeManager;
         }
 
+        public StatusManager GetStatusManager()
+        {
+            return _statusManager;
+        }
+
         public CoreManager GetCoreManager()
         {
             return _coreManager;
@@ -167,7 +173,7 @@ namespace RPGEngine.Core
 
         public void AddDamageType(DamageTypeTemplate typeTemplate)
         {
-            DamageTypes.Add(typeTemplate.Key,typeTemplate);
+           _damageTypeManager.AddDamageType(typeTemplate);
         }
 
         public Entity[] GetAllPlayers()
@@ -177,7 +183,7 @@ namespace RPGEngine.Core
 
         public DamageTypeTemplate GeDamageType(string key)
         {
-            return DamageTypes.ContainsKey(key) ? DamageTypes[key] : null;
+            return _damageTypeManager.GetDamageType(key);
         }
 
         public Entity GetEntityByKey(string key)
@@ -191,7 +197,7 @@ namespace RPGEngine.Core
 
         public StatusTemplate GetStatusByKey(string key)
         {
-            return statuses.ContainsKey(key)?statuses[key]:null;
+            return _statusManager.GetStatus(key);
         }
 
         public ITimer GetTimer()
@@ -206,10 +212,8 @@ namespace RPGEngine.Core
 
         public void AddStatus(StatusTemplate status, string key)
         {
-            if (!statuses.ContainsKey(key))
-                statuses.Add(key, status);
-            else
-                statuses[key] = status;
+            status.Key = key;
+            _statusManager.AddStatus(status);
         }
 
         public MeVariable GetVariable(string key)
@@ -261,6 +265,8 @@ namespace RPGEngine.Core
             _coreManager = CoreManager.FromFilePath(Utility.GetFilePath(ConfigFiles.CORE),this);
 
             _damageTypeManager.LoadDamageTypesFromfile(Utility.GetFilePath(ConfigFiles.DAMAGE_TYPES));
+
+            _statusManager.LoadStatusesFromFile(Utility.GetFilePath(ConfigFiles.STATUSES));
 
             _skillManager.LoadSkillsFromFile(Utility.GetFilePath(ConfigFiles.SKILLS));
         }

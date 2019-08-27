@@ -26,12 +26,7 @@ namespace RPGEngine.GameConfigReader
             ;
 
             result.Interval = json.ContainsKey(GcConstants.Statuses.INTERVAL)
-                ? TreeConverter.Build(json[GcConstants.Statuses.MAX_STACK].ToString(), Engine)
-                : new MeNode(1);
-            ;
-
-            result.Interval = json.ContainsKey(GcConstants.Statuses.INTERVAL)
-                ? TreeConverter.Build(json[GcConstants.Statuses.MAX_STACK].ToString(), Engine)
+                ? TreeConverter.Build(json[GcConstants.Statuses.INTERVAL].ToString(), Engine)
                 : new MeNode(1);
             ;
 

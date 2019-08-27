@@ -19,7 +19,7 @@ namespace RPGEngine.Game
         public const string CLASSES = "classes";
         public const string STATUSES = "statuses";
         public const string SKILLS = "skills";
-        public const string STATUS = "stats";
+        public const string STATS = "stats";
 
     }
 
