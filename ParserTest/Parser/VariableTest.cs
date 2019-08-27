@@ -34,7 +34,8 @@ namespace EngineTest.Parser
             Definer.Instance().Engine = Engine;
             BasePlayer = new MockEntity(Engine) { Name = "MOCK_PLAYER", Key = "MOCK_KEY" };
             Engine.AddPlayer(BasePlayer);
-            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine, null, null, null, null);
+            trueDamage.Key = "T";
             Engine.AddDamageType(trueDamage);
         }
 

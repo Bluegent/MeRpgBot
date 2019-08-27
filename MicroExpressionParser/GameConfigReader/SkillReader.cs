@@ -84,7 +84,7 @@ namespace RPGEngine.GameConfigReader
             string threatFormula = JsonUtils.GetValueOrDefault<string>(levelValue, GcConstants.Skills.THREAT, null);
             if (threatFormula == null)
             {
-                threatFormula = Engine.GetDefaultSkillThreat().ToString();
+                threatFormula = Engine.GetCoreManager().DefaultSkillThreat.ToString();
             }
             levelTemplate.SkillThreat = TreeConverter.Build(threatFormula, Engine);
 

@@ -11,8 +11,8 @@ namespace ParserTest
         public void FromJsonTest_Succes()
         {
             string json = "{\"StatKey\":\"P\",\"name\":\"Physical\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
-            DamageType expected = new DamageType() { Key = "P", Key="Physical", MitigationFormula= "NONNEG(VALUE-DEF)" };
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = new DamageTypeTemplate() { Key = "P", Key="Physical", MitigationFormula= "NONNEG(VALUE-DEF)" };
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.MitigationFormula, result.MitigationFormula);
@@ -22,8 +22,8 @@ namespace ParserTest
         public void FromJsonTest_IncompleteJson_NoMitigationFormula()
         {
             string json = "{\"StatKey\":\"P\",\"name\":\"Physical\"}";
-            DamageType expected = new DamageType() { Key = "P", Key = "Physical", MitigationFormula = null };
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = new DamageTypeTemplate() { Key = "P", Key = "Physical", MitigationFormula = null };
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.MitigationFormula, result.MitigationFormula);
@@ -33,8 +33,8 @@ namespace ParserTest
         public void FromJsonTest_IncompleteJson_NoName()
         {
             string json = "{\"StatKey\":\"P\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
-            DamageType expected = new DamageType() { Key = "P", Key = null, MitigationFormula = "NONNEG(VALUE-DEF)" };
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = new DamageTypeTemplate() { Key = "P", Key = null, MitigationFormula = "NONNEG(VALUE-DEF)" };
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.MitigationFormula, result.MitigationFormula);
@@ -44,8 +44,8 @@ namespace ParserTest
         public void FromJsonTest_IncompleteJson_NoKey()
         {
             string json = "{\"name\":\"Physical\",\"mitigation\":\"NONNEG(VALUE-DEF)\"}";
-            DamageType expected = new DamageType() { Key = null, Key = "Physical", MitigationFormula = "NONNEG(VALUE-DEF)" };
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = new DamageTypeTemplate() { Key = null, Key = "Physical", MitigationFormula = "NONNEG(VALUE-DEF)" };
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.Key, result.Key);
             Assert.AreEqual(expected.MitigationFormula, result.MitigationFormula);
@@ -55,8 +55,8 @@ namespace ParserTest
         public void FromJsonTest_EmptyJson()
         {
             string json = "";
-            DamageType expected = null;
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = null;
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected, result);
         }
 
@@ -64,8 +64,8 @@ namespace ParserTest
         public void FromJsonTest_NullJson()
         {
             string json = null;
-            DamageType expected = null;
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = null;
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected, result);
         }
 
@@ -73,8 +73,8 @@ namespace ParserTest
         public void FromJsonTest_InvalidJson()
         {
             string json = "Invalid";
-            DamageType expected = null;
-            DamageType result = DamageType.FromJson(json);
+            DamageTypeTemplate expected = null;
+            DamageTypeTemplate result = DamageTypeTemplate.FromJson(json);
             Assert.AreEqual(expected, result);
 
         }

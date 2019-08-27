@@ -23,7 +23,8 @@ namespace EngineTest
         {
             Engine.AddPlayer(MockPlayer);
             Engine.AddEnemy(MockEnemy);
-            DamageType trueDamage = new DamageType(Engine,"T",null,null,null,null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine,null,null,null,null);
+            trueDamage.Key = "T";
             Engine.AddDamageType(trueDamage);
         }
 

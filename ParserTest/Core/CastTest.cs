@@ -26,7 +26,8 @@ namespace EngineTest.Core
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
-            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine, null, null, null, null);
+            trueDamage.Key = "T";
             trueDamage.Name = "true";
             Engine.AddDamageType(trueDamage);
 

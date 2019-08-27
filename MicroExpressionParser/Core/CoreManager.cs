@@ -16,16 +16,15 @@
        public long AttributePointsPerLevel { get; set; }
        public long StartExp { get; set; }
        public long MaxLevel { get; set; }
+       public IGameEngine Engine { get; set; }
 
-       public CoreManager()
-       {
-
-       }
 
        public static CoreManager FromFilePath(string filePath, IGameEngine engine)
        {
            CoreReader reader = new CoreReader(engine);
-           return reader.FromJson(FileReader.FromPath<JObject>(filePath));
+           CoreManager result = reader.FromJson(FileReader.FromPath<JObject>(filePath));
+           result.Engine = engine;
+           return result;
        }
     }
 }

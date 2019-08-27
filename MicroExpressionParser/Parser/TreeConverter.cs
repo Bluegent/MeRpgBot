@@ -71,12 +71,12 @@ namespace RPGEngine.Parser
                             break;
                         }
 
-                        //try a damage type
-                        DamageType tryDamageType = engine.GeDamageType(node.Token.Value);
-                        if (tryDamageType != null)
+                        //try a damage typeTemplate
+                        DamageTypeTemplate tryDamageTypeTemplate = engine.GeDamageType(node.Token.Value);
+                        if (tryDamageTypeTemplate != null)
                         {
                             newNode = new MeNode(
-                                new MeVariable() { Value = tryDamageType, Type = VariableType.DamageType });
+                                new MeVariable() { Value = tryDamageTypeTemplate, Type = VariableType.DamageType });
                             break;
                         }
                         /*

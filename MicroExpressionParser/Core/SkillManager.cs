@@ -6,9 +6,15 @@ namespace RPGEngine.Core
 {
     using System.Collections;
 
+    using Newtonsoft.Json.Linq;
+
+    using RPGEngine.GameConfigReader;
+    using RPGEngine.Utils;
+
     public class SkillManager
     {
         public Dictionary<string, SkillTemplate> SkillsByAlias;
+        public IGameEngine Engine { get; set; }
 
         public SkillManager()
         {
@@ -23,12 +29,12 @@ namespace RPGEngine.Core
 
             foreach (string alias in skill.Aliases)
             {
-                if (!alias.Equals(skill.Name))
+                if (!alias.Equals(skill.Key))
                 {
-                    if (SkillsByAlias.ContainsKey(skill.Key))
+                    if (SkillsByAlias.ContainsKey(alias))
                         throw new MeException(
                             $"Attempted to add skill with alias {alias}, but a skill with that alias already exists.");
-                    SkillsByAlias.Add(skill.Key, skill);
+                    SkillsByAlias.Add(alias, skill);
                 }
             }
         }
@@ -36,6 +42,23 @@ namespace RPGEngine.Core
         public SkillTemplate GetSkill(string key)
         {
             return SkillsByAlias.ContainsKey(key) ? SkillsByAlias[key] : null;
+        }
+
+        public void LoadSkillsFromFile(string path)
+        {
+            JArray skillJson = FileReader.FromPath<JArray>(path);
+            SkillReader reader = new SkillReader(Engine);
+
+            foreach (JToken skillValue in skillJson)
+            {
+                if (skillValue.Type != JTokenType.Object)
+                {
+                    throw new MeException($"Expected a json object \"{path}\"at  \"{skillValue}\".");
+                }
+
+                SkillTemplate newSkill = reader.FromJson(skillValue.ToObject<JObject>());
+                AddSkill(newSkill);
+            }
         }
     }
 }

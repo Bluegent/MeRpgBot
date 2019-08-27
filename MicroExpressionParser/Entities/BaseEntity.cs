@@ -120,21 +120,21 @@ namespace RPGEngine.Entities
             }
         }
 
-        public override double TakeDamage(double amount, DamageType type, Entity source, bool periodic = false)
+        public override double TakeDamage(double amount, DamageTypeTemplate typeTemplate, Entity source, bool periodic = false)
         {
-            if (type.GetDodge(source, this))
+            if (typeTemplate.GetDodge(source, this))
             {
                 if (!periodic)
                     Engine.Log().LogDodge(this, source);
                 return 0;
             }
-            double actualAmount = type.GetMitigatedAmount(amount, source, this);
+            double actualAmount = typeTemplate.GetMitigatedAmount(amount, source, this);
             double resisted = amount - actualAmount;
             TakeActualDamage(actualAmount);
 
             if (!periodic)
             {
-                Engine.Log().LogDamage(this, source, type, actualAmount, resisted);
+                Engine.Log().LogDamage(this, source, typeTemplate, actualAmount, resisted);
             }
             return actualAmount;
         }

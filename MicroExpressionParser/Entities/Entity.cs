@@ -63,7 +63,7 @@ namespace RPGEngine.Entities
 
 
 
-        public abstract double TakeDamage(double amount, DamageType type, Entity source, bool periodic = true);
+        public abstract double TakeDamage(double amount, DamageTypeTemplate typeTemplate, Entity source, bool periodic = true);
 
         public abstract double GetHealed(double amount, Entity source, bool log = true);
 

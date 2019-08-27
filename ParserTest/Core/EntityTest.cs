@@ -21,13 +21,17 @@ namespace EngineTest.Core
         [ClassInitialize]
         public static void StartUp(TestContext context)
         {
-            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine, null, null, null, null);
+            trueDamage.Key = "T";
             trueDamage.Name = "true";
-            DamageType alwaysCrit = new DamageType(Engine, "AC", null, null, "100", "2");
+            DamageTypeTemplate alwaysCrit = new DamageTypeTemplate(Engine,  null, null, "100", "2");
+            alwaysCrit.Key = "AC";
             alwaysCrit.Name = "always_crit";
-            DamageType alwaysDodge = new DamageType(Engine, "AD", null, "100", null, null);
+            DamageTypeTemplate alwaysDodge = new DamageTypeTemplate(Engine, null, "100", null, null);
+            alwaysDodge.Key = "AD";
             alwaysDodge.Name = "always_dodge";
-            DamageType physical = new DamageType(Engine,"P", $"{LConstants.NON_NEG_F}({LConstants.ValueKeyword}-{LConstants.TargetKeyword}{LConstants.PROP_OP}DEF)",null,null,null);
+            DamageTypeTemplate physical = new DamageTypeTemplate(Engine, $"{LConstants.NON_NEG_F}({LConstants.ValueKeyword}-{LConstants.TargetKeyword}{LConstants.PROP_OP}DEF)",null,null,null);
+            physical.Key = "P";
             physical.Name = "physical";
             Engine.AddDamageType(trueDamage);
             Engine.AddDamageType(alwaysCrit);

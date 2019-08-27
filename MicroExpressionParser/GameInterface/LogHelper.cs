@@ -10,7 +10,7 @@ namespace RPGEngine.GameInterface
         string Enclose(string msg, string enclosure);
 
         void Log(string msg);
-        void LogDamage(Entity target, Entity source, DamageType type, double amount, double resisted);
+        void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted);
         void LogDodge(Entity target, Entity source);
         void LogSay(Entity source, string msg);
     }
@@ -43,12 +43,12 @@ namespace RPGEngine.GameInterface
             return  sb.ToString();
         }
 
-        public void LogDamage(Entity target, Entity source, DamageType type, double amount, double resisted)
+        public void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted)
         {
             ResourceInstance hp = target.GetResource(Entity.HP_KEY);
             string hpBar = Utils.Utility.getBar(hp.Value,hp.MaxAmount);
             string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"and resisted {resisted}";
-            string msg = $"{target.Name} {hpBar} took {amount} {resist} {type.Name} damage.";
+            string msg = $"{target.Name} {hpBar} took {amount} {resist} {typeTemplate.Name} damage.";
             LogBlock(msg);
         }
 

@@ -57,6 +57,14 @@ namespace RPGEngine.GameConfigReader
 
         }
 
+        public static class DamageType
+        {
+            public const string MITIGATION = "mitigation";
+            public const string DODGE = "dodge";
+            public const string CRIT = "crit";
+            public const string CRIT_MULT = "crit_multiplier";
+        }
+
 
         public static class Resources
         {

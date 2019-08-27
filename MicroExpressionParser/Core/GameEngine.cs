@@ -24,14 +24,18 @@ namespace RPGEngine.Core
 
         PropertyManager GetPropertyManager();
         ClassManager GetClassManager();
+
+        DamageTypeManager GetDamageTypeManager();
+
+        CoreManager GetCoreManager();
         void AddPlayer(Entity entity);
 
         void AddEnemy(Entity entity);
 
-        void AddDamageType(DamageType type);
+        void AddDamageType(DamageTypeTemplate typeTemplate);
         Entity[] GetAllPlayers();
 
-        DamageType GeDamageType(string key);
+        DamageTypeTemplate GeDamageType(string key);
         Entity GetEntityByKey(string key);
         StatusTemplate GetStatusByKey(string key);
         void AddStatus(StatusTemplate status, string key);
@@ -42,8 +46,6 @@ namespace RPGEngine.Core
         void SetVariable(string key, MeVariable var);
         ILogHelper Log();
         long GetMaxExp(int level);
-
-        long GetDefaultSkillThreat();
 
         void EnqueueCommand(Command command);
 
@@ -58,15 +60,16 @@ namespace RPGEngine.Core
         private ConcurrentQueue<Command> commandsQueue;
 
         private List<long> ExpValues;
-        public long SkillThreat { get; set; }
         private SkillManager _skillManager;
         private PlayerManager _playerManager;
         private ClassManager _classManager;
+        private CoreManager _coreManager;
+        private DamageTypeManager _damageTypeManager;
 
         private PropertyManager _propertyManager;
         public Dictionary<string, Entity> Players { get; }
         public Dictionary<string, Entity> Enemies { get; }
-        private Dictionary<string, DamageType> DamageTypes { get; }
+        private Dictionary<string, DamageTypeTemplate> DamageTypes { get; }
         private Dictionary<string, MeVariable> DeclaredVariables;
         private Sanitizer Sanit { get; set; }
         private ILogHelper _log;
@@ -80,10 +83,18 @@ namespace RPGEngine.Core
             Definer.Instance().Init(this);
             _propertyManager = new PropertyManager();
             _propertyManager.Engine = this;
-            SkillThreat = 5;
+
             _skillManager = new SkillManager();
+            _skillManager.Engine = this;
+
+            _coreManager = new CoreManager();
+            _coreManager.Engine = this;
+
             _playerManager = new PlayerManager();
             
+            _damageTypeManager = new DamageTypeManager();
+            _damageTypeManager.Engine = this;
+
             _playerManager.Engine = this;
             _classManager = new ClassManager();
             _classManager.Engine = this;
@@ -91,7 +102,7 @@ namespace RPGEngine.Core
             _log = log;
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
-            DamageTypes = new Dictionary<string, DamageType>();
+            DamageTypes = new Dictionary<string, DamageTypeTemplate>();
             Timer = new MockTimer();
             Sanit = new Sanitizer(this);
             statuses = new Dictionary<string, StatusTemplate>();
@@ -127,6 +138,16 @@ namespace RPGEngine.Core
             return _classManager;
         }
 
+        public DamageTypeManager GetDamageTypeManager()
+        {
+            return _damageTypeManager;
+        }
+
+        public CoreManager GetCoreManager()
+        {
+            return _coreManager;
+        }
+
         public void AddPlayer(Entity entity)
         {
             if (Players.ContainsKey(entity.Key))
@@ -144,9 +165,9 @@ namespace RPGEngine.Core
             Enemies.Add(entity.Key, entity);
         }
 
-        public void AddDamageType(DamageType type)
+        public void AddDamageType(DamageTypeTemplate typeTemplate)
         {
-            DamageTypes.Add(type.Key,type);
+            DamageTypes.Add(typeTemplate.Key,typeTemplate);
         }
 
         public Entity[] GetAllPlayers()
@@ -154,7 +175,7 @@ namespace RPGEngine.Core
             return Players.Values.ToArray();
         }
 
-        public DamageType GeDamageType(string key)
+        public DamageTypeTemplate GeDamageType(string key)
         {
             return DamageTypes.ContainsKey(key) ? DamageTypes[key] : null;
         }
@@ -230,17 +251,15 @@ namespace RPGEngine.Core
             return ExpValues[level];
         }
 
-        public long GetDefaultSkillThreat()
-        {
-            return SkillThreat;
-        }
-
 
         public void LoadConfigFromFiles()
         {
             _propertyManager.LoadAttributesFromPath(Utility.GetFilePath(ConfigFiles.ATTRIBUTES));
             _propertyManager.LoadBaseValuesFromPath(Utility.GetFilePath(ConfigFiles.BASE_VALUES));
             _propertyManager.LoadResourcesFromPath(Utility.GetFilePath(ConfigFiles.RESOURCES));
+            _coreManager = CoreManager.FromFilePath(Utility.GetFilePath(ConfigFiles.CORE),this);
+
+            _skillManager.LoadSkillsFromFile(Utility.GetFilePath(ConfigFiles.SKILLS));
         }
 
         public void Update()

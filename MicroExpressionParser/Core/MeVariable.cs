@@ -110,10 +110,10 @@ namespace RPGEngine.Core
             return (Property)Value;
         }
 
-        public DamageType ToDamageType()
+        public DamageTypeTemplate ToDamageType()
         {
             ValidateType(VariableType.DamageType);
-            return (DamageType)Value;
+            return (DamageTypeTemplate)Value;
         }
 
         public Entity ToEntity()

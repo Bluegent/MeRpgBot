@@ -195,7 +195,8 @@
     <Compile Include="Core\ClassManager.cs" />
     <Compile Include="Core\CommandManager.cs" />
     <Compile Include="Core\CoreManager.cs" />
-    <Compile Include="Core\DamageType.cs" />
+    <Compile Include="Core\DamageTypeTemplate.cs" />
+    <Compile Include="Core\DamageTypeManager.cs" />
     <Compile Include="Core\EntityResource.cs" />
     <Compile Include="Core\PlayerManager.cs" />
     <Compile Include="Core\PropertyManager.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Entities\LevelableEntity.cs" />
     <Compile Include="Entities\MockEntity.cs" />
     <Compile Include="GameConfigReader\ClassReader.cs" />
+    <Compile Include="GameConfigReader\DamageTypeReader.cs" />
     <Compile Include="GameConfigReader\ResourceReader.cs" />
     <Compile Include="GameConfigReader\SkillReader.cs" />
     <Compile Include="Game\ClassTemplate.cs" />

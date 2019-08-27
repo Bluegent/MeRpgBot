@@ -289,7 +289,7 @@ namespace RPGEngine.Language
                     //func.ValidateParameters(values.Length);
                     MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
-                    DamageType damageType = values[2].ToDamageType();
+                    DamageTypeTemplate damageTypeTemplate = values[2].ToDamageType();
                     double amount = values[3].ToDouble();
                     bool periodic = false;
 
@@ -298,7 +298,7 @@ namespace RPGEngine.Language
                     double totalAmt = 0;
                     foreach (MeVariable variable in targets)
                     {
-                        totalAmt += variable.ToEntity().TakeDamage(amount, damageType, source, periodic);
+                        totalAmt += variable.ToEntity().TakeDamage(amount, damageTypeTemplate, source, periodic);
                     }
                     return totalAmt;
                 }, 4);

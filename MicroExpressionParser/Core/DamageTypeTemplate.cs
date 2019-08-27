@@ -6,17 +6,15 @@ using RPGEngine.Cleanup;
 
 namespace RPGEngine.Core
 {
-    public class DamageType : BaseObject
+    public class DamageTypeTemplate : BaseObject
     {
         public MeNode Mitigation { get; set; }
-
         public MeNode Dodge { get; set; }
         public MeNode CriticalChance { get; set; }
         public MeNode CriticalModifier { get; set; }
 
-        public DamageType(IGameEngine engine, string key, string mitigation, string dodge, string crit, string critmod)
+        public DamageTypeTemplate(IGameEngine engine, string mitigation, string dodge, string crit, string critmod)
         {
-            Key = key;
             Mitigation = mitigation != null ? TreeConverter.Build(mitigation, engine) : null;
             Dodge = dodge != null ? TreeConverter.Build(dodge, engine) : null;
             CriticalChance = crit != null ? TreeConverter.Build(crit, engine) : null;

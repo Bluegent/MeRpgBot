@@ -22,11 +22,14 @@ namespace EngineTest.GameConfigReader
         public static void StartUp(TestContext ctx)
         {
             Definer.Instance().Engine = Engine;
-            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine,  null, null, null, null);
+            trueDamage.Key = "T";
             Engine.AddDamageType(trueDamage);
             ResourceTemplate mana = new ResourceTemplate();
             mana.Key = "MP";
             Engine.GetPropertyManager().AddResource(mana);
+
+            Engine.GetCoreManager().DefaultSkillThreat = GcConstants.Core.DEFAULT_THREAT;
 
         }
 
@@ -63,7 +66,7 @@ namespace EngineTest.GameConfigReader
             Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_CAST_DURATION), levelTemplate.Duration.Value.ToDouble());
             Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_COOLDOWN), levelTemplate.Cooldown.Value.ToDouble());
 
-            Assert.AreEqual(Engine.GetDefaultSkillThreat(), levelTemplate.SkillThreat.Value.ToDouble());
+            Assert.AreEqual(GcConstants.Core.DEFAULT_THREAT, levelTemplate.SkillThreat.Value.ToDouble());
             Assert.IsNull(levelTemplate.Interval);
             Assert.AreEqual(GcConstants.Skills.DEFAULT_INTERRUPT, levelTemplate.PushBack.Value.ToBoolean());
             Assert.AreEqual(GcConstants.Skills.DEFAULT_PUSHBACK, levelTemplate.Interruptible.Value.ToBoolean());

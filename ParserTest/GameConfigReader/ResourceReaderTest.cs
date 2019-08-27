@@ -20,7 +20,8 @@ namespace EngineTest.GameConfigReader
         public static void StartUp(TestContext ctx)
         {
             Definer.Instance().Engine = Engine;
-            DamageType trueDamage = new DamageType(Engine, "T", null, null, null, null);
+            DamageTypeTemplate trueDamage = new DamageTypeTemplate(Engine, null, null, null, null);
+            trueDamage.Key = "T";
             Engine.AddDamageType(trueDamage);
         }
 
