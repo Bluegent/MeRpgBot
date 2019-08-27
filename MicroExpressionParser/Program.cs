@@ -22,6 +22,7 @@ namespace RPGEngine
             DiscordClient discord = new DiscordClient();
             ILogHelper logger = new DiscordLogHelper(discord);
             GameEngine engine = new GameEngine(logger);
+            engine.Timer = new RealTimer();
             engine.LoadConfigFromFiles();
             CommandManager.Instance.Engine = engine;
             discord.Engine = engine;

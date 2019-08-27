@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using RPGEngine.Game;
 
 namespace RPGEngine.Core
 {
@@ -10,12 +8,32 @@ namespace RPGEngine.Core
         long GetNow();
         long GetFuture(long seconds);
     }
+
+    public class RealTimer : ITimer
+    {
+        private long nowTime;
+
+        public RealTimer()
+        {
+            nowTime = 0;
+        }
+        public long GetNow()
+        {
+            nowTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            return nowTime;
+        }
+
+        public long GetFuture(long seconds)
+        {
+            return GetNow() + seconds * GameConstants.TickTime;
+        }
+    }
     public class MockTimer : ITimer
     {
         private long _fakeTime;
         public MockTimer()
         {
-            _fakeTime = 0; //DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            _fakeTime = 0;
         }
 
         public void ForceTick()

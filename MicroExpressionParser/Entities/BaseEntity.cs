@@ -61,7 +61,7 @@ namespace RPGEngine.Entities
                 return;
             MeNode cd = CurrentlyCasting.Skill.Values().Cooldown;
             cd = Sanitizer.ReplaceTargetAndSource(cd, this, CurrentlyCasting.Target);
-            CurrentlyCasting.Skill.CooldownFinishTime = Engine.GetTimer().GetNow() + (long)cd.Resolve().Value.ToDouble() * 1000;
+            CurrentlyCasting.Skill.CooldownFinishTime = Engine.GetTimer().GetFuture((long)cd.Resolve().Value.ToDouble());
         }
 
         private void FinishCasting()
@@ -163,7 +163,8 @@ namespace RPGEngine.Entities
             }
             if (skill.CooldownFinishTime != 0)
             {
-                Engine.Log().Log($"Skill {skill.Skill.Name} is on cooldown for {skill.CooldownFinishTime} seconds.");
+                long seconds = (skill.CooldownFinishTime - Engine.GetTimer().GetNow()) / GameConstants.TickTime;
+                Engine.Log().Log($"Skill {skill.Skill.Name} is on cooldown for {seconds} seconds.");
                 return false;
             }
             if (!Free)
