@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Text;
+using System.IO;
 
+using RPGEngine.Game;
 namespace RPGEngine.Utils
 {
-
+   
 
     public class Utility
     {
@@ -46,6 +48,12 @@ namespace RPGEngine.Utils
             if (amount > max)
                 return max;
             return amount;
+        }
+
+
+        public static string GetFilePath(string file)
+        {
+            return Path.Combine(ConfigFiles.BASE_PATH, file + ConfigFiles.EXENSION);
         }
     }
 }

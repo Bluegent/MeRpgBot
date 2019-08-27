@@ -13,6 +13,8 @@
         public Dictionary<string, BaseObject> BaseValues { get; set; }
         public Dictionary<string,ResourceTemplate> Resources { get; set; }
 
+        public IGameEngine Engine { get; set; }
+
         public PropertyManager()
         {
             Attributes = new Dictionary<string, BaseObject>();
@@ -63,20 +65,54 @@
 
         public void LoadAttributesFromPath(string path)
         {
-            JObject attributeJson = FileReader.FromPath(path);
-            if (attributeJson.Type != JTokenType.Array)
-            {
-                throw new MeException($"Expeted attribute array in \"{path}\".");
-            }
-            JArray attributeArray = attributeJson.ToObject<JArray>();
-            foreach(JToken attribute in attributeArray)
+            JArray attributeJson = FileReader.FromPath<JArray>(path);
+            foreach(JToken attribute in attributeJson)
             {
                 if (attribute.Type != JTokenType.Object)
                 {
-
+                    throw new MeException($"Expected a json object \"{path}\"at  \"{attribute}\".");
                 }
+                BaseObject newAttribute = new BaseObject();
+                newAttribute.LoadBase(attribute.ToObject<JObject>());
+                AddAttribute(newAttribute);
             }
         }
 
+        public void LoadBaseValuesFromPath(string path)
+        {
+            JArray baseValueArray = FileReader.FromPath<JArray>(path);
+            foreach (JToken baseValue in baseValueArray)
+            {
+                if (baseValue.Type != JTokenType.Object)
+                {
+                    throw new MeException($"Expected a json object \"{path}\"at  \"{baseValue}\".");
+                }
+                BaseObject newBaseValue = new BaseObject();
+                newBaseValue.LoadBase(baseValue.ToObject<JObject>());
+                AddBaseValue(newBaseValue);
+            }
+        }
+
+
+        public void LoadResourcesFromPath(string path)
+        {
+            JArray resourceJson = FileReader.FromPath<JArray>(path);
+            ResourceReader reader = new ResourceReader(Engine);
+
+            foreach (JToken resourceValue in resourceJson)
+            {
+                if (resourceValue.Type != JTokenType.Object)
+                {
+                    throw new MeException($"Expected a json object \"{path}\"at  \"{resourceValue}\".");
+                }
+
+                ResourceTemplate newResource = reader.FromJson(resourceValue.ToObject<JObject>());
+                AddResource(newResource);
+            }
+        }
+
+
     }
+
+    
 }

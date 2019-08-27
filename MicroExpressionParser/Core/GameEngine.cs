@@ -15,7 +15,7 @@ using RPGEngine.Parser;
 
 namespace RPGEngine.Core
 {
-
+    using RPGEngine.Utils;
 
     public interface IGameEngine
     {
@@ -47,6 +47,8 @@ namespace RPGEngine.Core
 
         void EnqueueCommand(Command command);
 
+        void LoadConfigFromFiles();
+
         void Update();
 
     }
@@ -77,10 +79,11 @@ namespace RPGEngine.Core
         {
             Definer.Instance().Init(this);
             _propertyManager = new PropertyManager();
-            
+            _propertyManager.Engine = this;
             SkillThreat = 5;
             _skillManager = new SkillManager();
             _playerManager = new PlayerManager();
+            
             _playerManager.Engine = this;
             _classManager = new ClassManager();
             _classManager.Engine = this;
@@ -231,6 +234,15 @@ namespace RPGEngine.Core
         {
             return SkillThreat;
         }
+
+
+        public void LoadConfigFromFiles()
+        {
+            _propertyManager.LoadAttributesFromPath(Utility.GetFilePath(ConfigFiles.ATTRIBUTES));
+            _propertyManager.LoadBaseValuesFromPath(Utility.GetFilePath(ConfigFiles.BASE_VALUES));
+            _propertyManager.LoadResourcesFromPath(Utility.GetFilePath(ConfigFiles.RESOURCES));
+        }
+
         public void Update()
         {
             PollCommands();

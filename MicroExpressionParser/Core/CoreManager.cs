@@ -2,6 +2,8 @@
 {
     using System.Dynamic;
 
+    using Newtonsoft.Json.Linq;
+
     using RPGEngine.Game;
     using RPGEngine.Utils;
 
@@ -23,7 +25,7 @@
        public static CoreManager FromFilePath(string filePath, IGameEngine engine)
        {
            CoreReader reader = new CoreReader(engine);
-           return reader.FromJson(FileReader.FromPath(filePath));
+           return reader.FromJson(FileReader.FromPath<JObject>(filePath));
        }
     }
 }

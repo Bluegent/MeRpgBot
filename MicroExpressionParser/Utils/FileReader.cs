@@ -26,9 +26,9 @@ namespace RPGEngine.Utils
             return null;
         }
 
-        public static JObject FromPath(string path)
+        public static T FromPath<T>(string path)
         {
-            return JsonConvert.DeserializeObject<JObject>(Read(path));
+            return JsonConvert.DeserializeObject<T>(Read(path));
         }
     }
 }

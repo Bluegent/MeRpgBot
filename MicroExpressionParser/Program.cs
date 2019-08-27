@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Discord;
-using System.Threading;
+﻿using System.Threading;
 
 namespace RPGEngine
 {
@@ -25,6 +20,7 @@ namespace RPGEngine
             DiscordClient discord = new DiscordClient();
             ILogHelper logger = new DiscordLogHelper(discord);
             GameEngine engine = new GameEngine(logger);
+            engine.LoadConfigFromFiles();
             CommandManager.Instance.Engine = engine;
             discord.Engine = engine;
             discord.Init();
