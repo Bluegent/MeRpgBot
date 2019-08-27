@@ -39,6 +39,12 @@ namespace RPGEngine.Game
             {
                 Entity.AddAttribute(attr.Key,attr.Value);
             }
+
+            foreach (StatTemplate stat in Engine.GetStatManager().GetStats())
+            {
+                Entity.AddStat(stat);
+            }
+
             Entity.AddResource(Engine.GetPropertyManager().GetResource(Entities.Entity.HP_KEY));
             foreach (ResourceTemplate resource in Class.Resources.Values)
             {

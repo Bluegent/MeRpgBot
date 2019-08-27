@@ -31,9 +31,11 @@
         public List<StatModifier> Modifiers { get; set; }
         private Entity _parent;
 
-        public StatInstance(Entity parent)
+        public StatInstance(Entity parent, StatTemplate stat)
         {
             _parent = parent;
+            Stat = stat;
+            Modifiers = new List<StatModifier>();
             Refresh();
         }
 

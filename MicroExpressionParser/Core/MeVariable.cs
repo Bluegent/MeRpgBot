@@ -89,7 +89,7 @@ namespace RPGEngine.Core
         protected void ValidateType(VariableType type)
         {
             if (Type != type)
-                throw new MeException($"Exception when converting variable of type {Type}({GetString()}) to {type}.");
+                throw new MeException($"Exception when converting variable of type {Type}({ToString()}) to {type}.");
         }
 
         public long ToLong()

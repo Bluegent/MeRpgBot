@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using RPGEngine.Core;
 using RPGEngine.Game;
@@ -53,6 +54,11 @@ namespace RPGEngine.Manager
                 AddStat(newEntry);
             }
 
+        }
+
+        public StatTemplate[] GetStats()
+        {
+            return _stats.Values.ToArray();
         }
 
     }

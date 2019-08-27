@@ -109,11 +109,11 @@ namespace RPGEngine.Entities
             BaseValueMap.Add(key, new BaseProperty() {Value =  value});
         }
 
-        public void AddStat(StatInstance stat)
+        public void AddStat(StatTemplate stat)
         {
-            if (Stats.ContainsKey(stat.Stat.Key))
+            if (Stats.ContainsKey(stat.Key))
                 return;
-            Stats.Add(stat.Stat.Key,stat);
+            Stats.Add(stat.Key,new StatInstance(this,stat));
             RefreshProperties();
         }
 
