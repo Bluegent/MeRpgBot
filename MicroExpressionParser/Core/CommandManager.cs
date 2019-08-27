@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RPGEngine.Entities;
 
 namespace RPGEngine.Core
 {
@@ -42,6 +43,7 @@ namespace RPGEngine.Core
             RegisterCommand(CommandsConstants.ATTACK_COMMAND,AttackCommand);
             RegisterCommand(CommandsConstants.CAST_COMMAND, CastCommand);
             RegisterCommand(CommandsConstants.DUEL_COMMAND, DuelCommand);
+            RegisterCommand(CommandsConstants.ME_COMMAND,MeCommand);
         }
 
 
@@ -51,6 +53,23 @@ namespace RPGEngine.Core
             {
                 _commands.Add(commandName,command);
             }
+        }
+
+        private void MeCommand(Command command)
+        {
+            if (command.Args.Length != 0)
+            {
+                Engine.Log().Log("Usage of me command: me");
+                return;
+            }
+            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            {
+                Engine.Log().Log("You don't have a character.");
+                return;
+            }
+            Entity playerEntity = Engine.GetPlayerManager().FindPlayerById(command.UserId).Entity;
+            Engine.Log().LogEntity(playerEntity);
+            
         }
 
         private void CreateCommand(Command command)

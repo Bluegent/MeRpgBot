@@ -10,6 +10,7 @@ namespace RPGEngine.GameInterface
         string Enclose(string msg, string enclosure);
 
         void Log(string msg);
+        void LogEntity(Entity me);
         void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted);
         void LogDodge(Entity target, Entity source);
         void LogSay(Entity source, string msg);
@@ -43,6 +44,13 @@ namespace RPGEngine.GameInterface
             return  sb.ToString();
         }
 
+        public void LogEntity(Entity target)
+        {
+            ResourceInstance hp = target.GetResource(Entity.HP_KEY);
+            string hpBar = Utils.Utility.getBar(hp.Value, hp.MaxAmount);
+            string msg = $"{target.Name} {hpBar}";
+            LogBlock(msg);
+        }
         public void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted)
         {
             ResourceInstance hp = target.GetResource(Entity.HP_KEY);
