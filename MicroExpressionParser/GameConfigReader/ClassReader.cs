@@ -19,7 +19,7 @@
         {
             Engine = engine;
         }
-        Tuple<string, SkillTemplate> SkillFromJson(JToken json, ClassTemplate result)
+        SkillTemplate SkillFromJson(JToken json, ClassTemplate result)
         {
             string skillKey = json.Value<string>();
             SkillTemplate skill = Engine.GetSkillManager().GetSkill(skillKey);
@@ -27,9 +27,19 @@
             {
                 throw new MeException($"Class {result.Name} references skill with key {skillKey}, which does not exist.");
             }
-            return new Tuple<string, SkillTemplate>(skillKey, skill);
+            return skill;
         }
 
+        ResourceTemplate ResourceFromJson(JToken json, ClassTemplate result)
+        {
+            string resKey = json.Value<string>();
+            ResourceTemplate res = Engine.GetPropertyManager().GetResource(resKey);
+            if (res == null)
+            {
+                throw new MeException($"Class {result.Name} references resource with key {resKey}, which does not exist.");
+            }
+            return res;
+        }
 
         public void AddBaseValueVector(string key, JObject json, ClassTemplate result, Dictionary<string, double> values)
         {
@@ -51,31 +61,54 @@
             }
         }
 
-
         public ClassTemplate FromJson(JObject json)
         {
             ClassTemplate result = new ClassTemplate();
             result.LoadBase(json);
 
             AddBaseValueVector(GcConstants.Classes.BASE_VALUES, json, result, result.BasicValues);
+            foreach (BaseObject baseValue in Engine.GetPropertyManager().BaseValues.Values)
+            {
+                if (!result.BasicValues.ContainsKey(baseValue.Key))
+                {
+                    result.BasicValues.Add(baseValue.Key, 0);
+                }
+            }
+
             AddBaseValueVector(GcConstants.Classes.BASIC_ATTRIBUTES, json, result, result.Attributes);
+            foreach (BaseObject attribute in Engine.GetPropertyManager().Attributes.Values)
+            {
+                if (!result.Attributes.ContainsKey(attribute.Key))
+                {
+                    result.Attributes.Add(attribute.Key,0);
+                }
+            }
 
             JToken[] skills = JsonUtils.GetValueOrDefault<JToken[]>(json, GcConstants.Classes.SKILLS, null);
             if (skills != null)
             {
                 foreach (JToken value in skills)
                 {
-                    Tuple<string, SkillTemplate> skill = SkillFromJson(value, result);
-                    result.Skills.Add(skill.Item1, skill.Item2);
+                    SkillTemplate skill = SkillFromJson(value, result);
+                    result.Skills.Add(skill.Key, skill);
 
                 }
             }
 
             JToken baseAttack = JsonUtils.ValidateJsonEntry(GcConstants.Classes.BASE_ATTACK, json, JTokenType.String, $"Class {result.Name} does not contain a {GcConstants.Classes.BASE_ATTACK} entry.");
-            Tuple<string, SkillTemplate> baseSkill = SkillFromJson(baseAttack, result);
-            result.BaseAttack = baseSkill.Item2;
+            SkillTemplate baseSkill = SkillFromJson(baseAttack, result);
+            result.BaseAttack = baseSkill;
 
+            JToken[] resources = JsonUtils.GetValueOrDefault<JToken[]>(json, GcConstants.Classes.RESOURCES, null);
+            if (resources != null)
+            {
+                foreach (JToken value in resources)
+                {
+                    ResourceTemplate res = ResourceFromJson(value, result);
+                    result.Resources.Add(res.Key,res);
 
+                }
+            }
             return result;
         }
     }

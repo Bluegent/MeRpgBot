@@ -76,6 +76,7 @@ namespace RPGEngine.GameConfigReader
             public const string BASIC_ATTRIBUTES = "basic_attributes";
             public const string SKILLS = "skills";
             public const string BASE_ATTACK = "base_attack";
+            public const string RESOURCES = "resources";
         }
 
         public static class Defaults

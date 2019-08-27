@@ -17,6 +17,10 @@
             {"key":"AGI","value":5},
             {"key":"VIT","value":10}
         ],
+        "resources":
+        [
+            "MP"
+        ],
 		"base_attack":"punch",
         "skills":
         [

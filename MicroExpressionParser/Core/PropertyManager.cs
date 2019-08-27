@@ -53,5 +53,10 @@
             Resources.Add(resource.Key,resource);
         }
 
+        public ResourceTemplate GetResource(string key)
+        {
+            return Resources.ContainsKey(key) ? Resources[key] : null;
+        }
+
     }
 }

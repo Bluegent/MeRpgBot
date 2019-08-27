@@ -37,6 +37,19 @@ Details:
 * __[Integer]__ How much of each attribute this class gets at the start.
 * __[Missing/Default]__ If a line for a specific key defined there is missing, default value is 0. Entire section can be missing.
 
+#### Resources
+```
+        "resources":
+        [
+            "MP",
+            "RAGE",
+            ...
+        ],
+        ...
+```
+* `"resources":["MP",`
+    * __[String]__	The keys of the resources (from resources.json) assigned to this class.
+    * __[Missing/Default]__ Entire section can be omitted and the class will only have the HP resource.
 
 #### Skills
 ```

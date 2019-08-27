@@ -7,6 +7,8 @@ using RPGEngine.GameConfigReader;
 
 namespace RPGEngine.Game
 {
+    using RPGEngine.Core;
+
     public class ClassTemplate : BaseObject
     {
         public Dictionary<string,SkillTemplate> Skills { get; }
@@ -14,11 +16,14 @@ namespace RPGEngine.Game
         public Dictionary<string, double> BasicValues { get; }
         public SkillTemplate BaseAttack { get; set; }
 
+        public Dictionary<string, ResourceTemplate>  Resources { get; }
+
         public ClassTemplate()
         {
             Skills = new Dictionary<string, SkillTemplate>();
             Attributes = new Dictionary<string, double>();
             BasicValues = new Dictionary<string, double>();
+            Resources = new Dictionary<string, ResourceTemplate>();
         }
 
         public SkillTemplate GetSkill(string key)
