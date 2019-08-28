@@ -63,7 +63,6 @@ namespace RPGEngine.Core
 
         private ConcurrentQueue<Command> commandsQueue;
 
-        private List<long> ExpValues;
         private SkillManager _skillManager;
         private PlayerManager _playerManager;
         private ClassManager _classManager;
@@ -81,7 +80,6 @@ namespace RPGEngine.Core
         private Sanitizer Sanit { get; set; }
         private ILogHelper _log;
         public ITimer Timer { get; set; }
-        public MeNode ExpFormula { get; set; }
 
 
         public GameEngine(ILogHelper log)
@@ -111,7 +109,7 @@ namespace RPGEngine.Core
             _classManager.Engine = this;
             _duelManager = new DuelManager();
             _duelManager.Engine = this;
-            ExpValues = new List<long>();
+
             _log = log;
             Players = new Dictionary<string, Entity>();
             Enemies = new Dictionary<string, Entity>();
@@ -125,8 +123,7 @@ namespace RPGEngine.Core
 
         public void SetStartExp(long value)
         {
-            if(ExpValues.Count == 0)
-                ExpValues.Add(value);
+
         }
 
         public SkillManager GetSkillManager()
@@ -260,19 +257,7 @@ namespace RPGEngine.Core
 
         public long GetMaxExp(int level)
         {
-            if (ExpFormula == null)
-                return 0;
-            if (ExpValues.Count <= level)
-            {
-                ExpValues.Capacity = level+1;
-                for (int i = ExpValues.Count-1; i <= level; ++i)
-                {
-                    double prev = ExpValues[i];
-                    MeNode sanitized = Sanitizer.ReplaceExpValues(ExpFormula, (long)prev, i+1);
-                    ExpValues.Add((long)Math.Floor(sanitized.Resolve().Value.ToDouble()));
-                }
-            }
-            return ExpValues[level];
+            return _coreManager.GetMaxExp(level);
         }
 
 

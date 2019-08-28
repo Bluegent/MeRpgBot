@@ -32,11 +32,12 @@ namespace RPGEngine.Utils
             StringBuilder bar = new StringBuilder();
             int segments = (int)Math.Floor(current / max * BarLength);
             bar.Append('[');
-            bar.Append(current+"/"+max+" ");
+            
             for (int i = 0; i < segments; ++i)
                 bar.Append(BarFullChar);
             for (int i = 0; i < BarLength - segments; ++i)
                 bar.Append(BarEmptyChar);
+            bar.Append($" {current}/{max}");
             bar.Append(']');
             return bar.ToString();
         }

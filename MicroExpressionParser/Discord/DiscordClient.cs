@@ -12,6 +12,7 @@ namespace RPGEngine.Discord
     using Newtonsoft.Json;
 
     using RPGEngine.Core;
+    using RPGEngine.Game;
 
     public  class DiscordClient : GameInterface.ILogger
     {
@@ -87,7 +88,7 @@ namespace RPGEngine.Discord
             {
                 channel = GetChannel();
             }
-            Log("I am finally online!");
+            Log($"RPG-Bot ready! [{Version.VersionString()}]");
             ready?.Invoke();
             return Task.CompletedTask;
         }

@@ -44,8 +44,19 @@ namespace RPGEngine.Core
             RegisterCommand(CommandsConstants.CAST_COMMAND, CastCommand);
             RegisterCommand(CommandsConstants.DUEL_COMMAND, DuelCommand);
             RegisterCommand(CommandsConstants.ME_COMMAND,MeCommand);
+            RegisterCommand(CommandsConstants.LIST_COMMAND,ListCommand);
         }
 
+        private bool CheckCurrentPlayer(Command command)
+        {
+            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            {
+
+                Engine.Log().Log("You do not have a character. Create one.");
+                return false;
+            }
+            return true;
+        }
 
         private void RegisterCommand(string commandName, Action<Command> command)
         {
@@ -55,6 +66,28 @@ namespace RPGEngine.Core
             }
         }
 
+        private void ListCommand(Command command)
+        {
+            if (command.Args.Length == 0)
+            {
+                Engine.Log().Log("Usage of me command: list <option> (players, classes)");
+                return;
+            }
+
+            string option = command.Args[0];
+
+            switch (option)
+            {
+                case "players":
+                    Engine.GetPlayerManager().DisplayPlayerList();
+                    break;
+                case "classes":
+                    Engine.GetClassManager().DisplayClassList();
+                    break;
+            }
+
+        }
+
         private void MeCommand(Command command)
         {
             if (command.Args.Length != 0)
@@ -62,13 +95,13 @@ namespace RPGEngine.Core
                 Engine.Log().Log("Usage of me command: me");
                 return;
             }
-            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            if (!CheckCurrentPlayer(command))
             {
-                Engine.Log().Log("You don't have a character.");
                 return;
             }
-            Entity playerEntity = Engine.GetPlayerManager().FindPlayerById(command.UserId).Entity;
-            Engine.Log().LogEntity(playerEntity);
+
+            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
+            currentPlayer.DisplayOverall();
             
         }
 
@@ -100,9 +133,8 @@ namespace RPGEngine.Core
                 return;
             }
 
-            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            if (!CheckCurrentPlayer(command))
             {
-                Engine.Log().Log("You do not have a character. Create one.");
                 return;
             }
 
@@ -121,9 +153,8 @@ namespace RPGEngine.Core
 
         private void AttackCommand(Command command)
         {
-            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            if (!CheckCurrentPlayer(command))
             {
-                Engine.Log().Log("You do not have a character. Create one.");
                 return;
             }
             Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
@@ -146,11 +177,9 @@ namespace RPGEngine.Core
                 Engine.Log().Log("Usage of cast command: cast <skill_alias> [optional] target");
                 return;
             }
-            
 
-            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            if (!CheckCurrentPlayer(command))
             {
-                Engine.Log().Log("You do not have a character. Create one.");
                 return;
             }
 
@@ -176,10 +205,8 @@ namespace RPGEngine.Core
                 Engine.Log().Log("Usage of cast command: duel challenge <target>\nduel accept \nduel reject \nduel exit");
                 return;
             }
-
-            if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
+            if (!CheckCurrentPlayer(command))
             {
-                Engine.Log().Log("You do not have a character. Create one.");
                 return;
             }
             Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
@@ -209,7 +236,12 @@ namespace RPGEngine.Core
                             Engine.Log().Log($"{targetName} is dead. You can't challenge a dead player.");
                             return;
                         }
-                        
+
+                        if (currentPlayer.Id == target.Id)
+                        {
+                            Engine.Log().Log($"{targetName} you can't challenge yourself you idiot.");
+                            return;
+                        }
                         target.AddChallenge(currentPlayer);
 
                     }

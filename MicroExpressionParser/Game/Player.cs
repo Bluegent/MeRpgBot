@@ -89,5 +89,12 @@ namespace RPGEngine.Game
             Engine.Log().Log($" {challenger.Entity.Name} challenged {Entity.Name} to a duel.");
             DuelRequests.Enqueue(challenger);
         }
+
+        public void DisplayOverall()
+        {
+            string displayString =
+                $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
+            Engine.Log().Log(displayString);
+        }
     }
 }

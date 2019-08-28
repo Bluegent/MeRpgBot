@@ -6,6 +6,18 @@ namespace RPGEngine.Game
         public const long TickTime = 1000;
     }
 
+    public static class Version
+    {
+        public const long MAJOR_VERSION = 0;
+        public const long MINOR_VERSION = 3;
+        public const string RELEASE_NAME = "Punch Update";
+
+        public static string VersionString()
+        {
+            return $"v.{MAJOR_VERSION}.{MINOR_VERSION} {RELEASE_NAME}";
+        }
+    }
+
     public static class ConfigFiles
     {
         public const string BASE_PATH = "config";
@@ -36,5 +48,6 @@ namespace RPGEngine.Game
         public const string DUEL_COMMAND = "duel";
 
         public const string ME_COMMAND = "me";
+        public const string LIST_COMMAND = "list";
     }
 }

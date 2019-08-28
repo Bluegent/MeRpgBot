@@ -77,5 +77,17 @@
                 player.Entity.Update();
             }
         }
+
+        public void DisplayPlayerList()
+        {
+            string displayString = "Registered players:\n";
+            if (_players.Count == 0)
+                displayString += "No registered players at the moment.";
+            foreach (Player player in _players.Values)
+            {
+                displayString += $"{player.Entity.Name} \n";
+            }
+            Engine.Log().Log(displayString);
+        }
     }
 }

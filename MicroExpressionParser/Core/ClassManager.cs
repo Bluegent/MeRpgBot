@@ -52,5 +52,17 @@
                 AddClass(newEntry);
             }
         }
+
+        public void DisplayClassList()
+        {
+            string displayString = "Available classes:\n";
+            if (_classes.Count == 0)
+                displayString += "There are no classes available at the moment.";
+            foreach (ClassTemplate classT in _classes.Values)
+            {
+                displayString += $"Name: {classT.Name} Key: {classT.Key} \n";
+            }
+            Engine.Log().Log(displayString);
+        }
     }
 }

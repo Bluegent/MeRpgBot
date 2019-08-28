@@ -5,6 +5,7 @@ using RPGEngine.GameConfigReader;
 
 namespace RPGEngine.Entities
 {
+    using System;
     using System.Dynamic;
 
     using RPGEngine.Cleanup;
@@ -167,6 +168,17 @@ namespace RPGEngine.Entities
             ResolvedReviveDuration = Sanitizer.ReplacePropeties(ReviveDuration, this).Resolve().Value.ToLong();
         }
 
+        public string GetResourcesString()
+        {
+            string result = "";
+            foreach (ResourceInstance resource in ResourceMap.Values)
+            {
+                result +=
+                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {resource.Resource.Name}\n";
+            }
+
+            return result;
+        }
 
     }
 

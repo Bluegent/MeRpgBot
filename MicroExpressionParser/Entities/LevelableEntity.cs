@@ -8,20 +8,20 @@ namespace RPGEngine.Entities
         public int Level { get; private set; }
         public int AttributePoints { get; private set; }
         public double CurrentExp { get; set; }
-        private double _currentLevelMaxExp;
+        public double CurrentLevelMaxExp { get; set; }
 
         public LevelableEntity(IGameEngine engine) : base(engine)
         {
             Level = 0;
             AttributePoints = 0;
             CurrentExp = 0;
-            _currentLevelMaxExp = Engine.GetMaxExp(Level);
+            CurrentLevelMaxExp = Engine.GetMaxExp(Level);
         }
 
         public void AddExp(long amount)
         {
             CurrentExp += amount;
-            if(CurrentExp >= _currentLevelMaxExp)
+            if(CurrentExp >= CurrentLevelMaxExp)
                 LevelUp();
         }
 
@@ -29,8 +29,8 @@ namespace RPGEngine.Entities
         {
             ++Level;
             ++AttributePoints;
-            CurrentExp -= _currentLevelMaxExp;
-            _currentLevelMaxExp = Engine.GetMaxExp(Level);
+            CurrentExp -= CurrentLevelMaxExp;
+            CurrentLevelMaxExp = Engine.GetMaxExp(Level);
         }
 
         public bool AssignAttributePoint(string key)
@@ -40,11 +40,13 @@ namespace RPGEngine.Entities
                 //log that you don't have attribute points
                 return false;
             }
+
             if (!Attributes.ContainsKey(key))
             {
                 //log that you don't have that attribute
                 return false;
             }
+
             ++Attributes[key].FromPoints;
             RefreshProperties();
 
