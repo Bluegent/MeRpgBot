@@ -14,6 +14,12 @@ namespace RPGEngine.Entities
         public List<AppliedStatus> Statuses;
         public SkillCastData CurrentlyCasting;
         public Entity CurrentTarget { get; private set; }
+
+        public bool IsAutoCasting;
+
+        public string AutoCastSkill;
+        public long NextAutoCast;
+
         public bool HasTarget
         {
             get
@@ -30,6 +36,9 @@ namespace RPGEngine.Entities
             CurrentlyCasting = null;
             Statuses = new List<AppliedStatus>();
             Skills = new Dictionary<string, SkillInstance>();
+            IsAutoCasting = false;
+            NextAutoCast = 0;
+            AutoCastSkill = null;
 
 
         }
@@ -69,7 +78,10 @@ namespace RPGEngine.Entities
         private void FinishCasting()
         {
             SetCurrentCD();
-
+            if (IsAutoCasting)
+            {
+                NextAutoCast = CurrentlyCasting.Skill.CooldownFinishTime + GameConstants.TickTime;
+            }
             //casting has ended, remove it
             CurrentlyCasting = null;
             Free = true;
@@ -154,7 +166,7 @@ namespace RPGEngine.Entities
             return amount;
         }
 
-        public override bool Cast(Entity target, string skillKey)
+        public override bool Cast(Entity target, string skillKey, bool autocast = false)
         {
             SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
             if (skill == null)
@@ -169,6 +181,7 @@ namespace RPGEngine.Entities
                 Engine.Log().Log($"Skill {skill.Skill.Name} is on cooldown for {seconds} seconds.");
                 return false;
             }
+
             if (!Free)
             {
                 Engine.Log().Log($"You are busy.");
@@ -421,6 +434,8 @@ namespace RPGEngine.Entities
 
         public void Target(Entity target)
         {
+            CancelCurrentCast();
+            StopAutoCasting();
             if (!Free)
             {
                 Engine.Log().Log("Casting...");
@@ -437,17 +452,50 @@ namespace RPGEngine.Entities
             Engine.Log().Log($"{Name} is now targeting {target.Name}.");
         }
 
+        public void StopAutoCasting()
+        {
+            IsAutoCasting = false;
+            AutoCastSkill = null;
+            
+        }
+
+        private void CancelCurrentCast()
+        {
+            CurrentlyCasting = null;
+        }
+
+        private void CheckAutoCast()
+        {
+            if (!IsAutoCasting)
+                return;
+            long now = Engine.GetTimer().GetNow();
+            if (CurrentlyCasting == null && (NextAutoCast == 0 || NextAutoCast <= now))
+            {
+                Cast(CurrentTarget, AutoCastSkill);
+            }
+        }
+        public void StartAutoCasting(string skillKey, Entity target = null)
+        {
+            CancelCurrentCast();
+            NextAutoCast = 0;
+            AutoCastSkill = skillKey;
+            if(target!=null)
+                Target(target);
+            IsAutoCasting = true;
+        }
+
         public override void Update()
         {
-            //Template handling
             if (!IsDead)
             {
+                CheckDeath();
                 RemoveExpiredStatuses();
                 RegenResources();
                 ApplyHealAndHarm();
                 TickCooldownds();
+
+                CheckAutoCast();
                 TickCurrentCast();
-                CheckDeath();
             }
             else
             {

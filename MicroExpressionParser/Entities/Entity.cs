@@ -74,7 +74,7 @@ namespace RPGEngine.Entities
 
         public abstract double GetHealed(double amount, Entity source, bool log = true);
 
-        public abstract bool Cast(Entity target, string skillKey);
+        public abstract bool Cast(Entity target, string skillKey, bool autocast = false);
 
         public abstract BaseProperty GetProperty(string key);
 
