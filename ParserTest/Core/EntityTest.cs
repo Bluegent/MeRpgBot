@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -46,6 +47,7 @@ namespace EngineTest.Core
             string expression = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
+            test.Key = "TEST_STATUS_KEY6";
             double[] values = { 10 };
             
             double expected = ent.GetProperty("STR").Value+10;
@@ -61,6 +63,7 @@ namespace EngineTest.Core
             string expression = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
+            test.Key = "TEST_STATUS_KEY10";
             double[] values = { 10 };
             int duration = 5;
             double expected = ent.GetProperty("STR").Value + 10;
@@ -109,6 +112,7 @@ namespace EngineTest.Core
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
 
             StatusTemplate test = new StatusTemplate(statuses){Interval = TreeConverter.Build("0", Engine)};
+            test.Key = "TEST_STATUS_KEY5";
             double[] values = { 10 ,5};
            
             double expectedStr = ent.GetProperty("STR").Value + values[0];
@@ -129,6 +133,7 @@ namespace EngineTest.Core
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,{damage})";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses){Interval = TreeConverter.Build("0", Engine)};
+            test.Key = "TEST_STATUS_KEY";
             ent.ApplyStatus(test,ent,5,null);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
             ent.Update();
@@ -142,6 +147,7 @@ namespace EngineTest.Core
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,$0);{LConstants.ADD_MOD_F}(STR,$1)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses) { Interval = TreeConverter.Build("0", Engine)};
+            test.Key = "TEST_STATUS_KEY3";
             double[] values = { 20, 10 };
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
             double expected = ent.GetProperty("STR").Value + values[1];
@@ -161,6 +167,7 @@ namespace EngineTest.Core
             string expression = $"{LConstants.HARM_F}({LConstants.TargetKeyword},{LConstants.TargetKeyword},T,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression);
             StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build(timeValues[0].ToString(), Engine) };
+            test.Key = "TEST_STATUS_KEY4";
             double[] values = { 20};
             ent.ApplyStatus(test, ent, timeValues[0], values);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - values[0];
@@ -185,6 +192,7 @@ namespace EngineTest.Core
             string intervalExpression = $"10-{LConstants.GET_PROP_F}({LConstants.SourceKeyword},INT)*2";
             MeNode intervalNode = TreeConverter.Build(intervalExpression, Engine);
             StatusTemplate test = new StatusTemplate(statuses){ Interval = intervalNode };
+            test.Key = "TEST_STATUS_KEY2";
             ent.ApplyStatus(test, ent, 5, null);
             double expectedHp = ent.GetProperty(Entity.HP_KEY).Value - damage;
             double expectedHp2 = ent.GetProperty(Entity.HP_KEY).Value - damage*2;
@@ -250,6 +258,7 @@ namespace EngineTest.Core
             string expression2 = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
             StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build("0", Engine) };
+            test.Key = "TEST_STATUS_KEY311";
             double[] values = { 10 };
 
             BaseEntity.ApplyStatus(test, BaseEntity, 10, values);
@@ -272,11 +281,12 @@ namespace EngineTest.Core
             MeNode tree = TreeConverter.Build(expression, Engine);
             MeNode partiallyResolved = TreeResolver.ResolveGivenOperations(tree, new string[1] { LConstants.GET_PROP_F });
             Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
-
+            
             //apply a status that modifies the value
             string expression2 = $"{LConstants.ADD_MOD_F}(STR,$0)";
             MeNode[] statuses = Engine.GetSanitizer().SplitAndConvert(expression2);
             StatusTemplate test = new StatusTemplate(statuses){ Interval = TreeConverter.Build("0", Engine) };
+            test.Key = "TEST_STATUS_KEY33";
             double[] values = { 10 };
 
             BaseEntity.ApplyStatus(test, BaseEntity, 10, values);
@@ -287,6 +297,29 @@ namespace EngineTest.Core
             Assert.AreEqual(expected, partiallyResolved.Value.ToDouble());
 
             BaseEntity.Cleanse();
+        }
+
+        [TestMethod]
+        public void EntityTestAddResource()
+        {
+            MockEntity ent = new MockEntity(Engine);
+            ResourceTemplate resTemp = new ResourceTemplate();
+            resTemp.Formula =new MeNode(100);
+            resTemp.RegenFormula = new MeNode(0);
+            resTemp.RegenInterval = new MeNode(0);
+            resTemp.StartMod = new MeNode( 0);
+            resTemp.Key = "TEST_RES";
+            resTemp.Name = "Test Resource";
+            resTemp.Description = "";
+
+            ent.AddResource(resTemp);
+            ent.Key = "TEST_KEY";
+            Assert.AreEqual(0,ent.GetProperty(resTemp.Key).Value);
+            long amount = 50;
+            Engine.AddPlayer(ent);
+            string fromula = $"{LConstants.ADD_TO_RESOURCE_F}({ent.Key},{resTemp.Key},{amount})";
+            TreeConverter.Build(fromula, Engine).Resolve();
+            Assert.AreEqual(amount,ent.GetProperty(resTemp.Key).Value);
         }
     }
 }

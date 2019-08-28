@@ -32,9 +32,10 @@ namespace EngineTest.Core
             trueDamage.Key = "T";
             trueDamage.Name = "true";
             Engine.AddDamageType(trueDamage);
+            ResourceTemplate res = new ResourceTemplate() { Key = "MP"};
 
-            SkillCost nullCost = new SkillCost("MP", TreeConverter.Build("0", Engine));
-            SkillCost notFree = new SkillCost("MP", TreeConverter.Build("50", Engine));
+            SkillCost nullCost = new SkillCost(res, TreeConverter.Build("0", Engine));
+            SkillCost notFree = new SkillCost(res, TreeConverter.Build("50", Engine));
 
             _testSkill = new SkillTemplate();
             _testSkill.Type = SkillType.Cast;

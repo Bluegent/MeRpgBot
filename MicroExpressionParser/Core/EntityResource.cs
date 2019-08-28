@@ -44,6 +44,12 @@ namespace RPGEngine.Core
 
         }
 
+        public void Add(double amount)
+        {
+            Value += amount;
+            Clamp();
+        }
+
         private void Clamp()
         {
             Value = Utils.Utility.Clamp(Value, 0, MaxAmount);
@@ -67,6 +73,7 @@ namespace RPGEngine.Core
         public void Cast(double amount)
         {
             Value -= amount;
+            Clamp();
         }
 
         public JObject ToJObject()

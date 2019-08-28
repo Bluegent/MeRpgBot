@@ -49,10 +49,11 @@ namespace RPGEngine.Entities
 
         public void AddToResource(string key, double amount)
         {
-            if (ResourceMap.ContainsKey(key))
-            {
-                ResourceMap[key].Value += amount;
-            }
+            if (!ResourceMap.ContainsKey(key))
+                return;
+            ResourceInstance res = ResourceMap[key];
+            Engine.Log().Log($"[{Name}]Generated {amount:0.} {res.Resource.Name}.");
+            res.Add(amount);
         }
 
         public void CheckRevive()

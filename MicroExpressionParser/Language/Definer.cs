@@ -486,7 +486,7 @@ namespace RPGEngine.Language
                         var.ToEntity().AddToResource(resourceKey,amount);
                     }
                     return null;
-                }, 1);
+                }, 3);
         }
     }
 }

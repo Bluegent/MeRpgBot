@@ -6,7 +6,6 @@ using RPGEngine.GameInterface;
 using RPGEngine.Language;
 using Newtonsoft.Json.Linq;
 using RPGEngine.Entities;
-using RPGEngine.Game;
 
 namespace EngineTest.GameConfigReader
 {
@@ -28,6 +27,9 @@ namespace EngineTest.GameConfigReader
             Engine.AddDamageType(trueDamage);
             ResourceTemplate mana = new ResourceTemplate();
             mana.Key = "MP";
+            ResourceTemplate hp = new ResourceTemplate();
+            hp.Key = Entity.HP_KEY;
+            Engine.GetPropertyManager().AddResource(hp);
             Engine.GetPropertyManager().AddResource(mana);
 
             Engine.GetCoreManager().DefaultSkillThreat = GcConstants.Core.DEFAULT_THREAT;
@@ -61,7 +63,7 @@ namespace EngineTest.GameConfigReader
 
             SkillLevelTemplate levelTemplate = skill.ByLevel[0];
             Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_COST_VALUE), levelTemplate.Cost.Amount.Value.ToDouble());
-            Assert.AreEqual(Entity.HP_KEY, levelTemplate.Cost.ResourceKey);
+            Assert.AreEqual(Entity.HP_KEY, levelTemplate.Cost.Resource.Key);
             Assert.AreEqual(GcConstants.Skills.DEFAULT_NEEDED_LEVEL, levelTemplate.NeededLevel);
 
             Assert.AreEqual(double.Parse(GcConstants.Skills.DEFAULT_CAST_DURATION), levelTemplate.Duration.Value.ToDouble());
@@ -136,7 +138,7 @@ namespace EngineTest.GameConfigReader
 
 
             Assert.AreEqual(100, levelTemplate.Cost.Amount.Value.ToDouble());
-            Assert.AreEqual("MP", levelTemplate.Cost.ResourceKey);
+            Assert.AreEqual("MP", levelTemplate.Cost.Resource.Key);
 
             Assert.AreEqual(100, levelTemplate.Duration.Resolve().Value.ToDouble());
             Assert.AreEqual(cd, levelTemplate.Cooldown.Value.ToDouble());
