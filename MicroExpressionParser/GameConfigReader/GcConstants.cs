@@ -25,6 +25,8 @@ namespace RPGEngine.GameConfigReader
             public const string CLASS = "class";
             public const string ENTITY = "entity";
             public const string BASE_SKILL = "base_skill";
+            public const string DEAD = "dead";
+            public const string REVIVE_TIME = "revive_time";
         }
 
         //statuses

@@ -66,10 +66,14 @@ namespace RPGEngine.Utils
 
         public static string GetFilePath(string file)
         {
+            if (!Directory.Exists(ConfigFiles.BASE_PATH))
+                Directory.CreateDirectory(ConfigFiles.BASE_PATH);
             return Path.Combine(ConfigFiles.BASE_PATH, file + ConfigFiles.EXENSION);
         }
         public static string GetPersistenceFilePath(string file)
         {
+            if (!Directory.Exists(PersistenceFiles.BASE_PATH))
+                Directory.CreateDirectory(PersistenceFiles.BASE_PATH);
             return Path.Combine(PersistenceFiles.BASE_PATH, file + PersistenceFiles.EXENSION);
         }
     }

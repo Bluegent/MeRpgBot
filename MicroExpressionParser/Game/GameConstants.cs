@@ -10,7 +10,7 @@ namespace RPGEngine.Game
     public static class Version
     {
         public const long MAJOR_VERSION = 0;
-        public const long MINOR_VERSION = 3;
+        public const long MINOR_VERSION = 4;
         public const string RELEASE_NAME = "Punch Update";
 
         public static string VersionString()

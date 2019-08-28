@@ -67,6 +67,8 @@ namespace RPGEngine.Entities
             result.Add(GcConstants.General.LEVEL,Level);
             result.Add(GcConstants.General.CURRENT_EXP,CurrentExp);
             result.Add(GcConstants.General.ATTRIBUTE_POINTS,AttributePoints);
+            result.Add(GcConstants.General.DEAD,IsDead);
+            result.Add(GcConstants.General.REVIVE_TIME,ReviveTime);
             JArray attributes=new JArray();
             foreach (EntityAttribute attr in Attributes.Values)
             {
@@ -94,6 +96,10 @@ namespace RPGEngine.Entities
             int level = obj[GcConstants.General.LEVEL].ToObject<int>();
             double currentExp = obj[GcConstants.General.CURRENT_EXP].ToObject<double>();
             int attributePoints = obj[GcConstants.General.ATTRIBUTE_POINTS].ToObject<int>();
+            bool isDead = obj[GcConstants.General.DEAD].ToObject<bool>();
+            long reviveTime = obj[GcConstants.General.REVIVE_TIME].ToObject<long>();
+            IsDead = isDead;
+            ReviveTime = reviveTime;
             Name = name;
             Level = level;
             CurrentExp = currentExp;

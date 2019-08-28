@@ -127,7 +127,8 @@ namespace RPGEngine.Entities
         {
             ResourceMap[HP_KEY].Value = 0;
             Cleanse();
-            FinishCasting();
+            CancelCurrentCast();
+            StopAutoCasting();
         }
 
         public override void Revive()
