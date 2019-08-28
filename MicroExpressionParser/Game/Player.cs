@@ -86,7 +86,7 @@ namespace RPGEngine.Game
         public void RejectDuel()
         {
             Player challenger = DuelRequests.Dequeue();
-            Engine.Log().Log($" {Entity.Name} rejected the challenge from {challenger.Entity.Name}.");
+            Engine.Log().Log($"[{Entity.Name}] Rejected challenge from {challenger.Entity.Name}.");
         }
 
         public void EndDuel()
@@ -95,21 +95,21 @@ namespace RPGEngine.Game
             if (Duel != null)
             {
                 Player enemy = Duel.Player1.Entity.Name == Entity.Name ? Duel.Player2 : Duel.Player1;
-                Engine.Log().Log($" {Entity.Name} ended the duel against {enemy.Entity.Name}.");
+                Engine.Log().Log($"[{Entity.Name}] Ended duel against {enemy.Entity.Name}.");
                 Duel.EndDuel();
             }
         }
 
         public void AddChallenge(Player challenger)
         {
-            Engine.Log().Log($" {challenger.Entity.Name} challenged {Entity.Name} to a duel.");
+            Engine.Log().Log($"[{challenger.Entity.Name}] Challenged {Entity.Name} to a duel.");
             DuelRequests.Enqueue(challenger);
         }
 
         public void DisplayOverall()
         {
             string displayString =
-                $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
+                $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead?"(dead)":"")}\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
             Engine.Log().Log(displayString);
         }
 

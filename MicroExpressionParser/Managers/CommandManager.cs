@@ -61,13 +61,12 @@ namespace RPGEngine.Managers
             }
             if (player.Entity.IsDead)
             {
-                Engine.Log().Log("You can't auto-attack if you're dead.");
                 return;
             }
 
             if (player.Entity.IsAutoCasting)
             {
-                Engine.Log().Log("You are already auto-attacking.");
+                Engine.Log().Log($"[{player.Entity.Name}] You are already auto-attacking.");
                 return;
             }
 
@@ -76,7 +75,7 @@ namespace RPGEngine.Managers
             {
                 if (!player.Entity.HasTarget)
                 {
-                    Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                    Engine.Log().Log($"[{player.Entity.Name}] Invalid target.");
                     return;
                 }
 
@@ -89,7 +88,7 @@ namespace RPGEngine.Managers
                 target = Engine.GetPlayerManager().FindPlayerByName(name);
                 if (target == null)
                 {
-                    Engine.Log().Log("Target does not exist.");
+                    Engine.Log().Log($"[{player.Entity.Name}] Invalid target.");
                     return;
                 }
                 else
@@ -106,7 +105,7 @@ namespace RPGEngine.Managers
             if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
             {
 
-                Engine.Log().Log("You do not have a character. Create one.");
+                Engine.Log().Log("You don't have a character.");
                 return false;
             }
             return true;
@@ -193,14 +192,15 @@ namespace RPGEngine.Managers
             }
 
             string name = command.Args[0];
+            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
             Player target = Engine.GetPlayerManager().FindPlayerByName(name);
             if (target == null)
             {
-                Engine.Log().Log("Target does not exist.");
+                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
                 return;
             }
 
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
+          
             currentPlayer.Entity.Target(target.Entity);
 
         }
@@ -215,14 +215,14 @@ namespace RPGEngine.Managers
 
             if (!currentPlayer.Entity.HasTarget)
             {
-                Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
                 return;
             }
 
             if (currentPlayer.Entity.IsAutoCasting
                 && currentPlayer.Entity.AutoCastSkill == currentPlayer.Class.BaseAttack.Key)
             {
-                Engine.Log().Log("You are already auto-attacking that target.");
+                Engine.Log().Log($"[{currentPlayer.Entity.Name}] You are already auto-attacking that target.");
                 return;
             }
 
@@ -258,7 +258,7 @@ namespace RPGEngine.Managers
                 Player target = Engine.GetPlayerManager().FindPlayerByName(name);
                 if (target == null)
                 {
-                    Engine.Log().Log("Target does not exist.");
+                    Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
                     return;
                 }
                 currentPlayer.Entity.Cast(target.Entity, skillAlias);
@@ -266,7 +266,7 @@ namespace RPGEngine.Managers
             }
             if (!currentPlayer.Entity.HasTarget)
             {
-                Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
                 return;
             }
             currentPlayer.Entity.Cast(currentPlayer.Entity.CurrentTarget, skillAlias);
@@ -313,7 +313,7 @@ namespace RPGEngine.Managers
 
                         if (currentPlayer.Id == target.Id)
                         {
-                            Engine.Log().Log($"{targetName} you can't challenge yourself you idiot.");
+                            Engine.Log().Log($"{targetName} you can't challenge yourself, you idiot.");
                             return;
                         }
                         target.AddChallenge(currentPlayer);
@@ -324,7 +324,7 @@ namespace RPGEngine.Managers
                     {
                         if (currentPlayer.Dueling)
                         {
-                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are currently in a duel.");
+                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Currently dueling.");
                             return;
                         }
                         if (currentPlayer.DuelRequests.Count != 0)
@@ -333,7 +333,7 @@ namespace RPGEngine.Managers
                         }
                         else
                         {
-                            Engine.Log().Log($"{currentPlayer.Entity.Name} you do not have duel requests.");
+                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] No duel requests.");
                         }
                     }
                     break;
@@ -341,7 +341,7 @@ namespace RPGEngine.Managers
                     {
                         if (currentPlayer.Dueling)
                         {
-                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are currently in a duel.");
+                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Currently dueling.");
                             return;
                         }
                         if (currentPlayer.DuelRequests.Count != 0)
@@ -350,7 +350,7 @@ namespace RPGEngine.Managers
                         }
                         else
                         {
-                            Engine.Log().Log($"{currentPlayer.Entity.Name} you do not have duel requests.");
+                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] No duel requests.");
                         }
                     }
                     break;
@@ -363,7 +363,7 @@ namespace RPGEngine.Managers
                         }
                         else
                         {
-                            Engine.Log().Log($"{currentPlayer.Entity.Name} you are not in a duel at the moment.");
+                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Not currently dueling.");
                         }
                     }
                     break;
