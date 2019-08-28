@@ -86,7 +86,7 @@ namespace RPGEngine.GameInterface
             ResourceInstance hp = target.GetResource(Entity.HP_KEY);
             string hpBar = Utils.Utility.getBar(hp.Value, hp.MaxAmount);
             string msg = $"{target.Name} {hpBar}";
-            LogBlock(msg);
+            Log(msg);
         }
         public void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted)
         {
@@ -94,17 +94,17 @@ namespace RPGEngine.GameInterface
             string hpBar = Utils.Utility.getBar(hp.Value,hp.MaxAmount);
             string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"({resisted} resisted)";
             string msg = $"{target.Name} {hpBar} [-{amount}{resist} {typeTemplate.Name} damage]";
-            LogBlock(msg);
+            Log(msg);
         }
 
         public void LogDodge(Entity target, Entity source)
         {
-            LogBlock($"{target.Name} dodged {source.Name}'s attack.");
+            Log($"{target.Name} dodged {source.Name}'s attack.");
         }
 
         public virtual void LogSay(Entity source, string message)
         {
-            LogBlock($"{source.Name}:{Enclose(message,Italics)}");
+            Log($"{source.Name}:{Enclose(message,Italics)}");
         }
     }
 

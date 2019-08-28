@@ -15,8 +15,8 @@
             GameEngine engine = new GameEngine(new DiscordLogHelper(new ConsoleLogger()));
             engine.LoadConfigFromFiles();
             CommandManager.Instance.Engine = engine;
-            Command cmd = new Command() { UserId = 1, Name = "create",Args = new string[] { "John", "shonen_protag" } };
-            Command cmd2 = new Command() {UserId = 2, Name = "create", Args = new string[] { "Putza", "shonen_protag" } };
+            Command cmd = new Command()  { UserId = 1, Name = "create",Args = new string[] { "John", "shonen_protag" } };
+            Command cmd2 = new Command() { UserId = 2, Name = "create", Args = new string[] { "Putza", "shonen_protag" } };
             Command cmd3 = new Command() { UserId = 1, Name = "duel", Args = new string[] { "challenge", "Putza" } };
             Command cmd4 = new Command() { UserId = 2, Name = "duel", Args = new string[] { "accept"} };
             Command cmd5 = new Command() { UserId = 2, Name = "attack", Args = new string[]{} };
