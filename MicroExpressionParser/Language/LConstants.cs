@@ -40,6 +40,9 @@ namespace RPGEngine.Language
         public const string PUSH_BACK_F = "PUSH_BACK";
         public const string INTERRUPT_F = "INTERRUPT";
         public const string FLOOR_F = "FLOOR";
+        public const string REVIVE_F = "REVIVE";
+        public const string ADD_TO_RESOURCE_F = "ADD_TO_RESOURCE";
+
 
         public const char PARAM_SEPARATOR = ',';
         public const char LEFT_PAREN = '(';

@@ -53,10 +53,15 @@ __[Note]__ Due to the flexible nature of MicroExpression, this file might be out
     * `CAST(Billy,Jimmy,heal)` - Billy will cast heal on Jimmy
 * `CHANCE(percentage)` - rolls for an outcome with a percentage chance
     * `CHANCE(25) - will return true 25% of the time`
-* `APPLY_STATUS(entity,status,duration,value(s))` - apply a status effec to given entity that lasts a certain duration
+* `APPLY_STATUS(entity,status,duration,value(s))` - apply a status effect to given entity that lasts a certain duration
     * `APPLY_STATUS(Billy,poison,60,ARRAY(10,10))` - will poison Billy for 60 seconds, where Billy takes 10 damage every 10 seconds.
     * Note: The last argument can be a single value or an array and is interpreted by the status itself. In this case we assume the values that poison takes are damage and interval.
-          
+* `ADD_TO_RESOURCE(entity, resource_key, amount)` - add an amount to the target's specific resource.
+	* Nothing happens if the resource is missing from the target.
+	* ADD_TO_RESOURCE(billy,MP,10) - add 10 mana points to billly
+	* Works for HP too, but won't be treated as a heal since that has its own functionality
+* `REVIVE(entity)` - revive an entity
+
 ### Keywords
 * skill:
     * $T - represents the target entity

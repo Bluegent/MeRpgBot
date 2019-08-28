@@ -47,6 +47,14 @@ namespace RPGEngine.Entities
         public abstract void Revive();
 
 
+        public void AddToResource(string key, double amount)
+        {
+            if (ResourceMap.ContainsKey(key))
+            {
+                ResourceMap[key].Value += amount;
+            }
+        }
+
         public void CheckRevive()
         {
             if ( IsDead && Engine.GetTimer().GetNow() >= ReviveTime)

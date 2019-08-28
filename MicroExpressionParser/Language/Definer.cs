@@ -463,7 +463,30 @@ namespace RPGEngine.Language
                         }
                         return null;
                     }, 2);
-
+            AddFunction(LConstants.REVIVE_F,
+                (values, func) =>
+                {
+                    func.ValidateParameters(values.Length);
+                    MeVariable[] entity = values[0].ToArray();
+                    foreach (MeVariable var in entity)
+                    {
+                        var.ToEntity().Revive();
+                    }
+                    return null;
+                },1);
+            AddFunction(LConstants.ADD_TO_RESOURCE_F,
+                (values, func) =>
+                {
+                    func.ValidateParameters(values.Length);
+                    MeVariable[] entity = values[0].ToArray();
+                    string resourceKey = values[1].ToString();
+                    double amount = values[2].ToDouble();
+                    foreach (MeVariable var in entity)
+                    {
+                        var.ToEntity().AddToResource(resourceKey,amount);
+                    }
+                    return null;
+                }, 1);
         }
     }
 }
