@@ -49,6 +49,56 @@ namespace RPGEngine.Managers
             RegisterCommand(CommandsConstants.DUEL_COMMAND, DuelCommand);
             RegisterCommand(CommandsConstants.ME_COMMAND,MeCommand);
             RegisterCommand(CommandsConstants.LIST_COMMAND,ListCommand);
+            RegisterCommand(CommandsConstants.AUTO_ATTACK_COMMAND, AutoAttackCommand);
+        }
+
+        private void AutoAttackCommand(Command command)
+        {
+            Player player = Engine.GetPlayerManager().FindPlayerById(command.UserId);
+            if (!CheckCurrentPlayer(command))
+            {
+                return;
+            }
+            if (player.Entity.IsDead)
+            {
+                Engine.Log().Log("You can't auto-attack if you're dead.");
+                return;
+            }
+
+            if (player.Entity.IsAutoCasting)
+            {
+                Engine.Log().Log("You are already auto-attacking.");
+                return;
+            }
+
+            Player target;
+            if (command.Args.Length == 0)
+            {
+                if (!player.Entity.HasTarget)
+                {
+                    Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                    return;
+                }
+
+                target = null;
+
+            }
+            else
+            {
+                string name = command.Args[0];
+                target = Engine.GetPlayerManager().FindPlayerByName(name);
+                if (target == null)
+                {
+                    Engine.Log().Log("Target does not exist.");
+                    return;
+                }
+                else
+                {
+                    player.Entity.Target(target.Entity);
+                }
+            }
+
+            player.Entity.StartAutoCasting(player.Class.BaseAttack.Key, target?.Entity);
         }
 
         private bool CheckCurrentPlayer(Command command)
@@ -166,6 +216,13 @@ namespace RPGEngine.Managers
             if (!currentPlayer.Entity.HasTarget)
             {
                 Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
+                return;
+            }
+
+            if (currentPlayer.Entity.IsAutoCasting
+                && currentPlayer.Entity.AutoCastSkill == currentPlayer.Class.BaseAttack.Key)
+            {
+                Engine.Log().Log("You are already auto-attacking that target.");
                 return;
             }
 
