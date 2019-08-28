@@ -8,6 +8,8 @@ namespace RPGEngine.Parser
 {
     using System.Globalization;
 
+    using RPGEngine.Templates;
+
     public static class TreeConverter
     {
 

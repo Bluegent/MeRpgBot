@@ -10,6 +10,7 @@ using RPGEngine.Utils;
 namespace RPGEngine.GameConfigReader
 {
     using RPGEngine.Entities;
+    using RPGEngine.Templates;
 
     public class SkillReader
     {

@@ -1,7 +1,5 @@
-﻿namespace RPGEngine.Game
+﻿namespace RPGEngine.Templates
 {
-    using System.Collections.Generic;
-
     using RPGEngine.Cleanup;
     using RPGEngine.Core;
     using RPGEngine.Entities;
@@ -22,6 +20,14 @@
             return Sanitizer.ReplacePropeties(Formula, parent).Resolve().Value.ToDouble();
         }
     }
+}
+
+namespace RPGEngine.Game
+{
+    using System.Collections.Generic;
+
+    using RPGEngine.Entities;
+    using RPGEngine.Templates;
 
     public class StatInstance : BaseProperty
     {

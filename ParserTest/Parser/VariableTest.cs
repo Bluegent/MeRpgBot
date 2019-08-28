@@ -13,7 +13,7 @@ using RPGEngine.Entities;
 
 namespace EngineTest.Parser
 {
-
+    using RPGEngine.Templates;
 
     /// <summary>
     /// Summary description for VariableTest

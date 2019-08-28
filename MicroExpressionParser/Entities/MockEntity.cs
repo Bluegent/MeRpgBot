@@ -6,6 +6,7 @@ namespace RPGEngine.Entities
     using System;
 
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Templates;
 
     public class MockEntity : LevelableEntity
     {

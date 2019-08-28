@@ -7,6 +7,8 @@ using RPGEngine.Language;
 
 namespace RPGEngine.Entities
 {
+    using RPGEngine.Templates;
+
     public class BaseEntity : Entity
     {
         public List<AppliedStatus> Statuses;

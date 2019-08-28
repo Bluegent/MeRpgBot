@@ -1,4 +1,4 @@
-﻿namespace RPGEngine.Core
+﻿namespace RPGEngine.Managers
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,9 @@
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.Cleanup;
+    using RPGEngine.Core;
     using RPGEngine.Game;
+    using RPGEngine.GameConfigReader;
     using RPGEngine.Utils;
 
     public class CoreManager

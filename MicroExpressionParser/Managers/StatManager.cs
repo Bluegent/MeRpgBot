@@ -6,8 +6,10 @@ using RPGEngine.Game;
 using RPGEngine.GameConfigReader;
 using RPGEngine.Utils;
 
-namespace RPGEngine.Manager
+namespace RPGEngine.Managers
 {
+    using RPGEngine.Templates;
+
     public class StatManager
     {
         private Dictionary<string, StatTemplate> _stats;

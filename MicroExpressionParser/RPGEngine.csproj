@@ -192,18 +192,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
-    <Compile Include="Core\ClassManager.cs" />
-    <Compile Include="Core\CommandManager.cs" />
-    <Compile Include="Core\CoreManager.cs" />
-    <Compile Include="Core\DamageTypeTemplate.cs" />
-    <Compile Include="Core\DamageTypeManager.cs" />
+    <Compile Include="Managers\ClassManager.cs" />
+    <Compile Include="Managers\CommandManager.cs" />
+    <Compile Include="Managers\CoreManager.cs" />
+    <Compile Include="Templates\ResourceTemplate.cs" />
+    <Compile Include="Templates\DamageTypeTemplate.cs" />
+    <Compile Include="Managers\DamageTypeManager.cs" />
     <Compile Include="Core\DuelInstance.cs" />
-    <Compile Include="Core\DuelManager.cs" />
+    <Compile Include="Managers\DuelManager.cs" />
     <Compile Include="Core\EntityResource.cs" />
-    <Compile Include="Core\PlayerManager.cs" />
-    <Compile Include="Core\PropertyManager.cs" />
+    <Compile Include="Managers\PlayerManager.cs" />
+    <Compile Include="Managers\PropertyManager.cs" />
     <Compile Include="Core\SkillCastData.cs" />
-    <Compile Include="Core\StatusManager.cs" />
+    <Compile Include="Managers\StatusManager.cs" />
     <Compile Include="Discord\Command.cs" />
     <Compile Include="Discord\DiscordClient.cs" />
     <Compile Include="Discord\DiscordConfig.cs" />
@@ -216,15 +217,15 @@
     <Compile Include="GameConfigReader\ResourceReader.cs" />
     <Compile Include="GameConfigReader\SkillReader.cs" />
     <Compile Include="GameConfigReader\StatReader.cs" />
-    <Compile Include="Game\ClassTemplate.cs" />
-    <Compile Include="Game\CoreReader.cs" />
+    <Compile Include="Templates\ClassTemplate.cs" />
+    <Compile Include="GameConfigReader\CoreReader.cs" />
     <Compile Include="Game\GameConstants.cs" />
     <Compile Include="Game\Player.cs" />
-    <Compile Include="Game\SkillTemplate.cs" />
+    <Compile Include="Templates\SkillTemplate.cs" />
     <Compile Include="GameInterface\Logger.cs" />
     <Compile Include="Core\MeNode.cs" />
-    <Compile Include="Game\StatTemplate.cs" />
-    <Compile Include="Game\StatusTemplate.cs" />
+    <Compile Include="Templates\StatTemplate.cs" />
+    <Compile Include="Templates\StatusTemplate.cs" />
     <Compile Include="GameConfigReader\BaseObject.cs" />
     <Compile Include="GameConfigReader\GcConstants.cs" />
     <Compile Include="GameConfigReader\StatusReader.cs" />
@@ -241,7 +242,7 @@
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Data\Skill.cs" />
     <Compile Include="Data\StatusEffect.cs" />
-    <Compile Include="Manager\StatManager.cs" />
+    <Compile Include="Managers\StatManager.cs" />
     <Compile Include="Parser\InfixToPostfix.cs" />
     <Compile Include="Parser\TreeConverter.cs" />
     <Compile Include="Parser\Token.cs" />
@@ -262,7 +263,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\SkillManager.cs" />
+    <Compile Include="Managers\SkillManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Manager\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

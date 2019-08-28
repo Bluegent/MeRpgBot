@@ -5,6 +5,7 @@ using RPGEngine.Entities;
 namespace RPGEngine.Game
 {
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Templates;
 
     public class Player 
     {

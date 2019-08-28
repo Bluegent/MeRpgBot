@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using RPGEngine.Entities;
 
-namespace RPGEngine.Core
+namespace RPGEngine.Managers
 {
+    using RPGEngine.Core;
     using RPGEngine.Discord;
     using RPGEngine.Game;
+    using RPGEngine.Templates;
 
     public class CommandManager
     {

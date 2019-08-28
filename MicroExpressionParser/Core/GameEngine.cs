@@ -11,11 +11,12 @@ using RPGEngine.Cleanup;
 using RPGEngine.Game;
 using RPGEngine.GameInterface;
 using RPGEngine.Utils;
-using RPGEngine.Manager;
+using RPGEngine.Managers;
+using RPGEngine.Templates;
 
 namespace RPGEngine.Core
 {
-    
+
 
     public interface IGameEngine
     {
@@ -123,7 +124,7 @@ namespace RPGEngine.Core
 
         public void SetStartExp(long value)
         {
-
+            _coreManager.StartExp = value;
         }
 
         public SkillManager GetSkillManager()

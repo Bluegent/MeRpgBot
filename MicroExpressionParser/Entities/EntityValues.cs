@@ -5,6 +5,7 @@ using RPGEngine.Game;
 
 namespace RPGEngine.Entities
 {
+    using RPGEngine.Templates;
 
     public class BaseProperty
     {

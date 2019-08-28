@@ -5,6 +5,8 @@ using RPGEngine.Parser;
 
 namespace RPGEngine.GameConfigReader
 {
+    using RPGEngine.Templates;
+
     public class StatusReader
     {
         public IGameEngine Engine { get; }

@@ -1,9 +1,10 @@
 ﻿using RPGEngine.Core;
-namespace RPGEngine.Game
+namespace RPGEngine.GameConfigReader
 {
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Managers;
     using RPGEngine.Parser;
     using RPGEngine.Utils;
 

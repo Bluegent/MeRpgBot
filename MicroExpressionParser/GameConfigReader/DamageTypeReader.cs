@@ -3,6 +3,7 @@
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.Core;
+    using RPGEngine.Templates;
     using RPGEngine.Utils;
 
     public class DamageTypeReader

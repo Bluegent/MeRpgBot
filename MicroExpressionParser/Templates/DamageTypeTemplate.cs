@@ -4,8 +4,10 @@ using RPGEngine.Parser;
 using RPGEngine.Entities;
 using RPGEngine.Cleanup;
 
-namespace RPGEngine.Core
+namespace RPGEngine.Templates
 {
+    using RPGEngine.Core;
+
     public class DamageTypeTemplate : BaseObject
     {
         public MeNode Mitigation { get; set; }

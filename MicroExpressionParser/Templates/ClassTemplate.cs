@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using RPGEngine.GameConfigReader;
 
-namespace RPGEngine.Game
+namespace RPGEngine.Templates
 {
     using RPGEngine.Core;
+    using RPGEngine.Game;
 
     public class ClassTemplate : BaseObject
     {

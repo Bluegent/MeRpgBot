@@ -4,21 +4,10 @@ using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
 using RPGEngine.Language;
 
-namespace RPGEngine.Game
+namespace RPGEngine.Templates
 {
-    public class StatModifier
-    {
-        public string StatKey { get; set; }
-        public double Amount { get; set; }
-    }
+    using RPGEngine.Game;
 
-    public enum StackingType
-    {
-        None, //The buff does not stack, so when it is applied while another stack of it exists on the target, nothing happens.
-        Refresh, //The duration of existing effect is refreshed when applied again. The formula IS NOT recalculated!
-        Independent, //Status stacks have independent durations, so applying a new one will not affect the others.
-
-    }
     public class StatusTemplate : BaseObject
     {
         public List<MeNode> HpMods { get; private set; }
@@ -53,5 +42,19 @@ namespace RPGEngine.Game
                     return type;
             return StackingType.None;
         }
+    }
+
+    public class StatModifier
+    {
+        public string StatKey { get; set; }
+        public double Amount { get; set; }
+    }
+
+    public enum StackingType
+    {
+        None, //The buff does not stack, so when it is applied while another stack of it exists on the target, nothing happens.
+        Refresh, //The duration of existing effect is refreshed when applied again. The formula IS NOT recalculated!
+        Independent, //Status stacks have independent durations, so applying a new one will not affect the others.
+
     }
 }

@@ -8,6 +8,8 @@ namespace RPGEngine.GameInterface
     using System;
     using System.Collections.Generic;
 
+    using RPGEngine.Templates;
+
     public interface ILogHelper
     {
         string Enclose(string msg, string enclosure);

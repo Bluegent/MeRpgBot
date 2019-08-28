@@ -8,6 +8,9 @@ using RPGEngine.Language;
 namespace EngineTest.GameConfigReader
 {
     using Newtonsoft.Json.Linq;
+
+    using RPGEngine.Templates;
+
     [TestClass]
     public class ResourceReaderTest
     {

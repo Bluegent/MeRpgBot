@@ -10,7 +10,7 @@ using RPGEngine.Parser;
 using RPGEngine.Entities;
 namespace EngineTest.Core
 {
-  
+    using RPGEngine.Templates;
 
     [TestClass]
     public class EntityTest

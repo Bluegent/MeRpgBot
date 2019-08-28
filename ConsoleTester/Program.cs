@@ -6,6 +6,7 @@
     using RPGEngine.Core;
     using RPGEngine.Discord;
     using RPGEngine.GameInterface;
+    using RPGEngine.Managers;
 
     class Program
     {

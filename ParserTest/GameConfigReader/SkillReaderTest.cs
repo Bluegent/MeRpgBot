@@ -10,6 +10,7 @@ using RPGEngine.Game;
 
 namespace EngineTest.GameConfigReader
 {
+    using RPGEngine.Templates;
 
     [TestClass]
     public class SkillReaderTest

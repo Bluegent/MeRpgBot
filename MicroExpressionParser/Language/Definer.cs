@@ -9,7 +9,7 @@ using RPGEngine.Utils;
 
 namespace RPGEngine.Language
 {
-    
+    using RPGEngine.Templates;
 
     public class Definer
     {

@@ -10,6 +10,7 @@ using System;
 
 namespace EngineTest.Core
 {
+    using RPGEngine.Templates;
 
     [TestClass]
     public class CastTest

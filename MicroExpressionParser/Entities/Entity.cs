@@ -9,6 +9,7 @@ namespace RPGEngine.Entities
     using System.Dynamic;
 
     using RPGEngine.Cleanup;
+    using RPGEngine.Templates;
 
     public abstract class Entity
     {

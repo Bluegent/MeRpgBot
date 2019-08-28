@@ -8,6 +8,8 @@ namespace RPGEngine.Core
     using RPGEngine.Language;
     using Entities;
 
+    using RPGEngine.Templates;
+
     public class MeException : Exception
     {
         public MeException(string message) : base(message) { }

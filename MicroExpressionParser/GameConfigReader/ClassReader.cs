@@ -9,6 +9,7 @@
 
     using RPGEngine.Core;
     using RPGEngine.Game;
+    using RPGEngine.Templates;
     using RPGEngine.Utils;
 
     public class ClassReader

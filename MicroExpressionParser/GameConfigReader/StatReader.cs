@@ -6,6 +6,8 @@ using RPGEngine.Utils;
 
 namespace RPGEngine.GameConfigReader
 {
+    using RPGEngine.Templates;
+
     public class StatReader
     {
         private IGameEngine _engine;

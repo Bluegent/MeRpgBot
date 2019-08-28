@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using RPGEngine.Game;
 
-namespace RPGEngine.Core
+namespace RPGEngine.Managers
 {
     using System.Collections;
 
     using Newtonsoft.Json.Linq;
 
+    using RPGEngine.Core;
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Templates;
     using RPGEngine.Utils;
 
     public class SkillManager

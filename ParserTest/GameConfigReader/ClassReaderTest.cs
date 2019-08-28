@@ -12,6 +12,7 @@ namespace EngineTest.GameConfigReader
     using RPGEngine.GameInterface;
     using RPGEngine.Language;
     using RPGEngine.Parser;
+    using RPGEngine.Templates;
 
     [TestClass]
     public class ClassReaderTest

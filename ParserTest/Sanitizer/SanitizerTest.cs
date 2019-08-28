@@ -9,7 +9,8 @@ using RPGEngine.Cleanup;
 
 namespace EngineTest
 {
-    
+    using RPGEngine.Templates;
+
     [TestClass]
     public class SanitizerTest
     {

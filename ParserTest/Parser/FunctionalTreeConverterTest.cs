@@ -8,7 +8,7 @@ using RPGEngine.Entities;
 
 namespace EngineTest.Parser
 {
-
+    using RPGEngine.Templates;
 
     [TestClass]
     public class FunctionalTreeConverterTest

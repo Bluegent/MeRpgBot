@@ -7,6 +7,7 @@
 
     using RPGEngine.Core;
     using RPGEngine.Parser;
+    using RPGEngine.Templates;
     using RPGEngine.Utils;
 
     public class ResourceReader

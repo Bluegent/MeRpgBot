@@ -1,7 +1,8 @@
-﻿namespace RPGEngine.Core
+﻿namespace RPGEngine.Managers
 {
     using System.Collections.Generic;
 
+    using RPGEngine.Core;
     using RPGEngine.Game;
 
     public class DuelManager

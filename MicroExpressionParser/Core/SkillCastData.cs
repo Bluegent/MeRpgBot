@@ -6,6 +6,7 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.Core
 {
+    using RPGEngine.Templates;
 
     public class SkillInstance
     {

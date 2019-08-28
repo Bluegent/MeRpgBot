@@ -6,9 +6,34 @@ using System.Threading.Tasks;
 using RPGEngine.Core;
 using RPGEngine.GameConfigReader;
 
-namespace RPGEngine.Game
+namespace RPGEngine.Templates
 {
-    using Newtonsoft.Json.Linq;
+    using RPGEngine.Game;
+
+    public class SkillTemplate : BaseObject
+    {
+        public List<string> Aliases { get; set; }
+        public SkillType Type { get; set; }
+        public List<SkillLevelTemplate> ByLevel { get; set; }
+
+        public SkillTemplate()
+        {
+            ByLevel = new List<SkillLevelTemplate>();
+            Aliases = new List<string>();
+        }
+
+        public void TypeFromString(string str)
+        {
+            foreach (SkillType type in Enum.GetValues(typeof(SkillType)))
+                if (str.Equals(type.ToString().ToLower()))
+                {
+                    Type = type;
+                    return;
+                }
+            throw new MeException($"Unknown skill type {str} for skill {Name}.");
+        }
+
+    }
 
     public enum SkillType
     {
@@ -44,30 +69,5 @@ namespace RPGEngine.Game
         {
             Formulas = new List<MeNode>();
         }
-    }
-
-    public class SkillTemplate : BaseObject
-    {
-        public List<string> Aliases { get; set; }
-        public SkillType Type { get; set; }
-        public List<SkillLevelTemplate> ByLevel { get; set; }
-
-        public SkillTemplate()
-        {
-            ByLevel = new List<SkillLevelTemplate>();
-            Aliases = new List<string>();
-        }
-
-        public void TypeFromString(string str)
-        {
-            foreach (SkillType type in Enum.GetValues(typeof(SkillType)))
-                if (str.Equals(type.ToString().ToLower()))
-                {
-                    Type = type;
-                    return;
-                }
-            throw new MeException($"Unknown skill type {str} for skill {Name}.");
-        }
-
     }
 }

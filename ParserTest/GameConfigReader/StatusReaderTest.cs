@@ -8,6 +8,8 @@ using RPGEngine.GameInterface;
 
 namespace EngineTest.GameConfigReader
 {
+    using RPGEngine.Templates;
+
     [TestClass]
     public class StatusReaderTest
     {

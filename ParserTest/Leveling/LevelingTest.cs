@@ -27,7 +27,7 @@ namespace EngineTest.Leveling
         public static void StartUp(TestContext ctx)
         {
             Definer.Instance().Engine = Engine;
-            Engine.ExpFormula = TreeConverter.Build($"{LConstants.ExpPrevKeyword}*1.1+50*2^{LConstants.FLOOR_F}({LConstants.LevelKeyword}/5.0)", Engine);
+            Engine.GetCoreManager().ExpFormula = TreeConverter.Build($"{LConstants.ExpPrevKeyword}*1.1+50*2^{LConstants.FLOOR_F}({LConstants.LevelKeyword}/5.0)", Engine);
             Engine.SetStartExp(StartExp);
         }
 

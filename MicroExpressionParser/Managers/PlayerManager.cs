@@ -1,8 +1,10 @@
-﻿namespace RPGEngine.Core
+﻿namespace RPGEngine.Managers
 {
     using System.Collections.Generic;
 
+    using RPGEngine.Core;
     using RPGEngine.Game;
+    using RPGEngine.Templates;
 
     public class PlayerManager
     {

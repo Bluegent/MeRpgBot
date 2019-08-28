@@ -10,6 +10,7 @@ namespace EngineTest.GameConfigReader
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.GameConfigReader;
+    using RPGEngine.Managers;
 
     [TestClass]
     public class CoreReaderTest
