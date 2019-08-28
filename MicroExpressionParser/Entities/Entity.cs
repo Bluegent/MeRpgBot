@@ -175,7 +175,7 @@ namespace RPGEngine.Entities
             foreach (ResourceInstance resource in ResourceMap.Values)
             {
                 result +=
-                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {resource.Resource.Name}\n";
+                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {Utils.Utility.TruncateAndAlign(resource.Resource.Name,10),-15}\n";
             }
 
             return result;

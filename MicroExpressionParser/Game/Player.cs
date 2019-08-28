@@ -68,7 +68,6 @@ namespace RPGEngine.Game
         public void RejectDuel()
         {
             Player challenger = DuelRequests.Dequeue();
-            //log reject
             Engine.Log().Log($" {Entity.Name} rejected the challenge from {challenger.Entity.Name}.");
         }
 
@@ -80,8 +79,6 @@ namespace RPGEngine.Game
                 Player enemy = Duel.Player1.Entity.Name == Entity.Name ? Duel.Player2 : Duel.Player1;
                 Engine.Log().Log($" {Entity.Name} ended the duel against {enemy.Entity.Name}.");
                 Duel.EndDuel();
-
-                //log exit
             }
         }
 

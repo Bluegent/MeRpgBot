@@ -21,11 +21,13 @@
             Command cmd3 = new Command() { UserId = 1, Name = "duel", Args = new string[] { "challenge", "Putza" } };
             Command cmd4 = new Command() { UserId = 2, Name = "duel", Args = new string[] { "accept"} };
             Command cmd5 = new Command() { UserId = 2, Name = "attack", Args = new string[]{} };
+            Command meCmd = new Command() { UserId = 2, Name = "me", Args = new string[]{}};
             engine.EnqueueCommand(cmd);
             engine.EnqueueCommand(cmd2);
             engine.EnqueueCommand(cmd3);
             engine.EnqueueCommand(cmd4);
             engine.EnqueueCommand(cmd5);
+            engine.EnqueueCommand(meCmd);
             while (true)
             {
                 engine.Update();
