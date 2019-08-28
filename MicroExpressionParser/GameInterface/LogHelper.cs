@@ -30,6 +30,8 @@ namespace RPGEngine.GameInterface
 
         public const long MAX_MESSAGE_LENGTH = 1800;
 
+        public const string NEW_LINE = "\n";
+
         private StringBuilder output;
 
         public DiscordLogHelper(ILogger log)
@@ -48,14 +50,16 @@ namespace RPGEngine.GameInterface
 
         public void Log(string message)
         {
-            if (output.Length + message.Length > MAX_MESSAGE_LENGTH)
+            if (output.Length + message.Length> MAX_MESSAGE_LENGTH)
             {
                 EndBlock();
                 output.Append(message);
+                output.Append(NEW_LINE);
             }
             else
             {
                 output.Append(message);
+                output.Append(NEW_LINE);
             }
         }
 
