@@ -297,11 +297,13 @@ namespace RPGEngine.Core
 
         public void Update()
         {
+            _log.StartBlock();
             PollCommands();
             _playerManager.Update();
             _duelManager.Update();
             //Update entities
-            
+            _log.EndBlock();
+
         }
         public void PollCommands()
         {

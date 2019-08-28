@@ -23,7 +23,7 @@
         }
     }
 
-    public class StatInstance :BaseProperty
+    public class StatInstance : BaseProperty
     {
         public StatTemplate Stat { get; set; }
         public double Base { get; private set; }

@@ -5,10 +5,16 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.GameInterface
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface ILogHelper
     {
         string Enclose(string msg, string enclosure);
 
+
+        void StartBlock();
+        void EndBlock();
         void Log(string msg);
         void LogEntity(Entity me);
         void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted);
@@ -22,13 +28,35 @@ namespace RPGEngine.GameInterface
         public const string CodeBlock = "```";
         public const string Italics = "_";
 
+        public const long MAX_MESSAGE_LENGTH = 1800;
+
+        private StringBuilder output;
+
         public DiscordLogHelper(ILogger log)
         {
             _log = log;
+            output = new StringBuilder();
         }
+
+        public void EndBlock()
+        {
+            if (output.Length == 0)
+                return;
+            _log.Log(Enclose(output.ToString(),"```"));
+            output.Clear();
+        }
+
         public void Log(string message)
         {
-            _log.Log(message);
+            if (output.Length + message.Length > MAX_MESSAGE_LENGTH)
+            {
+                EndBlock();
+                output.Append(message);
+            }
+            else
+            {
+                output.Append(message);
+            }
         }
 
         public void LogBlock(string msg)
@@ -42,6 +70,11 @@ namespace RPGEngine.GameInterface
             sb.Insert(0, enclosure);
             sb.Append(enclosure);
             return  sb.ToString();
+        }
+
+        public void StartBlock()
+        {
+            output.Clear();
         }
 
         public void LogEntity(Entity target)
