@@ -22,6 +22,7 @@ namespace RPGEngine.GameInterface
         void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted);
         void LogDodge(Entity target, Entity source);
         void LogSay(Entity source, string msg);
+        void LogHeal(Entity target, Entity source, double amount);
     }
 
     public class DiscordLogHelper : ILogHelper
@@ -46,7 +47,7 @@ namespace RPGEngine.GameInterface
         {
             if (output.Length == 0)
                 return;
-            _log.Log(Enclose(output.ToString(),"```"));
+            _log.Log(Enclose(output.ToString(), CodeBlock));
             output.Clear();
         }
 
@@ -90,23 +91,32 @@ namespace RPGEngine.GameInterface
             string msg = $"{target.Name} {hpBar}";
             Log(msg);
         }
+
         public void LogDamage(Entity target, Entity source, DamageTypeTemplate typeTemplate, double amount, double resisted)
         {
             ResourceInstance hp = target.GetResource(Entity.HP_KEY);
             string hpBar = Utils.Utility.getBar(hp.Value,hp.MaxAmount);
-            string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"({resisted} resisted)";
-            string msg = $"{target.Name} {hpBar} [-{amount}{resist} {typeTemplate.Name} damage]";
+            //string resist = Utils.Utility.DoubleEq(resisted,0.0)?"": $"({resisted} resisted)";
+            string msg = $"{target.Name} {hpBar} {(amount < 0 ? "" : "-")}{amount} {typeTemplate.Name} damage";
             Log(msg);
         }
 
         public void LogDodge(Entity target, Entity source)
         {
-            Log($"{target.Name} dodged {source.Name}'s attack.");
+            Log($"[{target.Name}] Dodged {source.Name}.");
         }
 
         public virtual void LogSay(Entity source, string message)
         {
-            Log($"{source.Name}:{Enclose(message,Italics)}");
+            Log($"[{source.Name}]:{Enclose(message,Italics)}");
+        }
+
+        public virtual void LogHeal(Entity target, Entity source, double amount)
+        {
+            ResourceInstance hp = target.GetResource(Entity.HP_KEY);
+            string hpBar = Utils.Utility.getBar(hp.Value, hp.MaxAmount);
+            string msg = $"{target.Name} {hpBar} [{(amount>0?"+":"")}{amount}:0. {hp.Resource.Name}]";
+            Log(msg);
         }
     }
 

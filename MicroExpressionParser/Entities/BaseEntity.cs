@@ -120,7 +120,7 @@ namespace RPGEngine.Entities
 
         private void TakeActualDamage(double amount)
         {
-            ResourceMap[Entity.HP_KEY].Value -= amount;
+            ResourceMap[Entity.HP_KEY].Add(-1*amount);
         }
 
         public override void Die()
@@ -164,6 +164,8 @@ namespace RPGEngine.Entities
         public override double GetHealed(double amount, Entity source, bool log = true)
         {
             TakeActualDamage(-amount);
+            if(log)
+                Engine.Log().LogHeal(this,source,amount);
             return amount;
         }
 
@@ -208,8 +210,16 @@ namespace RPGEngine.Entities
 
             CurrentlyCasting = new SkillCastData(skill, target, this, Engine.GetTimer().GetNow());
             long time = CurrentlyCasting.CastFinishTime - Engine.GetTimer().GetNow();
-            if(time >= GameConstants.TickTime * 3)
-                Engine.Log().Log($"[{Name}] Started {(skill.Skill.Type == SkillType.Cast?"casting":"channeling")} {CurrentlyCasting.Skill.Skill.Name} at {CurrentlyCasting.Target.Name}.");
+            if (time >= GameConstants.TickTime * 3)
+            {
+                string type = skill.Skill.Type == SkillType.Cast ? "casting" : "channeling";
+                string castedFinish = Key.Equals(CurrentlyCasting.Target.Key)
+                    ? ""
+                    : $" on  {CurrentlyCasting.Target.Name}";          
+                Engine.Log()
+                    .Log(
+                        $"[{Name}] Started {type} {CurrentlyCasting.Skill.Skill.Name}{castedFinish}.");
+            }
             return true;
         }
 
@@ -261,6 +271,7 @@ namespace RPGEngine.Entities
         {
             long removeTime = GetRemoveTime(duration);
             AppliedStatus newStatus = new AppliedStatus() { Source = source, LastTick = 0, RemovalTime = removeTime, Template = status, NumericValues = values };
+            
             MeNode intervalTree = Sanitizer.ReplaceTargetAndSource(status.Interval, source, this);
             newStatus.Interval = intervalTree.Resolve().Value.ToLong();
             Statuses.Add(newStatus);
@@ -277,7 +288,7 @@ namespace RPGEngine.Entities
                 if (sts.Template.Key.Equals(newStatus.Template.Key))
                     ++stackCount;
             }
-            Engine.Log().Log($"[{Name}] Affected by {status.Name}[{stackCount}] .");
+            Engine.Log().Log($"[{Name}] Affected by {status.Name}[{stackCount}].");
         }
 
         private long GetRemoveTime(double duration)
@@ -301,7 +312,13 @@ namespace RPGEngine.Entities
                     {
                         AppliedStatus refresh = GetStatusInstance(status.Key);
                         if (refresh != null)
-                            refresh.RemovalTime = Engine.GetTimer().GetNow() + (long)duration * 1000;
+                        {
+                            refresh.RemovalTime = Engine.GetTimer().GetNow() + (long) duration * 1000;
+                        }
+                        else
+                        {
+                            AddStatusFromTemplate(status, source, duration, values);
+                        }
                         break;
                     }
                 case StackingType.None:
@@ -333,6 +350,7 @@ namespace RPGEngine.Entities
         {
             long now = Engine.GetTimer().GetNow();
             List<AppliedStatus> remove = new List<AppliedStatus>();
+            
             foreach (AppliedStatus status in Statuses)
             {
                 if (status.RemovalTime != 0 && status.RemovalTime < now)
@@ -341,7 +359,9 @@ namespace RPGEngine.Entities
 
             foreach (AppliedStatus status in remove)
             {
+               
                 status.Remove(this);
+                Engine.Log().Log($"[{Name}] {status.Template.Name}[1] wore off.");
                 Statuses.Remove(status);
             }
             if (remove.Count != 0)
@@ -405,7 +425,10 @@ namespace RPGEngine.Entities
             {
                 if (CurrentlyCasting.CastFinishTime <= now)
                 {
-                    Engine.Log().Log($"[{Name}] Casted {CurrentlyCasting.Skill.Skill.Name} at {CurrentlyCasting.Target.Name}.");
+                    string castedFinish = Key.Equals(CurrentlyCasting.Target.Key)
+                        ? ""
+                        : $" on  {CurrentlyCasting.Target.Name}";
+                    Engine.Log().Log($"[{Name}] Casted {CurrentlyCasting.Skill.Skill.Name}{castedFinish}.");
                     //casting has finished so resolve the formula
                     MeNode[] toResolve = CurrentlyCasting.Skill.Formulas;
                     foreach (MeNode node in toResolve)

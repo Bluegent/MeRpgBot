@@ -36,7 +36,6 @@ namespace RPGEngine.Core
             {
                 target.Attributes[mod.StatKey].Modifiers.Remove(mod);
             }
-            target.Engine.Log().Log($"{Template.Name}[1] was removed from {target.Name}.");
         }
     }
 }

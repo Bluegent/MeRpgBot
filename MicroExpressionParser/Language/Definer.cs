@@ -430,7 +430,10 @@ namespace RPGEngine.Language
                    double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
                    func.ValidateParameters(values.Length);
 
-                   //TODO:construct a statusEffect
+                   foreach (MeVariable target in targets)
+                   {
+                       target.ToEntity().ApplyStatus(effect,source,duration,amounts);
+                   }
                    return null;
                }, 5);
             AddFunction(LConstants.GET_F, 

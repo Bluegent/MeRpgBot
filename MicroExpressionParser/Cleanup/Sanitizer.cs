@@ -167,7 +167,7 @@ namespace RPGEngine.Cleanup
         {
             Dictionary<string, double> valueMap = GetNumericValueMap(values);
             ReplaceNumericPlaceholders(tree, valueMap);
-            return TreeResolver.Resolve(tree,0).Value;
+            return TreeResolver.Resolve(tree).Value;
         }
 
         public static MeNode SanitizeMitigation(MeNode tree,Entity target, Entity caster, double amount)

@@ -114,7 +114,7 @@ namespace RPGEngine.Discord
         }
         public void Log(string msg)
         {
-            if (msg.Length != 0)
+            if (!string.IsNullOrEmpty(msg))
                 Channel.SendMessageAsync(msg);
         }
     }

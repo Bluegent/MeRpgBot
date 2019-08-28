@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 
 using RPGEngine.Entities;
 using RPGEngine.Game;
@@ -62,6 +63,7 @@ namespace RPGEngine.Core
                 Value += RegenAmount;
                 Clamp();
                 NextRegenTick = now + RegenInterval * GameConstants.TickTime;
+
             }
         }
 
