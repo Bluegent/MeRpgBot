@@ -43,13 +43,13 @@ namespace RPGEngine.Templates
 
     public class SkillCost
     {
-        public string ResourceKey { get; }
+        public ResourceTemplate Resource;
         public MeNode Amount { get; }
 
-        public SkillCost(string key, MeNode amount)
+        public SkillCost(ResourceTemplate resource, MeNode amount)
         {
             Amount = amount;
-            ResourceKey = key;
+            Resource = resource;
         }
     }
 

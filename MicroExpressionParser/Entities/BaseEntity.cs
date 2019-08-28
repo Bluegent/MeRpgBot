@@ -172,33 +172,33 @@ namespace RPGEngine.Entities
             SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
             if (skill == null)
             {
-                Engine.Log().Log($"You do not have a skill with the key \"{skillKey}\".");
+                Engine.Log().Log($"[{Name}]You don't have that skill({skillKey}).");
                 //log that you don't have that skill
                 return false;
             }
             if (skill.CooldownFinishTime != 0)
             {
                 long seconds = (skill.CooldownFinishTime - Engine.GetTimer().GetNow()) / GameConstants.TickTime;
-                Engine.Log().Log($"Skill {skill.Skill.Name} is on cooldown for {seconds} seconds.");
+                Engine.Log().Log($"[{Name}]\"{skill.Skill.Name}\" is on cooldown for {seconds} s.");
                 return false;
             }
 
             if (!Free)
             {
-                Engine.Log().Log($"You are busy.");
+                Engine.Log().Log($"[{Name}]You are busy.");
                 return false;
             }
 
-            if (!ResourceMap.ContainsKey(skill.Values().Cost.ResourceKey))
+            if (!ResourceMap.ContainsKey(skill.Values().Cost.Resource.Key))
             {
-                Engine.Log().Log($"You don't have the necessary resource \"{skill.Values().Cost.ResourceKey}\".");
+                Engine.Log().Log($"[{Name}]You don't have \"{skill.Values().Cost.Resource.Name}\".");
                 return false;
             }
-            ResourceInstance res = ResourceMap[skill.Values().Cost.ResourceKey];
+            ResourceInstance res = ResourceMap[skill.Values().Cost.Resource.Key];
             double amount = Sanitizer.ReplacePropeties(skill.Values().Cost.Amount, this).Resolve().Value.ToDouble();
             if (!res.CanCast(amount))
             {
-                Engine.Log().Log($"Not enough {skill.Values().Cost.ResourceKey}.");
+                Engine.Log().Log($"[{Name}]Not enough {skill.Values().Cost.Resource.Name} for {skill.Skill.Name}.");
                 return false;
             }
 
@@ -207,7 +207,6 @@ namespace RPGEngine.Entities
             Free = false;
 
             CurrentlyCasting = new SkillCastData(skill, target, this, Engine.GetTimer().GetNow());
-            Engine.Log().Log($"{Name} is casting {skill.Skill.Name}");
             return true;
         }
 
@@ -269,6 +268,13 @@ namespace RPGEngine.Entities
                 Attributes[mod.StatKey].Modifiers.Add(mod);
             }
             RefreshProperties();
+            int stackCount = 0;
+            foreach(AppliedStatus sts in Statuses)
+            {
+                if (sts.Template.Key.Equals(newStatus.Template.Key))
+                    ++stackCount;
+            }
+            Engine.Log().Log($"[{Name}]Affected by {status.Name}[{stackCount}].");
         }
 
         private long GetRemoveTime(double duration)
@@ -396,17 +402,14 @@ namespace RPGEngine.Entities
             {
                 if (CurrentlyCasting.CastFinishTime <= now)
                 {
+                    Engine.Log().Log($"[{Name}]Casted {CurrentlyCasting.Skill.Skill.Name} at {CurrentlyCasting.Target.Name}.");
                     //casting has finished so resolve the formula
                     MeNode[] toResolve = CurrentlyCasting.Skill.Formulas;
                     foreach (MeNode node in toResolve)
                     {
-
                         MeNode sanitized = Sanitizer.ReplaceTargetAndSource(node, this, CurrentlyCasting.Target);
-                        string unsanitized = node.ToString();
-                        string debug = sanitized.ToString();
                         sanitized.Resolve();
                     }
-
                     FinishCasting();
                 }
             }
@@ -415,6 +418,7 @@ namespace RPGEngine.Entities
 
                 if (CurrentlyCasting.CastFinishTime <= now)
                 {
+                    Engine.Log().Log($"[{Name}]Finished channeling {CurrentlyCasting.Skill.Skill.Name}.");
                     FinishCasting();
                 }
                 else
@@ -439,18 +443,16 @@ namespace RPGEngine.Entities
             StopAutoCasting();
             if (!Free)
             {
-                Engine.Log().Log("Casting...");
+                Engine.Log().Log($"[{Name}]You are busy.");
                 return;
             }
-
             if (IsDead)
             {
-                Engine.Log().Log("You are dead.");
                 return;
             }
             CurrentTarget = target;
             if(target != null)
-            Engine.Log().Log($"{Name} is now targeting {target.Name}.");
+            Engine.Log().Log($"[{Name}]Targeting {target.Name}.");
         }
 
         public void StopAutoCasting()

@@ -53,7 +53,7 @@ namespace RPGEngine.GameConfigReader
                     .ToString();
             }
 
-            return new SkillCost(key, TreeConverter.Build(amountFormula, Engine));
+            return new SkillCost(Engine.GetPropertyManager().GetResource(key), TreeConverter.Build(amountFormula, Engine));
         }
 
         private SkillLevelTemplate LevelFromJson(JObject levelValue, SkillTemplate skill)
