@@ -53,6 +53,8 @@ namespace RPGEngine.Entities
             {
                 Revive();
                 IsDead = false;
+                ReviveTime = 0;
+                Engine.Log().Log($"{Name} has been revived.");
             }
         }
 
@@ -60,9 +62,10 @@ namespace RPGEngine.Entities
         {
             if (!IsDead && ResourceMap[HP_KEY].Value <= 0)
             {
-                Die();
                 IsDead = true;
                 ReviveTime = Engine.GetTimer().GetNow() + ResolvedReviveDuration * GameConstants.TickTime;
+                Die();
+                Engine.Log().Log($"{Name} died.");
             }
         }
 

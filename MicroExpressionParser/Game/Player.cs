@@ -68,8 +68,10 @@ namespace RPGEngine.Game
 
             Entity.Skills = skills;
             Entity.Key = Id.ToString();
+            Entity.ReviveDuration = Engine.GetCoreManager().ReviveTime;
             Dueling = false;
             Duel = null;
+            Entity.RefreshProperties();
         }
 
         public void AcceptDuel()

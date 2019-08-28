@@ -250,12 +250,25 @@ namespace RPGEngine.Managers
 
             Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
 
+
+
+            if (command.Args.Length > 1)
+            {
+                string name = command.Args[1];
+                Player target = Engine.GetPlayerManager().FindPlayerByName(name);
+                if (target == null)
+                {
+                    Engine.Log().Log("Target does not exist.");
+                    return;
+                }
+                currentPlayer.Entity.Cast(target.Entity, skillAlias);
+                return;
+            }
             if (!currentPlayer.Entity.HasTarget)
             {
                 Engine.Log().Log("You do not have a target or your current target is dead. Chose a valid target.");
                 return;
             }
-
             currentPlayer.Entity.Cast(currentPlayer.Entity.CurrentTarget, skillAlias);
         }
 
