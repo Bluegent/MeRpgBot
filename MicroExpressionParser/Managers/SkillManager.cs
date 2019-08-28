@@ -48,7 +48,7 @@ namespace RPGEngine.Managers
 
         public void LoadSkillsFromFile(string path)
         {
-            JArray skillJson = FileReader.FromPath<JArray>(path);
+            JArray skillJson = FileHandler.FromPath<JArray>(path);
             SkillReader reader = new SkillReader(Engine);
 
             foreach (JToken skillValue in skillJson)

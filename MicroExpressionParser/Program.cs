@@ -25,6 +25,7 @@ namespace RPGEngine
             GameEngine engine = new GameEngine(logger);
             engine.Timer = new RealTimer();
             engine.LoadConfigFromFiles();
+            engine.LoadPersistenceFiles();
             CommandManager.Instance.Engine = engine;
             discord.Engine = engine;
             discord.Init();

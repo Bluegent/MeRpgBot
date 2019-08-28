@@ -6,9 +6,19 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.Core
 {
-    using RPGEngine.Templates;
+    using System;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.Remoting.Messaging;
 
-    public class SkillInstance
+    using Newtonsoft.Json.Linq;
+
+    using RPGEngine.GameConfigReader;
+    using RPGEngine.GameInterface;
+    using RPGEngine.Managers;
+    using RPGEngine.Templates;
+    using RPGEngine.Utils;
+
+    public class SkillInstance : IJsonSerializable
     {
         public SkillTemplate Skill { get; set; }
         public int SkillLevel { get; set; }
@@ -20,6 +30,29 @@ namespace RPGEngine.Core
         }
 
         public MeNode[] Formulas => Values().Formulas.ToArray();
+
+        public JObject ToJObject()
+        {
+            JObject result=new JObject();
+            result.Add(GcConstants.General.KEY,Skill.Key);
+            result.Add(GcConstants.Skills.COOLDOWN,CooldownFinishTime);
+            result.Add(GcConstants.General.LEVEL,SkillLevel);
+            return result;
+        }
+
+        public bool FromJObject(JObject obj, IGameEngine engine)
+        {
+            string key = obj[GcConstants.General.KEY].ToObject<string>();
+            SkillTemplate template = engine.GetSkillManager().GetSkill(key);
+            if (template == null)
+                return false;
+            Skill = template;
+            int level = obj[GcConstants.General.LEVEL].ToObject<int>();
+            SkillLevel = level;
+            long cooldown = obj[GcConstants.Skills.COOLDOWN].ToObject<long>();
+            CooldownFinishTime = cooldown;
+            return true;
+        }
     }
 
     public class SkillCastData

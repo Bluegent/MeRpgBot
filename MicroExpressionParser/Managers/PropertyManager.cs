@@ -67,7 +67,7 @@
 
         public void LoadAttributesFromPath(string path)
         {
-            JArray attributeJson = FileReader.FromPath<JArray>(path);
+            JArray attributeJson = FileHandler.FromPath<JArray>(path);
             foreach(JToken attribute in attributeJson)
             {
                 if (attribute.Type != JTokenType.Object)
@@ -82,7 +82,7 @@
 
         public void LoadBaseValuesFromPath(string path)
         {
-            JArray baseValueArray = FileReader.FromPath<JArray>(path);
+            JArray baseValueArray = FileHandler.FromPath<JArray>(path);
             foreach (JToken baseValue in baseValueArray)
             {
                 if (baseValue.Type != JTokenType.Object)
@@ -98,7 +98,7 @@
 
         public void LoadResourcesFromPath(string path)
         {
-            JArray resourceJson = FileReader.FromPath<JArray>(path);
+            JArray resourceJson = FileHandler.FromPath<JArray>(path);
             ResourceReader reader = new ResourceReader(Engine);
 
             foreach (JToken resourceValue in resourceJson)

@@ -7,6 +7,8 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.Managers
 {
+    using Newtonsoft.Json;
+
     using RPGEngine.Core;
     using RPGEngine.Discord;
     using RPGEngine.Game;
@@ -104,7 +106,7 @@ namespace RPGEngine.Managers
 
             Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
             currentPlayer.DisplayOverall();
-            
+
         }
 
         private void CreateCommand(Command command)

@@ -4,6 +4,7 @@ namespace RPGEngine.Game
     public class GameConstants
     {
         public const long TickTime = 1000;
+        public const long SAVE_INTERVAL = 10;
     }
 
     public static class Version
@@ -32,6 +33,14 @@ namespace RPGEngine.Game
         public const string STATUSES = "statuses";
         public const string SKILLS = "skills";
         public const string STATS = "stats";
+
+    }
+
+    public static class PersistenceFiles
+    {
+        public const string BASE_PATH = "data";
+        public const string EXENSION = ".json";
+        public const string PLAYERS = "players";
 
     }
 

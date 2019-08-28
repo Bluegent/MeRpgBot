@@ -43,7 +43,7 @@
         public void LoadDamageTypesFromfile(string path)
         {
             DamageTypeReader reader = new DamageTypeReader(Engine);
-            JArray damageTypeJson = FileReader.FromPath<JArray>(path);
+            JArray damageTypeJson = FileHandler.FromPath<JArray>(path);
 
             foreach (JToken damageValue in damageTypeJson)
             {

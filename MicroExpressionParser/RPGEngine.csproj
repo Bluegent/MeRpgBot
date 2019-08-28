@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AppliedStatus.cs" />
+    <Compile Include="GameInterface\IJsonSerializable.cs" />
     <Compile Include="Managers\ClassManager.cs" />
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\CoreManager.cs" />
@@ -255,7 +256,7 @@
     <Compile Include="GameInterface\LogHelper.cs" />
     <Compile Include="Cleanup\Sanitizer.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
-    <Compile Include="Utils\FileReader.cs" />
+    <Compile Include="Utils\FileHandler.cs" />
     <Compile Include="Utils\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -265,9 +266,7 @@
   <ItemGroup>
     <Compile Include="Managers\SkillManager.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Manager\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

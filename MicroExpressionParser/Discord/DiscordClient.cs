@@ -50,7 +50,7 @@ namespace RPGEngine.Discord
 
         public async void Init()
         {
-            config = JsonConvert.DeserializeObject<DiscordConfig>(Utils.FileReader.Read("config.json"));
+            config = JsonConvert.DeserializeObject<DiscordConfig>(Utils.FileHandler.Read("config.json"));
             client = new DiscordSocketClient();
 
             client.Log += DiscordLog;

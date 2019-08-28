@@ -2,9 +2,13 @@
 {
     using System.Collections.Generic;
 
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     using RPGEngine.Core;
     using RPGEngine.Game;
     using RPGEngine.Templates;
+    using RPGEngine.Utils;
 
     public class PlayerManager
     {
@@ -90,6 +94,30 @@
                 displayString += $"{player.Entity.Name} \n";
             }
             Engine.Log().Log(displayString);
+        }
+
+        public void Load(string path)
+        {
+            JObject[] players = FileHandler.FromPath<JObject[]>(path);
+            if (players != null)
+            {
+                foreach (JObject playerObject in players)
+                {
+                    Player player =new Player();
+                    player.FromJObject(playerObject, Engine);
+                    _players.Add(player.Id,player);
+                }
+            }
+        }
+
+        public void Save(string path)
+        {
+            List < JObject > result = new List<JObject>();
+            foreach(Player player in _players.Values)
+            {
+                result.Add(player.ToJObject());
+            }
+            FileHandler.Write(path,JsonConvert.SerializeObject(result,Formatting.Indented));
         }
     }
 }

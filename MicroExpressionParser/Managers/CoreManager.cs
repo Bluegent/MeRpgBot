@@ -63,7 +63,7 @@
        public static CoreManager FromFilePath(string filePath, IGameEngine engine)
        {
            CoreReader reader = new CoreReader(engine);
-           CoreManager result = reader.FromJson(FileReader.FromPath<JObject>(filePath));
+           CoreManager result = reader.FromJson(FileHandler.FromPath<JObject>(filePath));
            result.Engine = engine;
            return result;
        }

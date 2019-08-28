@@ -43,7 +43,7 @@
         public void LoadStatusesFromFile(string path)
         {
             StatusReader reader = new StatusReader(Engine);
-            JArray json = FileReader.FromPath<JArray>(path);
+            JArray json = FileHandler.FromPath<JArray>(path);
 
             foreach (JToken entry in json)
             {

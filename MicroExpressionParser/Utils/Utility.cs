@@ -68,5 +68,9 @@ namespace RPGEngine.Utils
         {
             return Path.Combine(ConfigFiles.BASE_PATH, file + ConfigFiles.EXENSION);
         }
+        public static string GetPersistenceFilePath(string file)
+        {
+            return Path.Combine(PersistenceFiles.BASE_PATH, file + PersistenceFiles.EXENSION);
+        }
     }
 }

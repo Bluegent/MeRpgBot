@@ -17,6 +17,14 @@ namespace RPGEngine.GameConfigReader
             public const string DESC = "description";
             public const string FORMULA = "formula";
             public const string VALUE = "value";
+            public const string LEVEL = "level";
+            public const string FROM_POINTS = "from_points";
+            public const string ID = "id";
+            public const string CURRENT_EXP = "current_exp";
+            public const string ATTRIBUTE_POINTS = "attribute_points";
+            public const string CLASS = "class";
+            public const string ENTITY = "entity";
+            public const string BASE_SKILL = "base_skill";
         }
 
         //statuses
@@ -85,6 +93,7 @@ namespace RPGEngine.GameConfigReader
             public const string SKILLS = "skills";
             public const string BASE_ATTACK = "base_attack";
             public const string RESOURCES = "resources";
+            public const string ATTRIBUTES = "attributes";
         }
 
 

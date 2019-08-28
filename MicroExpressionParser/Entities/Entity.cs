@@ -123,7 +123,7 @@ namespace RPGEngine.Entities
         {
             if (Attributes.ContainsKey(key))
                 return;
-            Attributes.Add(key, new EntityAttribute(value));
+            Attributes.Add(key, new EntityAttribute(value){Key = key});
             RefreshProperties();
         }
 

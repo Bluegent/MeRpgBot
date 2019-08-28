@@ -43,7 +43,7 @@ namespace RPGEngine.Managers
         public void LoadStatsFromFile(string path)
         {
             StatReader reader = new StatReader(_engine);
-            JArray json = FileReader.FromPath<JArray>(path);
+            JArray json = FileHandler.FromPath<JArray>(path);
 
             foreach (JToken entry in json)
             {

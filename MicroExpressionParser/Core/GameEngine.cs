@@ -55,6 +55,8 @@ namespace RPGEngine.Core
         void EnqueueCommand(Command command);
 
         void LoadConfigFromFiles();
+        void LoadPersistenceFiles();
+        void SavePersistenceFiles();
 
         void Update();
 
@@ -81,7 +83,7 @@ namespace RPGEngine.Core
         private Sanitizer Sanit { get; set; }
         private ILogHelper _log;
         public ITimer Timer { get; set; }
-
+        private long _nextSave;
 
         public GameEngine(ILogHelper log)
         {
@@ -119,6 +121,7 @@ namespace RPGEngine.Core
             DeclaredVariables = new Dictionary<string, MeVariable>();
 
             commandsQueue = new ConcurrentQueue<Command>();
+            _nextSave = Timer.GetFuture(GameConstants.SAVE_INTERVAL);
 
         }
 
@@ -281,6 +284,11 @@ namespace RPGEngine.Core
             _classManager.LoadClassesFromFile(Utility.GetFilePath(ConfigFiles.CLASSES));
         }
 
+        public void LoadPersistenceFiles()
+        {
+            _playerManager.Load(Utility.GetPersistenceFilePath(PersistenceFiles.PLAYERS));
+        }
+
         public void Update()
         {
             _log.StartBlock();
@@ -289,6 +297,11 @@ namespace RPGEngine.Core
             _duelManager.Update();
             //Update entities
             _log.EndBlock();
+            if (_nextSave <= Timer.GetNow())
+            {
+                SavePersistenceFiles();
+            }
+           
 
         }
         public void PollCommands()
@@ -307,6 +320,12 @@ namespace RPGEngine.Core
         public void EnqueueCommand(Command command)
         {
             commandsQueue.Enqueue(command);
+        }
+
+        public void SavePersistenceFiles()
+        {
+            _playerManager.Save(Utility.GetPersistenceFilePath(PersistenceFiles.PLAYERS));
+            _nextSave = Timer.GetFuture(GameConstants.SAVE_INTERVAL);
         }
     }
 }

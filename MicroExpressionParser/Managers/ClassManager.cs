@@ -41,7 +41,7 @@
         public void LoadClassesFromFile(string path)
         {
             ClassReader reader = new ClassReader(Engine);
-            JArray json = FileReader.FromPath<JArray>(path);
+            JArray json = FileHandler.FromPath<JArray>(path);
 
             foreach (JToken entry in json)
             {

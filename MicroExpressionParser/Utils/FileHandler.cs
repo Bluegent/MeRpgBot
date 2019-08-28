@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace RPGEngine.Utils
 {
+    using System.Data.SqlClient;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class FileReader
+    public class FileHandler
     {
         public static string Read(string path)
         {
@@ -28,7 +30,25 @@ namespace RPGEngine.Utils
 
         public static T FromPath<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(Read(path));
+            string data = Read(path);
+            if(data!=null)
+                return JsonConvert.DeserializeObject<T>(Read(path));
+            return default(T);
+        }
+
+        public static void Write(string path, string data)
+        {
+            using (StreamWriter sw = new StreamWriter(path, false))
+            {
+                sw.Write(data);
+                sw.Flush();
+                sw.Close();
+            }
+        }
+
+        public static void WriteJson(string path, JObject data)
+        {
+            string dataString = JsonConvert.SerializeObject(data, Formatting.Indented);
         }
     }
 }
