@@ -126,6 +126,13 @@ namespace RPGEngine.Game
             Engine.Log().Log(displayString);
         }
 
+        public void DisplayResources()
+        {
+            string displayString =
+                $"{GetBasicInfoString()}\n\n{Entity.GetResourcesDetailedString()}";
+            Engine.Log().Log(displayString);
+        }
+
         public JObject ToJObject()
         {
             JObject result=new JObject();

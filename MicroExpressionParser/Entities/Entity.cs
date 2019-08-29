@@ -192,6 +192,19 @@ namespace RPGEngine.Entities
 
             return result;
         }
+        public string GetResourcesDetailedString()
+        {
+            string result = "";
+            foreach (ResourceInstance resource in ResourceMap.Values)
+            {
+                double regenValue = resource.RegenAmount;
+                string regenString = $"{(regenValue > 0 ? $"[Regen: {regenValue}/" : "")}{(regenValue > 0 ? $"{resource.RegenInterval} s]" : "")}";
+                result +=
+                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {Utils.Utility.TruncateAndAlign(resource.Resource.Name, 10),-15} {regenString}\n";
+            }
+
+            return result;
+        }
 
     }
 

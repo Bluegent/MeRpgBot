@@ -36,6 +36,11 @@
                                 currentPlayer.DisplaySkills();
                             }
                             break;
+                        case "resources":
+                            {
+                                currentPlayer.DisplayResources();
+                            }
+                            break;
                     }
                 }
             }
