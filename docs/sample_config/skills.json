@@ -81,7 +81,7 @@
             {
                 "cooldown":"180",
                 "duration":"10",
-                "formula":"APPLYSTATUS($S,shonen_powerup,60,ARRAY(10,10,-5))",
+                "formula":"APPLY($S,shonen_powerup,60,ARRAY(10,10,-5))",
                 "needed_level":10
             }
         ]
@@ -151,7 +151,7 @@
             {
                 "cooldown":"30",
                 "cost":{"key":"RP","value":"20"},
-                "formula":"APPLYSTATUS($T,bleed,16,ARRAY(0.05))"
+                "formula":"APPLY($T,bleed,16,ARRAY(0.05))"
             }
         ]
     },
