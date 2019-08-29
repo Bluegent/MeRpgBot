@@ -23,6 +23,7 @@
             Command cmd5 = new Command() { UserId = 2, Name = "autoattack", Args = new string[]{} };
             Command cmd6 = new Command() { UserId = 1, Name = "cast", Args = new string[] { "attack"} };
             Command meCmd = new Command() { UserId = 2, Name = "me", Args = new string[]{}};
+            Command meSkills = new Command() { UserId = 2, Name = "me", Args = new string[] { "skills" } };
             engine.EnqueueCommand(cmd);
             engine.EnqueueCommand(cmd2);
             engine.EnqueueCommand(cmd3);
@@ -30,6 +31,7 @@
             engine.EnqueueCommand(cmd5);
             engine.EnqueueCommand(meCmd);
             engine.EnqueueCommand(cmd6);
+            engine.EnqueueCommand(meSkills);
             MockTimer timer = (MockTimer)engine.GetTimer();
             while (true)
             {

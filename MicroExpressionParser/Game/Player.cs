@@ -38,13 +38,9 @@ namespace RPGEngine.Game
             Class = myClass;
             Dictionary<string, SkillInstance> skills = new Dictionary<string, SkillInstance>();
             DuelRequests = new Queue<Player>();
-            //TODO: deserialize properly
             foreach (SkillTemplate skill in Class.Skills.Values)
             {
                 skills.Add(skill.Key, new SkillInstance() { Skill = skill, SkillLevel = 0 });
-                foreach(string str in skill.Aliases)
-                    if(!str.Equals(skill.Key))
-                        skills.Add(str, new SkillInstance() { Skill = skill, SkillLevel = 0 });
             }
             skills.Add(Class.BaseAttack.Key, new SkillInstance() { Skill = Class.BaseAttack, SkillLevel = 0 });
             Entity = new LevelableEntity(engine);
