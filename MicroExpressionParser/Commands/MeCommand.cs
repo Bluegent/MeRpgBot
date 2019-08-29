@@ -51,6 +51,11 @@
                                 currentPlayer.DisplayStats();
                             }
                             break;
+                        case "statuses":
+                            {
+                                currentPlayer.DisplayStatuses();
+                            }
+                            break;
                         case "all":
                             {
                                 currentPlayer.DisplayAll();

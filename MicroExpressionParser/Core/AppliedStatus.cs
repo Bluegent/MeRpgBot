@@ -9,6 +9,7 @@ using RPGEngine.Entities;
 namespace RPGEngine.Core
 {
     using RPGEngine.Templates;
+    using RPGEngine.Utils;
 
     public class AppliedStatus
     {
@@ -36,6 +37,13 @@ namespace RPGEngine.Core
             {
                 target.Attributes[mod.StatKey].Modifiers.Remove(mod);
             }
+        }
+
+        public string GetDisplayString(IGameEngine engine)
+        {
+            long removeTime = (RemovalTime - engine.GetTimer().GetNow()) / 1000;
+            string result = $"{Utility.TruncateAndAlign(Template.Name,15),-15} [Expires in: {Utility.FormatSeconds(removeTime),12}]";
+            return result;
         }
     }
 }

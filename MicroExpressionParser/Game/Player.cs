@@ -139,7 +139,12 @@ namespace RPGEngine.Game
                 $"{GetBasicInfoString()}\n\n{Entity.GetStatsString()}";
             Engine.Log().Log(displayString);
         }
-
+        public void DisplayStatuses()
+        {
+            string displayString =
+                $"{GetBasicInfoString()}\n\n{Entity.GetStatusesString()}";
+            Engine.Log().Log(displayString);
+        }
         public void DisplayResources()
         {
             string displayString =
@@ -158,7 +163,9 @@ namespace RPGEngine.Game
                 + $"{Utility.GetSeparatorLine(lineLength)}\n"
                 + $"[Stats]\n{Entity.GetStatsString()}"
                 + $"{Utility.GetSeparatorLine(lineLength)}\n"
-                + $"[Skills]\n{Entity.GetSkillsString()}";
+                + $"[Skills]\n{Entity.GetSkillsString()}"
+                + $"{Utility.GetSeparatorLine(lineLength)}\n"
+                + $"[Status Effects]\n{Entity.GetStatusesString()}";
             Engine.Log().Log(displayString);
         }
 

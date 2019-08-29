@@ -553,6 +553,21 @@ namespace RPGEngine.Entities
 
             return result;
         }
+
+        public string GetStatusesString()
+        {
+            string result = "";
+            if (Statuses.Count == 0)
+            {
+                return "No applied status effects.\n";
+            }
+            foreach (AppliedStatus status in Statuses)
+            {
+                result += $"{status.GetDisplayString(Engine)}\n";
+            }
+
+            return result;
+        }
     }
 
 }
