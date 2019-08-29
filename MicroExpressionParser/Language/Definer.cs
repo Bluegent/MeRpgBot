@@ -4,11 +4,13 @@ using System.Linq;
 
 using RPGEngine.Entities;
 using RPGEngine.Core;
-using RPGEngine.Game;
 using RPGEngine.Utils;
 
 namespace RPGEngine.Language
 {
+    using RPGEngine.Language.DefinerUtils;
+    using RPGEngine.Language.Operators.Mathematical;
+    using RPGEngine.Language.Operators.Object;
     using RPGEngine.Templates;
 
     public class Definer
@@ -16,6 +18,13 @@ namespace RPGEngine.Language
         private static readonly Definer _instance = new Definer();
         public Dictionary<string, Operator> Operators;
         public Dictionary<string, Function> Functions;
+
+        public static readonly Validator TwoDoubles = new Validator((values, op) =>
+            {
+                values[0].ToDouble();
+                values[1].ToDouble();
+                return true;
+            });
 
         private List<char> operatorChars;
         private bool _initialized;
@@ -103,6 +112,16 @@ namespace RPGEngine.Language
             return op;
         }
 
+        private void AddOperator(Operator op)
+        {
+            Operators.Add(op.Key, op);
+            foreach (char c in op.Key)
+            {
+                if (!operatorChars.Contains(c))
+                    operatorChars.Add(c);
+            }
+        }
+
         private Function AddFunction(string name, Func<MeVariable[], Operation, MeVariable> operation, int parameterCount = -1, bool[] executeInPlace = null)
         {
             Function func = new Function(name, parameterCount, executeInPlace);
@@ -129,155 +148,33 @@ namespace RPGEngine.Language
                 return;
             _initialized = true;
 
-            Validator twoDoubles = new Validator((values, op) =>
+
+            IOperatorDefiner[] opDefiners = {
+                    new PlusOperator(),
+                    new MinusOperator(),
+                    new PropertyOperator(),
+                    new MultiplyOperator(),
+                    new PowerOperator(),
+                    new DivideOperator(),
+                    new NotOperator(),
+                    new GreaterOperator(),
+                    new LesserOperator(),
+                    new AssignOperator(),
+                    new NumEqualsOperator()
+
+
+
+                };
+
+            foreach (IOperatorDefiner def in opDefiners)
             {
-                values[0].ToDouble();
-                values[1].ToDouble();
-                return true;
-            });
+                AddOperator(def.DefineOperator());
+            }
 
             Engine = engine;
-            AddOperator(
-                LConstants.PLUS_OP,
-                1,
-                true,
-                (values, op) =>
-                    {
-                        op.CheckParamCount(values.Length);
-                        return values[0].ToDouble() + values[1].ToDouble();
-                    }, twoDoubles);
 
 
 
-            AddOperator(LConstants.MINUS_OP, 1, true,
-            (values, op) =>
-            {
-                op.CheckParamCount(values.Length);
-                return values[0].ToDouble() - values[1].ToDouble();
-            }, twoDoubles);
-
-
-            AddOperator(LConstants.MULITPLY_OP, 2, true,
-                (values, op) =>
-                {
-                    op.CheckParamCount(values.Length);
-                    return values[0].ToDouble() * values[1].ToDouble();
-                }, twoDoubles);
-
-            AddOperator(LConstants.POWER_OP, 3, true,
-                 (values, op) =>
-                 {
-                     op.CheckParamCount(values.Length);
-                     return Math.Pow(values[0].ToDouble(), values[1].ToDouble());
-                 }, twoDoubles);
-
-            AddOperator(LConstants.DIVIDE_OP, 2, true,
-                (values, op) =>
-                {
-                    op.CheckParamCount(values.Length);
-                    return values[0].ToDouble() / values[1].ToDouble();
-                }, twoDoubles);
-            AddOperator(LConstants.NOT_OP, 2, true,
-                (values, op) =>
-                {
-                    op.CheckParamCount(values.Length);
-                    return !values[0].ToBoolean();
-                }, new Validator((variables, operation) =>
-                                         {
-                                             variables[0].ToBoolean();
-                                             return true;
-                                         })
-                , 1);
-
-
-            AddOperator(LConstants.GREATER_OP, 0, true,
-                 (values, op) =>
-                 {
-                     op.CheckParamCount(values.Length);
-                     return values[0].ToDouble() > values[1].ToDouble();
-                 }, twoDoubles);
-            AddOperator(LConstants.LESSER_OP, 0, true,
-                 (values, op) =>
-                 {
-                     op.CheckParamCount(values.Length);
-                     return values[0].ToDouble() < values[1].ToDouble();
-                 }, twoDoubles);
-
-            AddOperator(LConstants.EQUAL_OP, 0, true,
-                (values, op) =>
-                {
-                    op.CheckParamCount(values.Length);
-                    return Utility.DoubleEq(values[0].ToDouble(), values[1].ToDouble());
-                }, twoDoubles);
-
-            AddOperator(LConstants.ASSIGN_OP, -1, true, (values, op) =>
-               {
-                   op.CheckParamCount(values.Length);
-                   string key = values[0].ToMeString();
-                   MeVariable leftSide = Definer.Instance().Engine.GetVariable(key);
-                   MeVariable rightSide = values[1];
-                   if (rightSide.Type == VariableType.String)
-                   {
-                       rightSide = Definer.Instance().Engine.GetVariable(rightSide.Value.ToString());
-                   }
-                   if (leftSide == null)
-                   {
-                       Definer.Instance().Engine.AddVariable(key, rightSide);
-                   }
-                   else
-                   {
-                       Definer.Instance().Engine.SetVariable(key, rightSide);
-                   }
-                   return null;
-               }, new Validator(
-                (variables, operation) => true), 2);
-
-            AddOperator(LConstants.PROP_OP, 20, true, (values, op) =>
-                  {
-                      op.CheckParamCount(values.Length);
-                      string key = values[1].ToMeString();
-                      MeVariable var = values[0];
-                      switch (var.Type)
-                      {
-                          case VariableType.Array:
-                              {
-                                  if (key.Equals(LConstants.ARR_LENGTH))
-                                  {
-                                      return var.ToArray().Length;
-                                  }
-                                  throw new MeException($"Attempting to retrieve undefined property \"{key}\" from array.");
-                              }
-                          case VariableType.Entity:
-                              {
-
-                                  return new MeVariable() { Value = new Property(var.ToEntity(), key), Type = VariableType.Property };
-                              }
-
-                      }
-                      throw new MeException($"Attempting to retrieve undefined property \"{key}\" from variable \"{var}\"");
-                  }
-            , new Validator(
-                (variables, operation) =>
-                {
-                    MeVariable var = variables[0];
-                    string key = variables[1].ToMeString();
-                    switch (var.Type)
-                    {
-                        case VariableType.Array:
-                            {
-                                return key.Equals(LConstants.ARR_LENGTH);
-                            }
-                        case VariableType.Entity:
-                            {
-                                Entity ent = var.ToEntity();
-                                return ent.HasProperty(key);
-                            }
-                        default:
-                            {
-                                return false;
-                            }
-                    }
-                }), 2);
 
             AddFunction(LConstants.MAX_F,
                 (values, func) =>
@@ -436,7 +333,7 @@ namespace RPGEngine.Language
                 {
                     func.CheckParamCount(values.Length);
                     double chance = values[0].ToDouble() * 10;
-                    return Utils.Utility.Chance(chance);
+                    return RPGEngine.Utils.Utility.Chance(chance);
 
                 }, 1);
 

@@ -5,7 +5,7 @@ namespace RPGEngine.Language
 {
    
 
-    public class Function :Operation
+    public class Function : Operation
     {
         private readonly bool[] _executeInPlace;
 

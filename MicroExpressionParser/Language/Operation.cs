@@ -33,12 +33,11 @@ namespace RPGEngine.Language
     public class Operation
     {
         public string Key { get; }
-        public Validator Validator { get; set; }
-        public Func<MeVariable[], Operation, MeVariable> OpFunc { get; set; }
+        public Validator Validator { private get; set; }
+        public Func<MeVariable[], Operation, MeVariable> OpFunc { private get; set; }
+        public int ParameterCount { get; protected set; }
 
-        public int ParameterCount { get; set; }
-
-        public Operation(string key, int parameterCount = -1)
+        protected Operation(string key, int parameterCount = -1)
         {
             Key = key;
             ParameterCount = parameterCount;

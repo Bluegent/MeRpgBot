@@ -202,7 +202,19 @@
     <Compile Include="Commands\TargetCommand.cs" />
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="GameInterface\IJsonSerializable.cs" />
+    <Compile Include="Language\DefinerUtils\Utils.cs" />
     <Compile Include="Language\Operation.cs" />
+    <Compile Include="Language\Operators\Mathematical\AssignOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\DivideOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\GreaterOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\LesserOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\MinusOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\MultiplyOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\NotOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\NumEqualsOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\PlusOperator.cs" />
+    <Compile Include="Language\Operators\Mathematical\PowerOperator.cs" />
+    <Compile Include="Language\Operators\Object\PropertyOperator.cs" />
     <Compile Include="Managers\ClassManager.cs" />
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\CoreManager.cs" />
@@ -276,7 +288,9 @@
   <ItemGroup>
     <Compile Include="Managers\SkillManager.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Language\Functions\Math\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
