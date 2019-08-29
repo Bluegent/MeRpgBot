@@ -289,7 +289,8 @@
     <Compile Include="Managers\SkillManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Language\Functions\Math\" />
+    <Folder Include="Language\Functions\EntityInteractions\" />
+    <Folder Include="Language\Functions\Mathematical\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

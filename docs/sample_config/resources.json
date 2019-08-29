@@ -14,5 +14,14 @@
 		"interval":"5",
 		"name": "Mana",
 		"description": "Used to casts spells."
+	},
+    {
+		"key": "RP",
+		"formula": "100",
+		"regen":"-1",
+		"interval":"30",
+		"name": "Rage",
+		"description": "aaaaaaaaAAAAAAAAAAAAAA",
+        "start_percentage":"0"
 	}
 ]

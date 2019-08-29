@@ -2,8 +2,8 @@
 	{	
 		"key": "P",
 		"mitigation": "NON_NEG($V-GET_PROP($T,DEF))",
-		"dodge":"GET_PROP($T,AGI)/1000",
-		"crit":"GET_PROP($S,AGI)/1000",
+		"dodge":"$T::DODGE",
+		"crit":"$S::CRIT",
 		"name": "Physical",
 		"description": "Physical damage, mitigated by a target's DEF attribute."
 	},

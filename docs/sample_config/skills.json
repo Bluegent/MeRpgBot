@@ -79,7 +79,7 @@
         "values_by_level":
         [
             {
-                "cooldown":"216000",
+                "cooldown":"180",
                 "duration":"10",
                 "formula":"APPLYSTATUS($S,shonen_powerup,60,ARRAY(10,10,-5))",
                 "needed_level":10
@@ -111,6 +111,76 @@
                 "formula":"HEAL($T,$S,10+GET_PROP($S,INT)*10)",
                 "needed_level":20,
                 "cost":{"key":"MP","value":"25"}
+            }
+        ]
+    },
+    {
+        "key":"chop",
+        "name":"Axe chop",
+        "description":"Pretend your enemy is a log.",
+        "values_by_level":
+        [
+            {
+                "cooldown":"10",
+                "formula":"HARM($T,$S,P,$S::B_DMG+STR*3);ADD_TO_RESOURCE($S,RP,10);"
+            }
+        ]
+    },
+    {
+        "key":"cleave",
+        "name":"Cleave",
+        "description":"Why hit once when you could hit multiple times?",
+        "type":"channel",
+        "values_by_level":
+        [
+            {
+                "cooldown":"100",
+                "interval":"10",
+                "duration":"31",
+                "cost":{"key":"RP","value":"30"},
+                "formula":"HARM($T,$S,P,$S::B_DMG+STR*3)"
+            }
+        ]
+    },
+    {
+        "key":"strike",
+        "name":"Axe Strike",
+        "description":"Make 'em bleed.",
+        "values_by_level":
+        [
+            {
+                "cooldown":"30",
+                "duration":"31",
+                "cost":{"key":"RP","value":"20"},
+                "formula":"APPLYSTATUS($T,bleed,16,ARRAY(0.05))"
+            }
+        ]
+    },
+    {
+        "key":"death_aura",
+        "name":"Death Aura",
+        "description":"When you're so edgy it's somehow healthy???",
+        "values_by_level":
+        [
+            {
+                "cooldown":"180",
+                "duration":"5",
+                "cost":{"key":"RP","value":"40"},
+                "formula":"HEAL($S,$S,$S::VIT*10)"
+            }
+        ]
+    },
+    {
+        "key":"death_feast",
+        "name":"Death's Feast",
+        "description":"Yum!",
+        "values_by_level":
+        [
+            {
+                "cooldown":"60",
+                "duration":"5",
+                "cost":{"key":"RP","value":"30"},
+                "formula":"HEAL($S,$S,HARM($T,$S,M,$S::B_DMG+($S::STR+$S::VIT)*5))"
             }
         ]
     }

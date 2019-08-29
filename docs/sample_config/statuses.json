@@ -7,5 +7,14 @@
         "interval":"0",
         "stacking":"refresh",
         "formula":"MOD_VALUE(STR,$0);MOD_VALUE(AGI,$1);MOD_VALUE(INT,$2)"
+    },
+    {   
+        "key":"bleed",
+        "name":"Bleeding",
+        "description":"Oh, oof, ouch, it hurts.",
+        "max_stack":"5",
+        "interval":"5",
+        "stacking":"independent",
+        "formula":"HARM($T,$S,T,$T::HP*$0);"
     }
 ]

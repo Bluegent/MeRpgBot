@@ -1,9 +1,15 @@
 [
 	{
 		"key": "DODGE",
-		"formula": "1+AGI/2000",
-		"name": "Physical Defense",
+		"formula": "1+AGI/200",
+		"name": "Dodge Chance",
 		"description": "Chance to avoid an enemy attack."
+	},
+    {
+		"key": "CRIT",
+		"formula": "1+AGI/200",
+		"name": "Crit Chance",
+		"description": "Chance to deal more damage."
 	},
 	{
 		"key": "DEF",
@@ -19,7 +25,7 @@
 	},
 	{
 		"key": "ATT_SPEED",
-		"formula": "BASE_MDEF+INT/4",
+		"formula": "AGI/100",
 		"name": "Attack Speed",
 		"description": "How fast your normal attack is casted when auto attacking."
 	},

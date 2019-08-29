@@ -1,5 +1,5 @@
 {	
-    "revive_time":"1800",
+    "revive_time":"300",
     "revive_modifier":"0.5",
     "skill_threat":"5",
     "attribute_points_per_level":"1",
