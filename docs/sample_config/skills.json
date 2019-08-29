@@ -122,7 +122,7 @@
         [
             {
                 "cooldown":"10",
-                "formula":"HARM($T,$S,P,$S::B_DMG+STR*3);ADD_TO_RESOURCE($S,RP,10);"
+                "formula":"HARM($T,$S,P,$S::B_DMG+$S::STR*3);ADD_TO_RESOURCE($S,RP,10);"
             }
         ]
     },
@@ -138,7 +138,7 @@
                 "interval":"10",
                 "duration":"31",
                 "cost":{"key":"RP","value":"30"},
-                "formula":"HARM($T,$S,P,$S::B_DMG+STR*3)"
+                "formula":"HARM($T,$S,P,$S::B_DMG+$S::STR*3)"
             }
         ]
     },
