@@ -150,7 +150,6 @@
         [
             {
                 "cooldown":"30",
-                "duration":"31",
                 "cost":{"key":"RP","value":"20"},
                 "formula":"APPLYSTATUS($T,bleed,16,ARRAY(0.05))"
             }
