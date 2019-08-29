@@ -59,8 +59,8 @@ namespace RPGEngine.Core
             long cooldownValue = (CooldownFinishTime - parent.Engine.GetTimer().GetNow())/1000;
             long cooldown = cooldownValue < 0 ? 0 : cooldownValue;
             long cost = Sanitizer.ReplacePropeties(Values().Cost.Amount, parent).Resolve().Value.ToLong();
-            string costString = cost == 0 ? "" : $"Cost: {cost} {Values().Cost.Resource.Name}]";
-            string result = $"{Skill.Name} [{Skill.Key}] {costString} [Cooldown: {cooldown} s]";
+            string costString = cost == 0 ? "" : $"[Cost: {Utility.TruncateAndAlign($"{cost} {Values().Cost.Resource.Name}",10),10}]";
+            string result = $"{Utils.Utility.TruncateAndAlign(Skill.Name,25),-27} [{Utils.Utility.TruncateAndAlign($"{Skill.Key}",10),-15}][CD: {Utility.FormatSeconds(cooldown),12}]{costString}";
             return result;
 
         }

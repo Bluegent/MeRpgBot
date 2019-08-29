@@ -11,6 +11,7 @@ namespace RPGEngine.Game
     using RPGEngine.GameConfigReader;
     using RPGEngine.GameInterface;
     using RPGEngine.Templates;
+    using RPGEngine.Utils;
 
     public class Player : IJsonSerializable
     {
@@ -108,10 +109,13 @@ namespace RPGEngine.Game
             return $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead ? $"(dead for {seconds}s )" : "")}";
         }
 
+        public string GetExpInfoString()
+        {
+            return $"{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP\n";
+        }
         public void DisplayOverall()
         {
-            string displayString =
-                $"{GetBasicInfoString()}\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
+            string displayString = $"{GetBasicInfoString()}\n\n{GetExpInfoString()}{Entity.GetResourcesString()}";
             Engine.Log().Log(displayString);
         }
 
@@ -140,6 +144,21 @@ namespace RPGEngine.Game
         {
             string displayString =
                 $"{GetBasicInfoString()}\n\n{Entity.GetResourcesDetailedString()}";
+            Engine.Log().Log(displayString);
+        }
+        public void DisplayAll()
+        {
+            int lineLength = 15;
+            string displayString =
+                $"{GetBasicInfoString()}\n{GetExpInfoString()}"
+                +$"{Utility.GetSeparatorLine(lineLength)}\n"
+                + $"[Resources]\n{Entity.GetResourcesDetailedString()}"
+                + $"{Utility.GetSeparatorLine(lineLength)}\n"
+                + $"[Attributes]\n{Entity.GetAttributesString()}"
+                + $"{Utility.GetSeparatorLine(lineLength)}\n"
+                + $"[Stats]\n{Entity.GetStatsString()}"
+                + $"{Utility.GetSeparatorLine(lineLength)}\n"
+                + $"[Skills]\n{Entity.GetSkillsString()}";
             Engine.Log().Log(displayString);
         }
 

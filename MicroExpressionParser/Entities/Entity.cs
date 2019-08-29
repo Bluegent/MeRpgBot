@@ -199,7 +199,7 @@ namespace RPGEngine.Entities
             {
                 string addedPoints = attribute.FromPoints > 0 ? $"[+{attribute.FromPoints}]" : "";
                 result +=
-                    $"{Engine.GetPropertyManager().Attributes[attribute.Key].Name} {attribute.Value} {addedPoints}\n";
+                    $"{Utils.Utility.TruncateAndAlign(Engine.GetPropertyManager().Attributes[attribute.Key].Name,15),-20} {attribute.Value,5} {addedPoints}\n";
             }
 
             return result;
@@ -210,8 +210,7 @@ namespace RPGEngine.Entities
             string result = "";
             foreach (StatInstance stat in Stats.Values)
             {
-                result +=
-                    $"{stat.Stat.Name} {stat.Value}\n";
+                result += $"{Utils.Utility.TruncateAndAlign(stat.Stat.Name,15),-20} {stat.Value.ToString("0.00"),3}\n";
             }
 
             return result;
@@ -223,9 +222,9 @@ namespace RPGEngine.Entities
             foreach (ResourceInstance resource in ResourceMap.Values)
             {
                 double regenValue = resource.RegenAmount;
-                string regenString = $"{(regenValue > 0 ? $"[Regen: {regenValue}/" : "")}{(regenValue > 0 ? $"{resource.RegenInterval} s]" : "")}";
+                string regenString = $"{(regenValue > 0 ? $"{regenValue}/" : "")}{(regenValue > 0 ? $"{Utils.Utility.FormatSeconds(resource.RegenInterval)}" : "")}";
                 result +=
-                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {Utils.Utility.TruncateAndAlign(resource.Resource.Name, 10),-15} {regenString}\n";
+                    $"{Utils.Utility.getBar(resource.Value, resource.MaxAmount)} {Utils.Utility.TruncateAndAlign(resource.Resource.Name, 10),-15} [Regen: {regenString,10}]\n";
             }
 
             return result;
