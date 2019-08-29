@@ -41,6 +41,11 @@
                                 currentPlayer.DisplayResources();
                             }
                             break;
+                        case "attributes":
+                            {
+                                currentPlayer.DisplayAttributes();
+                            }
+                            break;
                     }
                 }
             }

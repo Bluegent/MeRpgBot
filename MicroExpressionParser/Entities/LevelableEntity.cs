@@ -133,5 +133,10 @@ namespace RPGEngine.Entities
             }
             return true;
         }
+
+        public new string GetAttributesString()
+        {
+            return $"Available Attribute Points: {AttributePoints}\n{base.GetAttributesString()}";
+        }
     }
 }

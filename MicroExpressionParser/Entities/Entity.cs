@@ -192,6 +192,18 @@ namespace RPGEngine.Entities
 
             return result;
         }
+        public string GetAttributesString()
+        {
+            string result = "";
+            foreach (EntityAttribute attribute in Attributes.Values)
+            {
+                string addedPoints = attribute.FromPoints > 0 ? $"[+{attribute.FromPoints}]" : "";
+                result +=
+                    $"{Engine.GetPropertyManager().Attributes[attribute.Key].Name} {attribute.Value} {addedPoints}\n";
+            }
+
+            return result;
+        }
         public string GetResourcesDetailedString()
         {
             string result = "";
