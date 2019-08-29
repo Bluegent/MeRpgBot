@@ -60,19 +60,29 @@ namespace RPGEngine.Parser
                             current = "";
                         }
                     }
-                    Token prev = result.Last();
-                    switch (prev.Type)
+
+                    if (result.Count == 0)
                     {
-                        case TokenType.Function:
-                            throw new Exception($"Found minus after function with no (, function:\"{prev.Value}\".");
-                        case TokenType.Variable:
-                        case TokenType.RightParen:
-                            result.Add(new Token(char.ToString(c)));
-                            break;
-                        default:
-                            current = "-";
-                            break;
+                        current = "-";
                     }
+                    else
+                    {
+                        Token prev = result.Last();
+                        switch (prev.Type)
+                        {
+                            case TokenType.Function:
+                                throw new Exception(
+                                    $"Found minus after function with no (, function:\"{prev.Value}\".");
+                            case TokenType.Variable:
+                            case TokenType.RightParen:
+                                result.Add(new Token(char.ToString(c)));
+                                break;
+                            default:
+                                current = "-";
+                                break;
+                        }
+                    }
+
                     //eventually consider -=
                 }
                 else 
