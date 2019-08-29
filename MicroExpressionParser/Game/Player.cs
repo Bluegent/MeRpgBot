@@ -105,8 +105,8 @@ namespace RPGEngine.Game
 
         private string GetBasicInfoString()
         {
-            long seconds = Entity.ReviveTime - Engine.GetTimer().GetNow();
-            return $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead ? $"(dead for {seconds}s )" : "")}";
+            long seconds = (Entity.ReviveTime - Engine.GetTimer().GetNow())/1000;
+            return $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead ? $"(dead for {Utility.FormatSeconds(seconds)} )" : "")}";
         }
 
         public string GetExpInfoString()
@@ -115,7 +115,7 @@ namespace RPGEngine.Game
         }
         public void DisplayOverall()
         {
-            string displayString = $"{GetBasicInfoString()}\n\n{GetExpInfoString()}{Entity.GetResourcesString()}";
+            string displayString = $"{GetBasicInfoString()}\n{GetExpInfoString()}\n{Entity.GetResourcesString()}";
             Engine.Log().Log(displayString);
         }
 
@@ -150,7 +150,7 @@ namespace RPGEngine.Game
         {
             int lineLength = 15;
             string displayString =
-                $"{GetBasicInfoString()}\n{GetExpInfoString()}"
+                $"{GetBasicInfoString()}{GetExpInfoString()}"
                 +$"{Utility.GetSeparatorLine(lineLength)}\n"
                 + $"[Resources]\n{Entity.GetResourcesDetailedString()}"
                 + $"{Utility.GetSeparatorLine(lineLength)}\n"

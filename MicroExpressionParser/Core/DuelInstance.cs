@@ -23,9 +23,16 @@
             Ended = true;
         }
 
+        private long GetExpReward(int level)
+        {
+            if (level == 0)
+                return (long)(0.75 * Engine.GetCoreManager().GetMaxExp(level));
+
+            return (long)(0.75 * Engine.GetCoreManager().GetMaxExp(level-1));
+        }
+
         public void EndDuel()
         {
-            //log ended
             ExitDuel();
         }
         public void Update()
@@ -40,13 +47,14 @@
             else if (Player1.Entity.IsDead)
             {
                 Engine.Log().Log($" {Player2.Entity.Name} won the duel against {Player1.Entity.Name}.");
+                Player2.Entity.AddExp(GetExpReward(Player2.Entity.Level));
                 ExitDuel();
-                //log player2 wins
 
             }
             else if (Player2.Entity.IsDead)
             {
                 Engine.Log().Log($" {Player1.Entity.Name} won the duel against {Player2.Entity.Name}.");
+                Player1.Entity.AddExp(GetExpReward(Player2.Entity.Level));
                 ExitDuel();
             }
             

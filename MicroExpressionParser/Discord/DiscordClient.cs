@@ -92,7 +92,7 @@ namespace RPGEngine.Discord
                 channel = GetChannel();
             }
             isReady = true;
-            Log($"RPG-Bot ready! [{Version.VersionString()}]");
+            Log($"```css\n #RPG-Bot is ready! [{Version.VersionString()}]\n```");
             ready?.Invoke();
             
             return Task.CompletedTask;

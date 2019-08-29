@@ -125,10 +125,14 @@ namespace RPGEngine.Entities
 
         public override void Die()
         {
+            if(IsDead)
+                return;
+            
             ResourceMap[HP_KEY].Value = 0;
             Cleanse();
             CancelCurrentCast();
             StopAutoCasting();
+            IsDead = true;
         }
 
         public override void Revive()
@@ -140,6 +144,8 @@ namespace RPGEngine.Entities
             {
                 res.Replentish();
             }
+
+            IsDead = false;
         }
 
         public override double TakeDamage(double amount, DamageTypeTemplate typeTemplate, Entity source, bool periodic = false)

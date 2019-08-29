@@ -13,7 +13,7 @@ namespace RPGEngine.Entities
     public class LevelableEntity : BaseEntity, IJsonSerializable
     {
         public int Level { get; private set; }
-        public int AttributePoints { get; private set; }
+        public long AttributePoints { get; private set; }
         public double CurrentExp { get; set; }
         public double CurrentLevelMaxExp { get; set; }
 
@@ -28,16 +28,19 @@ namespace RPGEngine.Entities
         public void AddExp(long amount)
         {
             CurrentExp += amount;
+            Engine.Log().Log($"{Name} gained {amount} EXP");
             if(CurrentExp >= CurrentLevelMaxExp)
                 LevelUp();
         }
 
         private void LevelUp()
         {
+            int lastLevel = Level;
             ++Level;
-            ++AttributePoints;
+            AttributePoints+=Engine.GetCoreManager().AttributePointsPerLevel;
             CurrentExp -= CurrentLevelMaxExp;
             CurrentLevelMaxExp = Engine.GetMaxExp(Level);
+            Engine.Log().Log($"[{Name}] {lastLevel+1}->{Level+1}");
         }
 
         public bool AssignAttributePoint(string key)

@@ -122,7 +122,7 @@ namespace RPGEngine.Utils
             }
             else
             {
-                result = value.ToString("0.00");
+                result = value.ToString("0");
             }
             return result;
         }
