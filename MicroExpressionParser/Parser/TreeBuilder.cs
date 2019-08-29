@@ -43,7 +43,7 @@
                     case TokenType.Operator:
                         {
                             TokenNode node = new TokenNode(tok);
-                            for (int i = 0; i < Definer.Instance().Operators[tok.Value].OperatorCount;++i)
+                            for (int i = 0; i < Definer.Instance().Operators[tok.Value].ParameterCount;++i)
                             {
                                 if(nodeStack.Count == 0 || nodeStack.Peek().Token.Type == TokenType.LeftParen)
                                     throw new MeException("Parameter(s) missing for operator " + tok.Value + " .");

@@ -202,6 +202,7 @@
     <Compile Include="Commands\TargetCommand.cs" />
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="GameInterface\IJsonSerializable.cs" />
+    <Compile Include="Language\Operation.cs" />
     <Compile Include="Managers\ClassManager.cs" />
     <Compile Include="Managers\CommandManager.cs" />
     <Compile Include="Managers\CoreManager.cs" />

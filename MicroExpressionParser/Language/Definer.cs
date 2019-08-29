@@ -13,7 +13,7 @@ namespace RPGEngine.Language
 
     public class Definer
     {
-        private static readonly  Definer _instance = new Definer();
+        private static readonly Definer _instance = new Definer();
         public Dictionary<string, Operator> Operators;
         public Dictionary<string, Function> Functions;
 
@@ -82,28 +82,33 @@ namespace RPGEngine.Language
             return false;
         }
 
-        private void AddOperator(
+        private Operator AddOperator(
             string character,
             int precedence,
             bool leftAssoc,
-            Func<MeVariable[], Operator, MeVariable> operation,
+            Func<MeVariable[], Operation, MeVariable> operation,
+            Validator valid,
             int opCount = 2)
         {
             Operator op = new Operator(character, precedence, leftAssoc, opCount);
-            op.Operation = operation;
+            op.OpFunc = operation;
+            op.Validator = valid;
             Operators.Add(op.Key, op);
             foreach (char c in character)
             {
-                if(!operatorChars.Contains(c))
+                if (!operatorChars.Contains(c))
                     operatorChars.Add(c);
             }
+
+            return op;
         }
 
-        private void AddFunction(string name, Func<MeVariable[], Function, MeVariable> operation, int parameterCount = -1, bool[] executeInPlace = null)
+        private Function AddFunction(string name, Func<MeVariable[], Operation, MeVariable> operation, int parameterCount = -1, bool[] executeInPlace = null)
         {
             Function func = new Function(name, parameterCount, executeInPlace);
-            func.Operation = operation;
+            func.OpFunc = operation;
             Functions.Add(func.Key, func);
+            return func;
         }
 
         public bool Ignore(char c)
@@ -117,79 +122,97 @@ namespace RPGEngine.Language
             operatorChars.Clear();
             _initialized = false;
         }
+
         public void Init(IGameEngine engine)
         {
             if (_initialized)
                 return;
             _initialized = true;
 
-            Engine = engine;
-            AddOperator(LConstants.PLUS_OP, 1, true,
-            (values, op) =>
+            Validator twoDoubles = new Validator((values, op) =>
             {
-                op.ValidateParameters(values.Length);
-                return values[0].ToDouble() + values[1].ToDouble();
+                values[0].ToDouble();
+                values[1].ToDouble();
+                return true;
             });
+
+            Engine = engine;
+            AddOperator(
+                LConstants.PLUS_OP,
+                1,
+                true,
+                (values, op) =>
+                    {
+                        op.CheckParamCount(values.Length);
+                        return values[0].ToDouble() + values[1].ToDouble();
+                    }, twoDoubles);
+
+
 
             AddOperator(LConstants.MINUS_OP, 1, true,
             (values, op) =>
             {
-                op.ValidateParameters(values.Length);
+                op.CheckParamCount(values.Length);
                 return values[0].ToDouble() - values[1].ToDouble();
-            });
+            }, twoDoubles);
 
 
             AddOperator(LConstants.MULITPLY_OP, 2, true,
                 (values, op) =>
                 {
-                    op.ValidateParameters(values.Length);
+                    op.CheckParamCount(values.Length);
                     return values[0].ToDouble() * values[1].ToDouble();
-                });
+                }, twoDoubles);
 
             AddOperator(LConstants.POWER_OP, 3, true,
-                (values, op) =>
-                {
-                    op.ValidateParameters(values.Length);
-                    return Math.Pow(values[0].ToDouble(), values[1].ToDouble());
-                });
+                 (values, op) =>
+                 {
+                     op.CheckParamCount(values.Length);
+                     return Math.Pow(values[0].ToDouble(), values[1].ToDouble());
+                 }, twoDoubles);
 
             AddOperator(LConstants.DIVIDE_OP, 2, true,
                 (values, op) =>
                 {
-                    op.ValidateParameters(values.Length);
+                    op.CheckParamCount(values.Length);
                     return values[0].ToDouble() / values[1].ToDouble();
-                });
-
+                }, twoDoubles);
             AddOperator(LConstants.NOT_OP, 2, true,
                 (values, op) =>
                 {
-                    op.ValidateParameters(values.Length);
+                    op.CheckParamCount(values.Length);
                     return !values[0].ToBoolean();
-                }, 1);
+                }, new Validator((variables, operation) =>
+                                         {
+                                             variables[0].ToBoolean();
+                                             return true;
+                                         })
+                , 1);
+
 
             AddOperator(LConstants.GREATER_OP, 0, true,
-                (values, op) =>
-                {
-                    op.ValidateParameters(values.Length);
-                    return values[0].ToDouble() > values[1].ToDouble();
-                });
+                 (values, op) =>
+                 {
+                     op.CheckParamCount(values.Length);
+                     return values[0].ToDouble() > values[1].ToDouble();
+                 }, twoDoubles);
             AddOperator(LConstants.LESSER_OP, 0, true,
-                (values, op) =>
-                {
-                    op.ValidateParameters(values.Length);
-                    return values[0].ToDouble() < values[1].ToDouble();
-                });
+                 (values, op) =>
+                 {
+                     op.CheckParamCount(values.Length);
+                     return values[0].ToDouble() < values[1].ToDouble();
+                 }, twoDoubles);
 
             AddOperator(LConstants.EQUAL_OP, 0, true,
                 (values, op) =>
                 {
-                    op.ValidateParameters(values.Length);
+                    op.CheckParamCount(values.Length);
                     return Utility.DoubleEq(values[0].ToDouble(), values[1].ToDouble());
-                });
+                }, twoDoubles);
 
             AddOperator(LConstants.ASSIGN_OP, -1, true, (values, op) =>
                {
-                   op.ValidateParameters(values.Length);
+                   op.CheckParamCount(values.Length);
                    string key = values[0].ToMeString();
                    MeVariable leftSide = Definer.Instance().Engine.GetVariable(key);
                    MeVariable rightSide = values[1];
@@ -206,39 +229,60 @@ namespace RPGEngine.Language
                        Definer.Instance().Engine.SetVariable(key, rightSide);
                    }
                    return null;
-               },2);
+               }, new Validator(
+                (variables, operation) => true), 2);
 
             AddOperator(LConstants.PROP_OP, 20, true, (values, op) =>
                   {
-                  op.ValidateParameters(values.Length);
-                  string key = values[1].ToMeString();
-                  MeVariable var = values[0];
-                  switch (var.Type)
-                  {
-                      case VariableType.Array:
+                      op.CheckParamCount(values.Length);
+                      string key = values[1].ToMeString();
+                      MeVariable var = values[0];
+                      switch (var.Type)
                       {
-                          if (key.Equals(LConstants.ARR_LENGTH))
+                          case VariableType.Array:
                               {
-                                  return var.ToArray().Length;
+                                  if (key.Equals(LConstants.ARR_LENGTH))
+                                  {
+                                      return var.ToArray().Length;
+                                  }
+                                  throw new MeException($"Attempting to retrieve undefined property \"{key}\" from array.");
                               }
-                          throw new MeException($"Attempting to retrieve undefined property \"{key}\" from array.");
-                      }
-                      case VariableType.Entity:
-                      {
+                          case VariableType.Entity:
+                              {
 
-                          return  new MeVariable() { Value = new Property(var.ToEntity(),key), Type = VariableType.Property };
-                        }
-                          
-                             
-                    }
+                                  return new MeVariable() { Value = new Property(var.ToEntity(), key), Type = VariableType.Property };
+                              }
+
+                      }
                       throw new MeException($"Attempting to retrieve undefined property \"{key}\" from variable \"{var}\"");
                   }
-            ,2);
+            , new Validator(
+                (variables, operation) =>
+                {
+                    MeVariable var = variables[0];
+                    string key = variables[1].ToMeString();
+                    switch (var.Type)
+                    {
+                        case VariableType.Array:
+                            {
+                                return key.Equals(LConstants.ARR_LENGTH);
+                            }
+                        case VariableType.Entity:
+                            {
+                                Entity ent = var.ToEntity();
+                                return ent.HasProperty(key);
+                            }
+                        default:
+                            {
+                                return false;
+                            }
+                    }
+                }), 2);
 
             AddFunction(LConstants.MAX_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     double[] parameters = MeVariable.ToDoubleArray(values);
                     return parameters.Max();
                 });
@@ -246,15 +290,15 @@ namespace RPGEngine.Language
             AddFunction(LConstants.FLOOR_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     return Math.Floor(values[0].ToDouble());
-                },1);
+                }, 1);
 
 
             AddFunction(LConstants.MIN_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     double[] parameters = MeVariable.ToDoubleArray(values);
                     return parameters.Min();
                 });
@@ -263,14 +307,14 @@ namespace RPGEngine.Language
             AddFunction(LConstants.ABS_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     return Math.Abs(values[0].ToDouble());
                 }, 1);
 
             AddFunction(LConstants.NON_NEG_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     double value = values[0].ToDouble();
                     return value > 0 ? value : 0;
                 }, 1);
@@ -278,7 +322,7 @@ namespace RPGEngine.Language
             AddFunction(LConstants.RANDOM_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     return new Random().Next((int)values[0].ToDouble(), (int)values[1].ToDouble());
                 }, 2);
 
@@ -286,7 +330,7 @@ namespace RPGEngine.Language
             AddFunction(LConstants.HARM_F,
                 (values, func) =>
                 {
-                    //func.ValidateParameters(values.Length);
+                    //func.CheckParamCount(values.Length);
                     MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
                     DamageTypeTemplate damageTypeTemplate = values[2].ToDamageType();
@@ -306,14 +350,14 @@ namespace RPGEngine.Language
             AddFunction(LConstants.HEAL_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     MeVariable[] targets = values[0].ToArray();
                     Entity source = values[1].ToEntity();
                     double amount = values[2].ToDouble();
                     double totalAmt = 0;
                     foreach (MeVariable variable in targets)
                     {
-                        totalAmt+= variable.ToEntity().GetHealed(amount, source);
+                        totalAmt += variable.ToEntity().GetHealed(amount, source);
                     }
                     return totalAmt;
                 }, 3);
@@ -321,14 +365,14 @@ namespace RPGEngine.Language
             AddFunction(LConstants.ARRAY_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     return new MeVariable() { Type = VariableType.Array, Value = values };
                 });
 
             AddFunction(LConstants.GET_PLAYERS_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     Entity[] players = Definer.Instance().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
                     foreach (Entity entity in players)
@@ -341,7 +385,7 @@ namespace RPGEngine.Language
             AddFunction(LConstants.GET_ACTIVE_PLAYERS_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     //TODO: Implement retrieving ONLY active players
                     Entity[] players = Definer.Instance().Engine.GetAllPlayers();
                     List<MeVariable> playerList = new List<MeVariable>();
@@ -355,10 +399,10 @@ namespace RPGEngine.Language
             AddFunction(LConstants.GET_PROP_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     Entity entity = values[0].ToEntity();
                     string prop = values[1].ToMeString();
-                    return new MeVariable() {Value = new Property(entity, prop), Type = VariableType.Property};
+                    return new MeVariable() { Value = new Property(entity, prop), Type = VariableType.Property };
                     ;
                 }, 2);
 
@@ -366,7 +410,7 @@ namespace RPGEngine.Language
                 (values, func) =>
                 {
                     //IF(CONDITION,THEN,ELSE)
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     bool condition = values[0].ToBoolean();
                     if (condition)
                     {
@@ -380,7 +424,7 @@ namespace RPGEngine.Language
             AddFunction(LConstants.ARR_RANDOM_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     MeVariable[] input = values[0].ToArray();
                     int index = new Random().Next(0, input.Length);
                     return input[index];
@@ -390,7 +434,7 @@ namespace RPGEngine.Language
             AddFunction(LConstants.CHANCE_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     double chance = values[0].ToDouble() * 10;
                     return Utils.Utility.Chance(chance);
 
@@ -400,7 +444,7 @@ namespace RPGEngine.Language
                 (values, func) =>
                 {
                     //CAST(CASTER,TARGET,SKILL)
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     Entity caster = values[0].ToEntity();
                     Entity target = values[1].ToEntity();
                     string skillKey = values[2].ToMeString();
@@ -412,7 +456,7 @@ namespace RPGEngine.Language
                (values, func) =>
                {
                    //MOD_VALUE(stat,Amount)
-                   func.ValidateParameters(values.Length);
+                   func.CheckParamCount(values.Length);
                    string stat = values[0].ToMeString();
                    double amount = values[1].ToDouble();
                    StatModifier mod = new StatModifier() { Amount = amount, StatKey = stat };
@@ -422,42 +466,42 @@ namespace RPGEngine.Language
                (values, func) =>
                {
                    //APPLYSTATUS(target,Source,status_key,duration,amounts)
-                   func.ValidateParameters(values.Length);
+                   func.CheckParamCount(values.Length);
                    MeVariable[] targets = values[0].ToArray();
                    Entity source = values[1].ToEntity();
                    StatusTemplate effect = Definer.Instance().Engine.GetStatusByKey(values[2].ToMeString());
                    double duration = values[3].ToDouble();
                    double[] amounts = MeVariable.ToDoubleArray(values[4].ToArray());
-                   func.ValidateParameters(values.Length);
+                   func.CheckParamCount(values.Length);
 
                    foreach (MeVariable target in targets)
                    {
-                       target.ToEntity().ApplyStatus(effect,source,duration,amounts);
+                       target.ToEntity().ApplyStatus(effect, source, duration, amounts);
                    }
                    return null;
                }, 5);
-            AddFunction(LConstants.GET_F, 
+            AddFunction(LConstants.GET_F,
                 (values, func) =>
             {
-                func.ValidateParameters(values.Length);
+                func.CheckParamCount(values.Length);
                 string key = values[0].ToMeString();
                 return Definer.Instance().Engine.GetVariable(key); ;
-            },1);
+            }, 1);
 
             AddFunction(LConstants.SAY_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     Entity entity = values[0].ToEntity();
                     string msg = values[1].ToMeString();
-                    Engine.Log().LogSay(entity,msg);
+                    Engine.Log().LogSay(entity, msg);
                     return null;
                 }, 2);
 
             AddFunction(LConstants.PUSH_BACK_F,
                 (values, func) =>
                     {
-                        func.ValidateParameters(values.Length);
+                        func.CheckParamCount(values.Length);
                         MeVariable[] entity = values[0].ToArray();
                         long amount = values[1].ToLong();
                         foreach (MeVariable var in entity)
@@ -469,24 +513,24 @@ namespace RPGEngine.Language
             AddFunction(LConstants.REVIVE_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     MeVariable[] entity = values[0].ToArray();
                     foreach (MeVariable var in entity)
                     {
                         var.ToEntity().Revive();
                     }
                     return null;
-                },1);
+                }, 1);
             AddFunction(LConstants.ADD_TO_RESOURCE_F,
                 (values, func) =>
                 {
-                    func.ValidateParameters(values.Length);
+                    func.CheckParamCount(values.Length);
                     MeVariable[] entity = values[0].ToArray();
                     string resourceKey = values[1].ToString();
                     double amount = values[2].ToDouble();
                     foreach (MeVariable var in entity)
                     {
-                        var.ToEntity().AddToResource(resourceKey,amount);
+                        var.ToEntity().AddToResource(resourceKey, amount);
                     }
                     return null;
                 }, 3);

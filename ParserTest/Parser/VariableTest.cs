@@ -148,6 +148,16 @@ namespace EngineTest.Parser
             Assert.IsNotNull(result);
             Assert.AreEqual(expected, result.ToDouble());
         }
+
+        [TestMethod]
+        public void OperatorTestCanExecute()
+        {
+            MeVariable[] vec = { 10, 11 };
+            MeVariable[] vec2 = { new MeVariable(){Value = "yass"}, 20 };
+
+            Assert.IsTrue(Definer.Instance().Operators[LConstants.PLUS_OP].CanExecute(vec));
+            Assert.IsFalse(Definer.Instance().Operators[LConstants.PLUS_OP].CanExecute(vec2));
+        }
     }
 }
 
