@@ -4,6 +4,9 @@ using RPGEngine.Game;
 namespace RPGEngine.Core
 {
     using System;
+    using System.Net;
+    using System.Runtime.Remoting.Messaging;
+    using System.Windows.Markup;
 
     using RPGEngine.Language;
     using Entities;
@@ -20,7 +23,7 @@ namespace RPGEngine.Core
         Function,
         NumericValue,
         Entity,
-        EntityProperty,
+        EntityAttribute,
         Operator,
         DamageType,
         Array,
@@ -48,6 +51,10 @@ namespace RPGEngine.Core
             Value = other.Value;
         }
 
+        public T Get<T>()
+        {
+            return (T)Value;
+        }
         public string GetString()
         {
             switch (Type)
@@ -98,6 +105,9 @@ namespace RPGEngine.Core
         {
             return (long)ToDouble();
         }
+
+        public static explicit operator long(MeVariable var) => var.ToLong();
+
         public double ToDouble()
         {
             if (Type == VariableType.Property)
@@ -107,11 +117,15 @@ namespace RPGEngine.Core
             return (double)Value;
         }
 
+        public static explicit operator double(MeVariable var) => var.ToDouble();
+
         public Property ToProperty()
         {
             ValidateType(VariableType.Property);
             return (Property)Value;
         }
+
+        public static explicit operator Property(MeVariable var) => var.ToProperty();
 
         public DamageTypeTemplate ToDamageType()
         {
@@ -119,17 +133,22 @@ namespace RPGEngine.Core
             return (DamageTypeTemplate)Value;
         }
 
+        public static explicit operator DamageTypeTemplate(MeVariable var) => var.ToDamageType();
+
         public Entity ToEntity()
         {
             ValidateType(VariableType.Entity);
             return (Entity)Value;
         }
 
+        public static explicit operator Entity(MeVariable var) => var.ToEntity();
+
         public Operator ToOperator()
         {
             ValidateType(VariableType.Operator);
             return (Operator)Value;
         }
+        public static explicit operator Operator(MeVariable var) => var.ToOperator();
 
         public Function ToFunction()
         {
@@ -137,19 +156,25 @@ namespace RPGEngine.Core
             return (Function)Value;
         }
 
+        public static explicit operator Function(MeVariable var) => var.ToFunction();
+
         public MeVariable[] ToArray()
         {
-            if(Type == VariableType.Array)
+            if (Type == VariableType.Array)
                 return (MeVariable[])Value;
 
-            return  new MeVariable[1] {this};
+            return new MeVariable[1] { this };
         }
 
-        public EntityAttribute ToEntityProperty()
+        public static explicit operator MeVariable[] (MeVariable var) => var.ToArray();
+
+        public EntityAttribute ToAttribute()
         {
-            ValidateType(VariableType.EntityProperty);
+            ValidateType(VariableType.EntityAttribute);
             return (EntityAttribute)Value;
         }
+
+        public static explicit operator EntityAttribute(MeVariable var) => var.ToAttribute();
 
         public string ToMeString()
         {
@@ -157,11 +182,15 @@ namespace RPGEngine.Core
             return (string)Value;
         }
 
+        public static explicit operator string(MeVariable var) => var.ToMeString();
+
         public bool ToBoolean()
         {
             ValidateType(VariableType.Boolean);
             return (bool)Value;
         }
+
+        public static explicit operator bool(MeVariable var) => var.ToBoolean();
 
         public StatusTemplate ToStatus()
         {
@@ -169,11 +198,15 @@ namespace RPGEngine.Core
             return (StatusTemplate)Value;
         }
 
+        public static explicit operator StatusTemplate(MeVariable var) => var.ToStatus();
+
         public StatModifier ToModifier()
         {
             ValidateType(VariableType.StatModifier);
             return (StatModifier)Value;
         }
+
+        public static explicit operator StatModifier(MeVariable var) => var.ToModifier();
 
         public string ToPlaceholder()
         {
@@ -204,14 +237,14 @@ namespace RPGEngine.Core
                     return ToDouble().ToString(CultureInfo.InvariantCulture);
                 case VariableType.Entity:
                     return $"entity:{ToEntity().Name}";
-                case VariableType.EntityProperty:
-                    return $"prop:{ToEntityProperty().Value}";
+                case VariableType.EntityAttribute:
+                    return $"prop:{ToAttribute().Value}";
                 case VariableType.Operator:
                     return $"op:{ToOperator().Key}";
                 case VariableType.DamageType:
                     return $"dmgT:{ToDamageType().Key}";
                 case VariableType.Array:
-                    return "[]";
+                    return "[]:";
                 case VariableType.String:
                     return ToMeString();
                 case VariableType.Boolean:
@@ -229,6 +262,11 @@ namespace RPGEngine.Core
             }
             return "";
         }
+
+
+
+
+
     }
 
     public class MeFunction : MeVariable
