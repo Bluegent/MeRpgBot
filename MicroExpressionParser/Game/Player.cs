@@ -106,10 +106,23 @@ namespace RPGEngine.Game
             DuelRequests.Enqueue(challenger);
         }
 
+        private string GetBasicInfoString()
+        {
+            long seconds = Entity.ReviveTime - Engine.GetTimer().GetNow();
+            return $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead ? $"(dead for {seconds}s )" : "")}";
+        }
+
         public void DisplayOverall()
         {
             string displayString =
-                $"{Entity.Name}[Lvl {Entity.Level + 1} {Class.Name}]{(Entity.IsDead?"(dead)":"")}\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
+                $"{GetBasicInfoString()}\n\n{Entity.GetResourcesString()}{Utils.Utility.getBar(Entity.CurrentExp, Entity.CurrentLevelMaxExp)} EXP";
+            Engine.Log().Log(displayString);
+        }
+
+        public void DisplaySkills()
+        {
+            string displayString =
+                $"{GetBasicInfoString()}\n\n{Entity.GetSkillsString()}";
             Engine.Log().Log(displayString);
         }
 

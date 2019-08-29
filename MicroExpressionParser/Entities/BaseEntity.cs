@@ -531,6 +531,18 @@ namespace RPGEngine.Entities
                 CheckRevive();
             }
         }
+
+        public string GetSkillsString()
+        {
+
+            string result = "";
+            foreach (SkillInstance skill in Skills.Values)
+            {
+                result += $"{skill.ToShortString(this)}\n";
+            }
+
+            return result;
+        }
     }
 
 }

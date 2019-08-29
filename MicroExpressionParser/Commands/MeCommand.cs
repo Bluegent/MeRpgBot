@@ -14,18 +14,34 @@
 
         public void Execute(Command command, IGameEngine engine)
         {
-            if (command.Args.Length != 0)
-            {
-                engine.Log().Log("Usage of me command: me");
-                return;
-            }
             if (!CommandManager.Instance.CheckCurrentPlayer(command))
             {
                 return;
             }
-
             Player currentPlayer = engine.GetPlayerManager().FindPlayerById(command.UserId);
-            currentPlayer.DisplayOverall();
+            if (command.Args.Length == 0)
+            {
+                
+                currentPlayer.DisplayOverall();
+            }
+            else
+            {
+                if (command.Args.Length == 1)
+                {
+                    string option = command.Args[0];
+                    switch (option)
+                    {
+                        case "skills":
+                            {
+                                currentPlayer.DisplaySkills();
+                            }
+                            break;
+                    }
+                }
+            }
+
+            
+
         }
     }
 }

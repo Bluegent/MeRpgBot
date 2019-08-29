@@ -53,6 +53,17 @@ namespace RPGEngine.Core
             CooldownFinishTime = cooldown;
             return true;
         }
+
+        public string ToShortString(Entity parent)
+        {
+            long cooldownValue = (CooldownFinishTime - parent.Engine.GetTimer().GetNow())/1000;
+            long cooldown = cooldownValue < 0 ? 0 : cooldownValue;
+            long cost = Sanitizer.ReplacePropeties(Values().Cost.Amount, parent).Resolve().Value.ToLong();
+            string costString = cost == 0 ? "" : $"Cost: {cost} {Values().Cost.Resource.Name}]";
+            string result = $"{Skill.Name} [{Skill.Key}] {costString} [Cooldown: {cooldown} s]";
+            return result;
+
+        }
     }
 
     public class SkillCastData
