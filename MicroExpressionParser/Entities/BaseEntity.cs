@@ -171,10 +171,14 @@ namespace RPGEngine.Entities
 
         public override bool Cast(Entity target, string skillKey, bool autocast = false)
         {
-            SkillInstance skill = Skills.ContainsKey(skillKey) ? Skills[skillKey] : null;
+            string tryAlias = Engine.GetSkillManager().GetKeyFromAlias(skillKey);
+            if (tryAlias == null)
+                tryAlias = skillKey;
+
+            SkillInstance skill = Skills.ContainsKey(tryAlias) ? Skills[tryAlias] : null;
             if (skill == null)
             {
-                Engine.Log().Log($"[{Name}] You don't have that skill({skillKey}).");
+                Engine.Log().Log($"[{Name}] You don't have that skill({tryAlias}).");
                 //log that you don't have that skill
                 return false;
             }

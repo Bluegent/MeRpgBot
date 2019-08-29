@@ -57,7 +57,7 @@ namespace RPGEngine.GameConfigReader
             public const string DEFAULT_TYPE = "cast";
             public const string DEFAULT_CAST_DURATION = "0";
             public const string DEFAULT_COOLDOWN = "1";
-            public const string DEFAULT_COST_VALUE = "1";
+            public const string DEFAULT_COST_VALUE = "0";
             public const string DEFAULT_INTERVAL_VALUE = "0";
 
             public const long DEFAULT_NEEDED_LEVEL = 0;

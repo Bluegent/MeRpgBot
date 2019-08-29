@@ -6,6 +6,8 @@ namespace RPGEngine.Managers
 {
     using System.Collections;
 
+    using global::Discord.Commands;
+
     using Newtonsoft.Json.Linq;
 
     using RPGEngine.Core;
@@ -15,35 +17,51 @@ namespace RPGEngine.Managers
 
     public class SkillManager
     {
-        public Dictionary<string, SkillTemplate> SkillsByAlias;
+        public Dictionary<string, SkillTemplate> SkillsByKey;
+
+        public Dictionary<string, string> AliasToKey;
         public IGameEngine Engine { get; set; }
 
         public SkillManager()
         {
-            SkillsByAlias = new Dictionary<string, SkillTemplate>();
+            SkillsByKey = new Dictionary<string, SkillTemplate>();
+            AliasToKey = new Dictionary<string, string>();
         }
 
         public void AddSkill(SkillTemplate skill)
         {
-            if(SkillsByAlias.ContainsKey(skill.Key))
-				throw new MeException($"Attempted to add skill with key {skill.Key}, but a skill with that key already exists.");
-			SkillsByAlias.Add(skill.Key,skill);
+            if (SkillsByKey.ContainsKey(skill.Key))
+                throw new MeException($"Attempted to add skill with key {skill.Key}, but a skill with that key already exists.");
+            SkillsByKey.Add(skill.Key, skill);
 
             foreach (string alias in skill.Aliases)
             {
                 if (!alias.Equals(skill.Key))
                 {
-                    if (SkillsByAlias.ContainsKey(alias))
+                    if (AliasToKey.ContainsKey(alias))
                         throw new MeException(
                             $"Attempted to add skill with alias {alias}, but a skill with that alias already exists.");
-                    SkillsByAlias.Add(alias, skill);
+                    AliasToKey.Add(alias, skill.Key);
                 }
             }
         }
 
         public SkillTemplate GetSkill(string key)
         {
-            return SkillsByAlias.ContainsKey(key) ? SkillsByAlias[key] : null;
+            if (AliasToKey.ContainsKey(key))
+            {
+                string skillKey = AliasToKey[key];
+                if (SkillsByKey.ContainsKey(skillKey))
+                {
+                    return SkillsByKey[skillKey];
+                }
+                return null;
+
+            }
+            else
+            {
+                return SkillsByKey.ContainsKey(key) ? SkillsByKey[key] : null;
+            }
         }
 
         public void LoadSkillsFromFile(string path)
@@ -61,6 +79,11 @@ namespace RPGEngine.Managers
                 SkillTemplate newSkill = reader.FromJson(skillValue.ToObject<JObject>());
                 AddSkill(newSkill);
             }
+        }
+
+        public string GetKeyFromAlias(string alias)
+        {
+            return AliasToKey.ContainsKey(alias) ? AliasToKey[alias] : null;
         }
     }
 }
