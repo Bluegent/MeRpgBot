@@ -191,6 +191,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AttackCommand.cs" />
+    <Compile Include="Commands\AutoAttackCommand.cs" />
+    <Compile Include="Commands\CastCommand.cs" />
+    <Compile Include="Commands\CreateCommand.cs" />
+    <Compile Include="Commands\DuelCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ListCommand.cs" />
+    <Compile Include="Commands\MeCommand.cs" />
+    <Compile Include="Commands\TargetCommand.cs" />
     <Compile Include="Core\AppliedStatus.cs" />
     <Compile Include="GameInterface\IJsonSerializable.cs" />
     <Compile Include="Managers\ClassManager.cs" />

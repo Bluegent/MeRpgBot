@@ -7,8 +7,11 @@ using RPGEngine.Entities;
 
 namespace RPGEngine.Managers
 {
+    using System.Reflection;
+
     using Newtonsoft.Json;
 
+    using RPGEngine.Commands;
     using RPGEngine.Core;
     using RPGEngine.Discord;
     using RPGEngine.Game;
@@ -19,6 +22,7 @@ namespace RPGEngine.Managers
         private static CommandManager _instance;
 
         private Dictionary<string, Action<Command>> _commands;
+        private Dictionary<string, ICommand> _commandInstances;
 
         public IGameEngine Engine { get; set; }
         public static CommandManager Instance
@@ -37,70 +41,31 @@ namespace RPGEngine.Managers
         private CommandManager()
         {
             _commands = new Dictionary<string, Action<Command>>();
+            _commandInstances = new Dictionary<string, ICommand>();
             RegisterCommands();
         }
 
         private void RegisterCommands()
         {
-            RegisterCommand(CommandsConstants.CREATE_COMMAND,CreateCommand);
-            RegisterCommand(CommandsConstants.TARGET_COMMAND,TargetCommand);
-            RegisterCommand(CommandsConstants.ATTACK_COMMAND,AttackCommand);
-            RegisterCommand(CommandsConstants.CAST_COMMAND, CastCommand);
-            RegisterCommand(CommandsConstants.DUEL_COMMAND, DuelCommand);
-            RegisterCommand(CommandsConstants.ME_COMMAND,MeCommand);
-            RegisterCommand(CommandsConstants.LIST_COMMAND,ListCommand);
-            RegisterCommand(CommandsConstants.AUTO_ATTACK_COMMAND, AutoAttackCommand);
+            string commandsNamespace = typeof(ICommand).Namespace;
+            Type[] commands = Assembly.GetExecutingAssembly().GetTypes();
+            foreach (Type command in commands)
+            {
+                if (command.Namespace != null
+                    && command.Namespace.Equals(commandsNamespace)
+                    && !command.IsInterface)
+                {
+                    ICommand commandInstance = (ICommand)Activator.CreateInstance(command);
+
+                    if (!_commandInstances.ContainsKey(commandInstance.GetKey()))
+                    {
+                        RegisterCommand(commandInstance);
+                    }
+                }
+            }
         }
 
-        private void AutoAttackCommand(Command command)
-        {
-            Player player = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-            if (player.Entity.IsDead)
-            {
-                return;
-            }
-
-            if (player.Entity.IsAutoCasting)
-            {
-                Engine.Log().Log($"[{player.Entity.Name}] You are already auto-attacking.");
-                return;
-            }
-
-            Player target;
-            if (command.Args.Length == 0)
-            {
-                if (!player.Entity.HasTarget)
-                {
-                    Engine.Log().Log($"[{player.Entity.Name}] Invalid target.");
-                    return;
-                }
-
-                target = null;
-
-            }
-            else
-            {
-                string name = command.Args[0];
-                target = Engine.GetPlayerManager().FindPlayerByName(name);
-                if (target == null)
-                {
-                    Engine.Log().Log($"[{player.Entity.Name}] Invalid target.");
-                    return;
-                }
-                else
-                {
-                    player.Entity.Target(target.Entity);
-                }
-            }
-
-            player.Entity.StartAutoCasting(player.Class.BaseAttack.Key, target?.Entity);
-        }
-
-        private bool CheckCurrentPlayer(Command command)
+        public bool CheckCurrentPlayer(Command command)
         {
             if (!Engine.GetPlayerManager().PlayerExists(command.UserId))
             {
@@ -110,271 +75,20 @@ namespace RPGEngine.Managers
             }
             return true;
         }
-
-        private void RegisterCommand(string commandName, Action<Command> command)
+        private void RegisterCommand(ICommand command)
         {
-            if (!_commands.ContainsKey(commandName))
+            if (!_commandInstances.ContainsKey(command.GetKey()))
             {
-                _commands.Add(commandName,command);
+                _commandInstances.Add(command.GetKey(), command);
             }
         }
 
-        private void ListCommand(Command command)
-        {
-            if (command.Args.Length == 0)
-            {
-                Engine.Log().Log("Usage of me command: list <option> (players, classes)");
-                return;
-            }
 
-            string option = command.Args[0];
-
-            switch (option)
-            {
-                case "players":
-                    Engine.GetPlayerManager().DisplayPlayerList();
-                    break;
-                case "classes":
-                    Engine.GetClassManager().DisplayClassList();
-                    break;
-            }
-
-        }
-
-        private void MeCommand(Command command)
-        {
-            if (command.Args.Length != 0)
-            {
-                Engine.Log().Log("Usage of me command: me");
-                return;
-            }
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-            currentPlayer.DisplayOverall();
-
-        }
-
-        private void CreateCommand(Command command)
-        {
-            if (command.Args.Length < 2)
-            {
-                Engine.Log().Log("Usage of create command: create <name> <class_name>");
-                return;
-            }
-
-            string name = command.Args[0];
-            string classKey = command.Args[1];
-            if (!Engine.GetClassManager().HasClass(classKey))
-            {
-                Engine.Log().Log($"The class {classKey} does not exist.");
-                return;
-            }
-
-            ClassTemplate playerClass = Engine.GetClassManager().GetClass(classKey);
-            Engine.GetPlayerManager().CreatePlayer(command.UserId, name, playerClass);
-        }
-
-        private void TargetCommand(Command command)
-        {
-            if (command.Args.Length < 1)
-            {
-                Engine.Log().Log("Usage of target command: create <name>");
-                return;
-            }
-
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-
-            string name = command.Args[0];
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-            Player target = Engine.GetPlayerManager().FindPlayerByName(name);
-            if (target == null)
-            {
-                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
-                return;
-            }
-
-          
-            currentPlayer.Entity.Target(target.Entity);
-
-        }
-
-        private void AttackCommand(Command command)
-        {
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-
-            if (!currentPlayer.Entity.HasTarget)
-            {
-                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
-                return;
-            }
-
-            if (currentPlayer.Entity.IsAutoCasting
-                && currentPlayer.Entity.AutoCastSkill == currentPlayer.Class.BaseAttack.Key)
-            {
-                Engine.Log().Log($"[{currentPlayer.Entity.Name}] You are already auto-attacking that target.");
-                return;
-            }
-
-            currentPlayer.Entity.Cast(
-                currentPlayer.Entity.CurrentTarget,
-                currentPlayer.Class.BaseAttack.Key);
-        }
-
-        private void CastCommand(Command command)
-        {
-            if (command.Args.Length < 1)
-            {
-                Engine.Log().Log("Usage of cast command: cast <skill_alias> [optional] target");
-                return;
-            }
-
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-
-
-
-            string skillAlias = command.Args[0];
-
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-
-
-
-            if (command.Args.Length > 1)
-            {
-                string name = command.Args[1];
-                Player target = Engine.GetPlayerManager().FindPlayerByName(name);
-                if (target == null)
-                {
-                    Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
-                    return;
-                }
-                currentPlayer.Entity.Cast(target.Entity, skillAlias);
-                return;
-            }
-            if (!currentPlayer.Entity.HasTarget)
-            {
-                Engine.Log().Log($"[{currentPlayer.Entity.Name}] Invalid target.");
-                return;
-            }
-            currentPlayer.Entity.Cast(currentPlayer.Entity.CurrentTarget, skillAlias);
-        }
-
-        private void DuelCommand(Command command)
-        {
-            if (command.Args.Length < 1)
-            {
-                Engine.Log().Log("Usage of cast command: duel challenge <target>\nduel accept \nduel reject \nduel exit");
-                return;
-            }
-            if (!CheckCurrentPlayer(command))
-            {
-                return;
-            }
-            Player currentPlayer = Engine.GetPlayerManager().FindPlayerById(command.UserId);
-
-            string option = command.Args[0];
-            switch (option)
-            {
-                case "challenge":
-                    {
-                        if (command.Args.Length < 2)
-                        {
-                            Engine.Log().Log("Please chose a target to challenge (duel challenge <target>)");
-                            return;
-                        }
-
-                        string targetName = command.Args[1];
-
-                        Player target = Engine.GetPlayerManager().FindPlayerByName(targetName);
-                        if (target == null)
-                        {
-                            Engine.Log().Log($"A player with name {targetName} does not exist.");
-                            return;
-                        }
-
-                        if (target.Entity.IsDead)
-                        {
-                            Engine.Log().Log($"{targetName} is dead. You can't challenge a dead player.");
-                            return;
-                        }
-
-                        if (currentPlayer.Id == target.Id)
-                        {
-                            Engine.Log().Log($"{targetName} you can't challenge yourself, you idiot.");
-                            return;
-                        }
-                        target.AddChallenge(currentPlayer);
-
-                    }
-                    break;
-                case "accept":
-                    {
-                        if (currentPlayer.Dueling)
-                        {
-                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Currently dueling.");
-                            return;
-                        }
-                        if (currentPlayer.DuelRequests.Count != 0)
-                        {
-                            currentPlayer.AcceptDuel();
-                        }
-                        else
-                        {
-                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] No duel requests.");
-                        }
-                    }
-                    break;
-                case "reject":
-                    {
-                        if (currentPlayer.Dueling)
-                        {
-                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Currently dueling.");
-                            return;
-                        }
-                        if (currentPlayer.DuelRequests.Count != 0)
-                        {
-                            currentPlayer.AcceptDuel();
-                        }
-                        else
-                        {
-                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] No duel requests.");
-                        }
-                    }
-                    break;
-                case "exit":
-                    {
-                        if (currentPlayer.Dueling)
-                        {
-                            currentPlayer.EndDuel();
-                            return;
-                        }
-                        else
-                        {
-                            Engine.Log().Log($"[{currentPlayer.Entity.Name}] Not currently dueling.");
-                        }
-                    }
-                    break;
-
-            }
-
-
-        }
 
         public void Execute(Command command)
         {
+            if (_commandInstances.ContainsKey(command.Name))
+                _commandInstances[command.Name].Execute(command, Engine);
             if (_commands.ContainsKey(command.Name))
                 _commands[command.Name](command);
         }

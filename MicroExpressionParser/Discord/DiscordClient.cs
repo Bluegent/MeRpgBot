@@ -21,6 +21,8 @@ namespace RPGEngine.Discord
         private DiscordSocketClient client;
         private Action ready;
 
+        private bool isReady;
+
         public IGameEngine Engine { get; set; }
 
         private DiscordConfig config;
@@ -56,6 +58,7 @@ namespace RPGEngine.Discord
             client.Log += DiscordLog;
             client.MessageReceived += MessageReceived;
             client.Ready += _client_Ready;
+            isReady = false;
 
             await client.LoginAsync(TokenType.Bot, config.Token);
             await client.StartAsync();
@@ -88,8 +91,10 @@ namespace RPGEngine.Discord
             {
                 channel = GetChannel();
             }
+            isReady = true;
             Log($"RPG-Bot ready! [{Version.VersionString()}]");
             ready?.Invoke();
+            
             return Task.CompletedTask;
         }
 
@@ -114,6 +119,7 @@ namespace RPGEngine.Discord
         }
         public void Log(string msg)
         {
+            if(isReady)
             if (!string.IsNullOrEmpty(msg))
                 Channel.SendMessageAsync(msg);
         }
