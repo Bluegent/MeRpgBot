@@ -46,6 +46,11 @@
                                 currentPlayer.DisplayAttributes();
                             }
                             break;
+                        case "stats":
+                            {
+                                currentPlayer.DisplayStats();
+                            }
+                            break;
                     }
                 }
             }

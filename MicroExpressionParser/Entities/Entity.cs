@@ -204,6 +204,19 @@ namespace RPGEngine.Entities
 
             return result;
         }
+
+        public string GetStatsString()
+        {
+            string result = "";
+            foreach (StatInstance stat in Stats.Values)
+            {
+                result +=
+                    $"{stat.Stat.Name} {stat.Value}\n";
+            }
+
+            return result;
+        }
+
         public string GetResourcesDetailedString()
         {
             string result = "";

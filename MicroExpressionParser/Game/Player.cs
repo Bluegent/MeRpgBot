@@ -129,6 +129,13 @@ namespace RPGEngine.Game
             Engine.Log().Log(displayString);
         }
 
+        public void DisplayStats()
+        {
+            string displayString =
+                $"{GetBasicInfoString()}\n\n{Entity.GetStatsString()}";
+            Engine.Log().Log(displayString);
+        }
+
         public void DisplayResources()
         {
             string displayString =
