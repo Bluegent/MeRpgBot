@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineTest", "ParserTest\En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTester", "ConsoleTester\ConsoleTester.csproj", "{21403D70-0D5B-41A9-A770-77A4D6BBF7C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGClient", "RPGClient\RPGClient.csproj", "{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{21403D70-0D5B-41A9-A770-77A4D6BBF7C1}.Release|x64.Build.0 = Release|Any CPU
 		{21403D70-0D5B-41A9-A770-77A4D6BBF7C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{21403D70-0D5B-41A9-A770-77A4D6BBF7C1}.Release|x86.Build.0 = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|x64.Build.0 = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Debug|x86.Build.0 = Debug|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|x64.ActiveCfg = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|x64.Build.0 = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|x86.ActiveCfg = Release|Any CPU
+		{90B19FAB-709C-4FAE-A27F-6090DA2BEBD3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
