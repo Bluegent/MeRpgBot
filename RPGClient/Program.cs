@@ -13,7 +13,7 @@ namespace RPGClient
     {
         static void Main(string[] args)
         {
-            new ClientWindow().Run();
+            new ClientWindow().Run(60);
         }
     }
 }

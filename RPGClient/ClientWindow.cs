@@ -16,6 +16,10 @@ namespace RPGClient
     {
 
         private View view;
+
+        private Texture2D texture;
+
+        private SpriteBatch spriteBatch;
         public ClientWindow() : base(800,600, new GraphicsMode(32, 24, 8, 8))
         {
             Title = "My Client Window";
@@ -25,6 +29,11 @@ namespace RPGClient
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Lequal);
             GL.Enable(EnableCap.Texture2D);
+
+            /*spriteBatch=new SpriteBatch();
+            texture = ContentPipe.LoadInternalTexture("player.png");
+            BezierSpline spline=new BezierSpline(new Vector2[]{new Vector2(0,0), new Vector2(Width, 0), new Vector2(Width, Height),new Vector2(0,Height/2)});
+            animation=new Animation(texture,spline,10000);*/
 
 
         }
@@ -48,6 +57,7 @@ namespace RPGClient
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            Title = $"FPS: {RenderFrequency.ToString("0")}/{TargetRenderFrequency}";
             GL.ClearColor(Color.White);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             view.Apply();
