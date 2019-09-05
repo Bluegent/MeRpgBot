@@ -35,12 +35,13 @@ namespace RPGClient
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            BezierSpline spline=new BezierSpline(new Vector2[]{new Vector2(10,10),new Vector2(Width/2,Height/4),new Vector2(Width,Height), new Vector2(Width/4, Height) });
+            BezierSpline spline=new BezierSpline(new Vector2[]{new Vector2(10,10),new Vector2(Width/2,Height/4),new Vector2(Width,Height), new Vector2(Width/4, 3*Height/4) });
             spline.Calculate();
             GL.ClearColor(1f, 1f, 1f, 1f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             view.Apply();
-            shapeRenderer.DrawSpline(spline,true);
+            shapeRenderer.FillRectangle(10,10,100,200,Color.Black);
+            shapeRenderer.DrawSpline(spline,Color.Black);
             SwapBuffers();
             base.OnRenderFrame(e);
         }
