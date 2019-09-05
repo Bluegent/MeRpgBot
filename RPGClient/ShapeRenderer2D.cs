@@ -18,5 +18,22 @@
             GL.End();
             GL.PopMatrix();
         }
+
+        public void DrawSpline(BezierSpline spline, bool debug = false)
+        {
+            if (debug)
+            {
+                for (int i = 1; i < spline.control.Length; ++i)
+                {
+                    DrawLine(spline.control[i - 1], spline.control[i], Color.Red);
+                }
+            }
+
+            for (int i = 1; i < spline.ResultCurve.Count; ++i)
+            {
+                DrawLine(spline.ResultCurve[i-1],spline.ResultCurve[i],Color.Black);
+            }
+
+        }
     }
 }

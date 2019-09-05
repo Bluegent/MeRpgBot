@@ -13,5 +13,7 @@ namespace RPGClient
     interface IShapeRenderer
     {
         void DrawLine(Vector2 p1, Vector2 p2, Color color, float lineWidth = 1);
+
+        void DrawSpline(BezierSpline spline, bool debug = false);
     }
 }
